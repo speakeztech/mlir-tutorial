@@ -1,0 +1,20 @@
+{
+    "recommendations": [
+        // MLIR/LLVM Support
+        "llvm-vs-code-extensions.vscode-mlir",
+        "llvm-vs-code-extensions.vscode-clangd",
+
+        // C/C++ Development
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools",
+
+        // Build and Debugging
+        "ms-vscode.makefile-tools",
+
+        // Code Quality
+        "llvm-vs-code-extensions.llvm-toolchain",
+
+        // Markdown for documentation
+        "yzhang.markdown-all-in-one"
+    ]
+}

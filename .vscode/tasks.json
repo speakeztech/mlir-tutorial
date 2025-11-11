@@ -1,0 +1,146 @@
+{
+    "version": "2.0.0",
+    "windows": {
+        "options": {
+            "shell": {
+                "executable": "powershell.exe",
+                "args": ["-NoProfile", "-Command"]
+            }
+        }
+    },
+    "tasks": [
+        {
+            "label": "Build (Windows)",
+            "type": "shell",
+            "command": "${workspaceFolder}\\scripts\\build-windows.ps1",
+            "args": [
+                "-BuildType", "Debug"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Build (Release)",
+            "type": "shell",
+            "command": "${workspaceFolder}\\scripts\\build-windows.ps1",
+            "args": [
+                "-BuildType", "Release"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Clean Build",
+            "type": "shell",
+            "command": "${workspaceFolder}\\scripts\\build-windows.ps1",
+            "args": [
+                "-Clean"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Run tutorial-opt",
+            "type": "shell",
+            "command": "${workspaceFolder}\\build\\bin\\tutorial-opt.exe",
+            "args": [
+                "${file}"
+            ],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Run MLIR Pass (Canonicalize)",
+            "type": "shell",
+            "command": "${workspaceFolder}\\build\\bin\\tutorial-opt.exe",
+            "args": [
+                "--canonicalize",
+                "${file}"
+            ],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Show MLIR Passes",
+            "type": "shell",
+            "command": "${workspaceFolder}\\build\\bin\\tutorial-opt.exe",
+            "args": [
+                "--show-dialects"
+            ],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Configure CMake",
+            "type": "shell",
+            "command": "C:\\msys64\\mingw64\\bin\\cmake.exe",
+            "args": [
+                "-G", "Ninja",
+                "-DCMAKE_BUILD_TYPE=Debug",
+                "-DMLIR_DIR=C:/msys64/mingw64/lib/cmake/mlir",
+                "-DLLVM_DIR=C:/msys64/mingw64/lib/cmake/llvm",
+                "-S", "${workspaceFolder}",
+                "-B", "${workspaceFolder}/build"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build with Ninja",
+            "type": "shell",
+            "command": "C:\\msys64\\mingw64\\bin\\ninja.exe",
+            "args": [
+                "-C", "${workspaceFolder}/build"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Run Tests",
+            "type": "shell",
+            "command": "C:\\msys64\\mingw64\\bin\\ninja.exe",
+            "args": [
+                "-C", "${workspaceFolder}/build",
+                "check-mlir-tutorial"
+            ],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

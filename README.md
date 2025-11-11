@@ -1,169 +1,317 @@
-# MLIR For Beginners
+# MLIR For Beginners - Windows Native Edition
 
-This is the code repository for a series of articles on the
-[MLIR framework](https://mlir.llvm.org/) for building compilers.
+This is a Windows-native fork of the [MLIR tutorial series](https://jeremykun.com/2023/08/10/mlir-getting-started/) focused on providing the fastest, lowest-burden path to learning MLIR on Windows using **MSYS2/MinGW64** and **CMake**.
 
-## Articles
+**Branch:** `WinOS-CMake` - Optimized for native Windows development without WSL.
 
-1.  [Build System (Getting Started)](https://jeremykun.com/2023/08/10/mlir-getting-started/)
-2.  [Running and Testing a Lowering](https://jeremykun.com/2023/08/10/mlir-running-and-testing-a-lowering/)
-3.  [Writing Our First Pass](https://jeremykun.com/2023/08/10/mlir-writing-our-first-pass/)
-4.  [Using Tablegen for Passes](https://jeremykun.com/2023/08/10/mlir-using-tablegen-for-passes/)
-5.  [Defining a New Dialect](https://jeremykun.com/2023/08/21/mlir-defining-a-new-dialect/)
-6.  [Using Traits](https://jeremykun.com/2023/09/07/mlir-using-traits/)
-7.  [Folders and Constant Propagation](https://jeremykun.com/2023/09/11/mlir-folders/)
-8.  [Verifiers](https://jeremykun.com/2023/09/13/mlir-verifiers/)
-9.  [Canonicalizers and Declarative Rewrite Patterns](https://jeremykun.com/2023/09/20/mlir-canonicalizers-and-declarative-rewrite-patterns/)
-10. [Dialect Conversion](https://jeremykun.com/2023/10/23/mlir-dialect-conversion/)
-11. [Lowering through LLVM](https://jeremykun.com/2023/11/01/mlir-lowering-through-llvm/)
-12. [A Global Optimization and Dataflow Analysis](https://jeremykun.com/2023/11/15/mlir-a-global-optimization-and-dataflow-analysis/)
-12. [Defining Patterns with PDLL](https://www.jeremykun.com/2024/08/04/mlir-pdll/)
+## Why This Fork?
 
-## Bazel build
+The original tutorial uses Bazel and assumes building LLVM from source. This fork provides:
+- **Pre-built LLVM/MLIR** via MSYS2 package manager (no multi-hour compilation)
+- **Native Windows tooling** with MSYS2/MinGW64 (not WSL or Cygwin)
+- **CMake build system** (simpler than Bazel for learning)
+- **PowerShell integration** for Windows-first workflow
+- **Fast setup** - from zero to running tutorials in under 30 minutes
 
-Bazel is one of two supported build systems for this tutorial. The other is
-CMake. If you're unfamiliar with Bazel, you can read the tutorials at
-[https://bazel.build/start](https://bazel.build/start). Familiarity with Bazel
-is not required to build or test, but it is required to follow the articles in
-the tutorial series and explained in the first article,
-[Build System (Getting Started)](https://jeremykun.com/2023/08/10/mlir-getting-started/).
-The CMake build is maintained, but was added at article 10 (Dialect Conversion)
-and will not be explained in the articles.
+## Tutorial Series
 
-**Note**: This project has been upgraded to Bazel 8.3.1 and migrated to use 
-Bzlmod for dependency management, replacing the traditional WORKSPACE file 
-approach. Dependencies are now managed through `MODULE.bazel` using the 
-Bazel Central Registry (BCR) where possible.
+This repository includes **complete Windows-adapted tutorials** that teach MLIR concepts using native Windows tools (MSYS2/CMake) instead of Bazel. All 13 tutorials are now available!
+
+### Complete Tutorial Series (All Available Now!)
+
+#### Beginner (Tutorials 1-4) - Getting Started with MLIR
+
+1.  **[Getting Started](docs/tutorials/01-getting-started.md)** - MSYS2 setup, building with CMake, first MLIR program
+2.  **[Running and Testing a Lowering](docs/tutorials/02-running-and-testing.md)** - lit/FileCheck testing, dialects, progressive lowering
+3.  **[Writing Your First Pass](docs/tutorials/03-writing-first-pass.md)** - Pattern rewriting, IR walking, debugging passes
+4.  **[Using Tablegen for Passes](docs/tutorials/04-using-tablegen.md)** - TableGen basics, `.td` files, CMake integration
+
+#### Intermediate (Tutorials 5-9) - Building Custom Dialects
+
+5.  **[Defining a New Dialect](docs/tutorials/05-defining-dialect.md)** - Dialect architecture, types, operations, TableGen definitions
+6.  **[Using Traits](docs/tutorials/06-using-traits.md)** - Operation traits, optimization enablement, memory effects
+7.  **[Folders and Constant Propagation](docs/tutorials/07-folders-constant-propagation.md)** - Constant folding, materializers, SCCP pass
+8.  **[Verifiers](docs/tutorials/08-verifiers.md)** - Verification architecture, custom verifiers, error messages
+9.  **[Canonicalizers and Declarative Rewrite Patterns](docs/tutorials/09-canonicalizers.md)** - DRR patterns, constraints, pattern benefits
+
+#### Advanced (Tutorials 10-13) - Production Compiler Features
+
+10. **[Dialect Conversion](docs/tutorials/10-dialect-conversion.md)** - Systematic conversion, type converters, materialization
+11. **[Lowering through LLVM](docs/tutorials/11-lowering-through-llvm.md)** - Complete lowering pipeline, JIT compilation, code generation
+12. **[Dataflow Analysis](docs/tutorials/12-dataflow-analysis.md)** - Analysis framework, lattices, custom analyses
+13. **[Defining Patterns with PDLL](docs/tutorials/13-pdll-patterns.md)** - Pattern Description Language, advanced pattern features
+
+**[→ Start Learning: Tutorial 01: Getting Started](docs/tutorials/01-getting-started.md)**
+
+### About These Tutorials
+
+All tutorials are based on Jeremy Kun's excellent series at [jeremykun.com](https://jeremykun.com/2023/08/10/mlir-getting-started/). Our Windows adaptations:
+- ✅ Replace Bazel with CMake
+- ✅ Use MSYS2/MinGW64 for native Windows development
+- ✅ Include PowerShell commands and Windows-specific examples
+- ✅ Preserve 100% of MLIR concepts and learning material
+- ✅ Add Windows troubleshooting and debugging tips
+
+**Time to Complete:** ~20-30 hours for all tutorials (2-3 hours each)
+
+## Quick Start (Windows Native with MSYS2)
 
 ### Prerequisites
 
-Install Bazelisk via instructions at
-[https://github.com/bazelbuild/bazelisk#installation](https://github.com/bazelbuild/bazelisk#installation).
-This should create the `bazel` command on your system.
+1. **Windows 10/11** (64-bit)
+2. **PowerShell 5.1+** (included with Windows)
+3. **Git for Windows** ([download](https://git-scm.com/download/win))
+4. **MSYS2** - we'll install this next
 
-You should also have a modern C++ compiler on your system, either `gcc` or
-`clang`, which Bazel will detect.
+### Step 1: Install MSYS2
 
-**Bazel Version**: This project requires Bazel 8.3.1 or newer. The specific
-version is pinned in `.bazelversion`.
+MSYS2 provides pre-built LLVM/MLIR binaries, eliminating the need to compile LLVM from source (which can take hours).
 
-### Build and test
+```powershell
+# Option A: Using winget (Windows 11 or Windows 10 with App Installer)
+winget install --id MSYS2.MSYS2
 
-Run
+# Option B: Using Chocolatey
+choco install msys2
 
-```bash
-bazel build ...:all
-bazel test ...:all
+# Option C: Direct download
+# Download installer from https://www.msys2.org/ and run it
 ```
 
-### Dependency Management
-
-The project uses Bzlmod (MODULE.bazel) for dependency management:
-
-- **Core dependencies**: Managed through Bazel Central Registry (BCR)
-  - rules_python, rules_java, protobuf, abseil-cpp, or-tools, etc.
-- **LLVM dependencies**: Managed through custom module extension
-  - LLVM/MLIR source code via git repository
-- **Development tools**: hedron_compile_commands via git_override
-
-This approach provides better dependency resolution, versioning, and 
-compatibility compared to the legacy WORKSPACE approach.
-
-## CMake build
-
-CMake is one of two supported build systems for this tutorial. The other is
-Bazel. If you're unfamiliar with CMake, you can read the tutorials at
-[https://cmake.org/getting-started/](https://cmake.org/getting-started/). The
-CMake build is maintained, but was added at article 10 (Dialect Conversion) and
-will not be explained in the articles.
-
-### Prerequisites
-
-*   Make sure you have installed everything needed to build LLVM
-    https://llvm.org/docs/GettingStarted.html#software
-*   For this recipe Ninja is used so be sure to have it as well installed
-    https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages
-
-### Checking out the code
-
-Checkout the tutorial including the LLVM dependency (submodules):
+After installation, **update MSYS2** (required before installing packages):
 
 ```bash
-git clone --recurse-submodules https://github.com/j2kun/mlir-tutorial.git
+# Run this in the "MSYS2 MSYS" terminal (from Start Menu)
+pacman -Syu --noconfirm
+# Close terminal when prompted and reopen MSYS2 MSYS
+pacman -Su --noconfirm
+```
+
+### Step 2: Install LLVM/MLIR Toolchain
+
+**CRITICAL:** You must use the **MINGW64** environment, not the MSYS environment!
+
+Open **"MSYS2 MINGW64"** from the Start Menu (look for the blue icon), then run:
+
+```bash
+# Install complete MLIR/LLVM toolchain with build tools
+pacman -S mingw-w64-x86_64-llvm \
+          mingw-w64-x86_64-clang \
+          mingw-w64-x86_64-mlir \
+          mingw-w64-x86_64-cmake \
+          mingw-w64-x86_64-ninja \
+          mingw-w64-x86_64-gcc \
+          mingw-w64-x86_64-pkgconf
+
+# Verify installation (should show /mingw64/bin/...)
+which mlir-opt
+which cmake
+which ninja
+```
+
+### Step 3: Add MSYS2 to Windows PATH
+
+This allows you to use MLIR tools from PowerShell and your IDE.
+
+**For C: drive installation** (run in PowerShell as Administrator):
+
+```powershell
+[System.Environment]::SetEnvironmentVariable(
+    "Path",
+    "$env:Path;C:\msys64\mingw64\bin;C:\msys64\usr\bin",
+    [System.EnvironmentVariableTarget]::Machine
+)
+```
+
+**For D: drive or external installation** (adjust path as needed):
+
+```powershell
+$msysPath = "D:\msys64"  # Change to your installation location
+[System.Environment]::SetEnvironmentVariable(
+    "Path",
+    "$env:Path;$msysPath\mingw64\bin;$msysPath\usr\bin",
+    [System.EnvironmentVariableTarget]::Machine
+)
+```
+
+**Restart PowerShell** after updating PATH, then verify:
+
+```powershell
+mlir-opt --version
+cmake --version
+```
+
+### Step 4: Clone and Build This Tutorial
+
+```powershell
+# Clone the repository (WinOS-CMake branch)
+git clone --branch WinOS-CMake https://github.com/YOUR-FORK/mlir-tutorial.git
 cd mlir-tutorial
+
+# Run the automated build script
+.\scripts\build-windows.ps1
 ```
 
-### Building dependencies
+That's it! You're ready to start learning MLIR.
 
-Note: The following steps are suitable for macOs and use ninja as building
-system, they should not be hard to adapt for your environment.
+### Manual Build (Alternative)
 
-*Build LLVM/MLIR*
+If you prefer to build manually:
 
+```powershell
+# Create build directory
+mkdir build
+cd build
+
+# Configure with CMake
+cmake -G Ninja `
+      -DCMAKE_BUILD_TYPE=Debug `
+      -DMLIR_DIR="C:\msys64\mingw64\lib\cmake\mlir" `
+      -DLLVM_DIR="C:\msys64\mingw64\lib\cmake\llvm" `
+      ..
+
+# Build
+ninja
+
+# Run tests
+ninja check-mlir-tutorial
+```
+
+### Running the Tutorial
+
+```powershell
+# Test the tutorial-opt tool
+.\build\bin\tutorial-opt.exe --help
+
+# Run example transformations
+.\build\bin\tutorial-opt.exe ..\tests\poly_syntax.mlir --canonicalize
+```
+
+## Understanding MSYS2 vs MINGW64
+
+**Important:** MSYS2 provides two different environments:
+
+- **MSYS2** environment (`/usr/bin`): Unix compatibility layer - produces binaries that depend on `msys-2.0.dll`
+- **MINGW64** environment (`/mingw64/bin`): Native Windows toolchain - produces standalone `.exe` files
+
+**Always use MINGW64 for this tutorial** to generate true native Windows executables.
+
+Check which environment you're in:
 ```bash
-#!/bin/sh
-
-BUILD_SYSTEM=Ninja
-BUILD_TAG=ninja
-THIRDPARTY_LLVM_DIR=$PWD/externals/llvm-project
-BUILD_DIR=$THIRDPARTY_LLVM_DIR/build
-INSTALL_DIR=$THIRDPARTY_LLVM_DIR/install
-
-mkdir -p $BUILD_DIR
-mkdir -p $INSTALL_DIR
-
-pushd $BUILD_DIR
-
-cmake ../llvm -G $BUILD_SYSTEM \
-      -DCMAKE_CXX_COMPILER="$(xcrun --find clang++)" \
-      -DCMAKE_C_COMPILER="$(xcrun --find clang)" \
-      -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
-      -DLLVM_LOCAL_RPATH=$INSTALL_DIR/lib \
-      -DLLVM_PARALLEL_COMPILE_JOBS=7 \
-      -DLLVM_PARALLEL_LINK_JOBS=1 \
-      -DLLVM_BUILD_EXAMPLES=OFF \
-      -DLLVM_INSTALL_UTILS=ON \
-      -DCMAKE_OSX_ARCHITECTURES="$(uname -m)" \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DLLVM_ENABLE_ASSERTIONS=ON \
-      -DLLVM_CCACHE_BUILD=ON \
-      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-      -DLLVM_ENABLE_PROJECTS='mlir' \
-      -DDEFAULT_SYSROOT="$(xcrun --show-sdk-path)" \
-      -DCMAKE_OSX_SYSROOT="$(xcrun --show-sdk-path)"
-
-cmake --build . --target check-mlir
-
-popd
+echo $MSYSTEM  # Should show "MINGW64"
 ```
 
-### Build and test
+## Troubleshooting
 
+### "mlir-opt not found" or "cmake not found"
+
+Make sure you:
+1. Installed packages in **MINGW64** environment (not MSYS)
+2. Added `C:\msys64\mingw64\bin` to your Windows PATH
+3. Restarted PowerShell after updating PATH
+
+Verify with:
+```powershell
+where.exe mlir-opt
+# Should show: C:\msys64\mingw64\bin\mlir-opt.exe
+```
+
+### CMake can't find MLIR
+
+If CMake reports "Could not find MLIR", ensure you're pointing to the correct cmake config:
+
+```powershell
+# Check if MLIR cmake files exist
+ls C:\msys64\mingw64\lib\cmake\mlir
+ls C:\msys64\mingw64\lib\cmake\llvm
+```
+
+If files are missing, reinstall the MLIR package:
 ```bash
-#!/bin/sh
-
-BUILD_SYSTEM="Ninja"
-BUILD_DIR=./build-`echo ${BUILD_SYSTEM}| tr '[:upper:]' '[:lower:]'`
-
-rm -rf $BUILD_DIR
-mkdir $BUILD_DIR
-pushd $BUILD_DIR
-
-LLVM_BUILD_DIR=externals/llvm-project/build
-cmake -G $BUILD_SYSTEM .. \
-    -DLLVM_DIR="$LLVM_BUILD_DIR/lib/cmake/llvm" \
-    -DMLIR_DIR="$LLVM_BUILD_DIR/lib/cmake/mlir" \
-    -DBUILD_DEPS="ON" \
-    -DBUILD_SHARED_LIBS="OFF" \
-    -DCMAKE_BUILD_TYPE=Debug
-
-popd
-
-cmake --build $BUILD_DIR --target MLIRAffineFullUnrollPasses
-cmake --build $BUILD_DIR --target MLIRMulToAddPasses
-cmake --build $BUILD_DIR --target MLIRNoisyPasses
-cmake --build $BUILD_DIR --target mlir-headers
-cmake --build $BUILD_DIR --target mlir-doc
-cmake --build $BUILD_DIR --target tutorial-opt
-cmake --build $BUILD_DIR --target check-mlir-tutorial
+# In MINGW64 terminal
+pacman -S mingw-w64-x86_64-mlir --force
 ```
+
+### Build Errors with or-tools
+
+If you get errors downloading or-tools, you can disable it temporarily (it's only needed for one tutorial):
+
+Edit `CMakeLists.txt` and comment out the or-tools section:
+```cmake
+# message(STATUS "Fetching or-tools...")
+# include(FetchContent)
+# ...
+```
+
+### Path Length Issues
+
+Windows has a 260 character path limit by default. Enable long paths:
+
+```powershell
+# Run as Administrator
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+    -Name "LongPathsEnabled" -Value 1
+```
+
+## IDE Setup
+
+### VSCode
+
+Install recommended extensions:
+- **MLIR** by LLVM Foundation
+- **C/C++** by Microsoft
+- **CMake Tools** by Microsoft
+
+Settings will be auto-configured from `.vscode/settings.json` in this repository.
+
+### CLion / Rider
+
+CLion will auto-detect the CMake configuration. To use MSYS2 toolchain:
+
+1. **Settings → Build, Execution, Deployment → Toolchains**
+2. Add toolchain: "MinGW-w64 MSYS2"
+3. Set paths:
+   - Environment: `C:\msys64\mingw64`
+   - CMake: `C:\msys64\mingw64\bin\cmake.exe`
+   - Make: `C:\msys64\mingw64\bin\ninja.exe`
+   - C Compiler: `C:\msys64\mingw64\bin\gcc.exe`
+   - C++ Compiler: `C:\msys64\mingw64\bin\g++.exe`
+
+## Additional Resources
+
+- **MLIR Documentation**: [mlir.llvm.org](https://mlir.llvm.org/)
+- **Original Tutorial Repo**: [github.com/j2kun/mlir-tutorial](https://github.com/j2kun/mlir-tutorial)
+- **MSYS2 Documentation**: [www.msys2.org](https://www.msys2.org/)
+- **Windows Development Guide**: See `WINDOWS_SETUP.md` for advanced configuration
+
+## Contributing
+
+This is a personal fork focused on Windows-native development. For issues with the tutorial content itself, please refer to [the original repository](https://github.com/j2kun/mlir-tutorial).
+
+For Windows-specific issues with this fork, please open an issue.
+
+## License
+
+Same as the original mlir-tutorial repository - Apache 2.0 with LLVM Exceptions.
+
+---
+
+## Legacy Build Systems (Not Used in This Branch)
+
+<details>
+<summary>Bazel Build (Original Tutorial) - Click to expand</summary>
+
+The original tutorial uses Bazel. This branch (`WinOS-CMake`) uses CMake instead for simplicity on Windows. If you want to use Bazel, switch to the `main` branch.
+
+For Bazel documentation, see the [original README](https://github.com/j2kun/mlir-tutorial/blob/main/README.md).
+
+</details>
+
+<details>
+<summary>Building LLVM from Source - Click to expand</summary>
+
+This branch uses pre-built LLVM/MLIR from MSYS2. If you need to build LLVM from source (for development or custom builds), see the upstream LLVM documentation at [llvm.org/docs/GettingStarted.html](https://llvm.org/docs/GettingStarted.html).
+
+**Warning:** Building LLVM from source on Windows takes 2-4 hours and requires 40GB+ disk space.
+
+</details>

@@ -13,8 +13,25 @@ MODULE.bazel.lock
 /build*
 
 # Visual Studio built-in CMake configuration
-.vscode*
 /CMakeSettings.json
 # Compilation databases
 compile_commands.json
 tablegen_compile_commands.yml
+
+# Windows specific
+*.exe
+*.obj
+*.dll
+*.pdb
+*.ilk
+
+# JetBrains IDEs
+.idea/
+cmake-build-*/
+
+# VSCode workspace settings (keep shared settings, ignore personal)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "WebFetch(domain:www.jeremykun.com)",
+      "WebFetch(domain:jeremykun.com)",
+      "Bash(for file in /d/repos/mlir-tutorial/docs/tutorials/0{5,6,7,8}*.md)",
+      "Bash(done)",
+      "Bash(do head -n 5 \"$file\")",
+      "Bash(for f in D:/repos/mlir-tutorial/docs/tutorials/{05,06,07,08,09}-*.md)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
