@@ -1427,9 +1427,9 @@ The lattice theory, transfer functions, and fixed-point iteration you've learned
 
 ### Further Reading
 
-- **"Hyping Hypergraphs"** - SpeakEZ Blog: Deep dive into Program Hypergraph architecture
-- **"Unified Cognitive Architecture"** - SpeakEZ Blog: Hypergraphs for AI and compilation convergence
-- **"Advent of Neuromorphic AI"** - SpeakEZ Blog: Dataflow architectures and forward gradient learning
+- **[Hyping Hypergraphs](https://speakez.tech/blog/hyping-hypergraphs/)** - SpeakEZ Blog: Deep dive into Program Hypergraph architecture
+- **[A Vision For Unified Cognitive Architecture](https://speakez.tech/blog/unified-cognitive-architecture/)** - SpeakEZ Blog: Hypergraphs for AI and compilation convergence
+- **[The Advent of Neuromorphic AI](https://speakez.tech/blog/advent-of-neuromorphic-ai/)** - SpeakEZ Blog: Dataflow architectures and forward gradient learning
 - **MLIR Dataflow Framework Documentation:** [mlir.llvm.org/docs/DataFlowAnalysis/](https://mlir.llvm.org/docs/DataFlowAnalysis/)
 - **Kildall's Algorithm (1973):** "A Unified Approach to Global Program Optimization"
 
