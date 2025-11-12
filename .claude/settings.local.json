@@ -9,7 +9,7 @@
       "Bash(do head -n 5 \"$file\")",
       "Bash(for f in D:/repos/mlir-tutorial/docs/tutorials/{05,06,07,08,09}-*.md)",
       "Bash(cd D:/repos/mlir-tutorial/docs/tutorials for file in 07-folders-constant-propagation.md 08-verifiers.md 09-canonicalizers.md 10-dialect-conversion.md 12-dataflow-analysis.md 13-pdll-patterns.md)",
-      "Bash(do grep -A2 \"📖 Navigation Guide\" \"$file\")"
+      "Bash(do grep -A2 \"🧭 Navigation Guide\" \"$file\")"
     ],
     "deny": [],
     "ask": []

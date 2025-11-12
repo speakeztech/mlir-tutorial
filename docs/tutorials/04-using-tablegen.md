@@ -6,7 +6,7 @@
 
 ---
 
-## 📖 Navigation Guide
+## 🧭 Navigation Guide
 
 This tutorial uses emojis to help you navigate:
 - **📖 Reading sections** - Conceptual explanations and background
@@ -28,7 +28,7 @@ And it leads to a crucial realization: if you're going to forget things anyway, 
 
 But here's where things get interesting (and where I initially stumbled): TableGen isn't the magical abstraction layer it first appears to be. It's something both simpler and more powerful—a **transparent code generator** that trades "hiding complexity" for "making repetition mechanical".
 
-## 📖 What You'll Learn
+## 💡 What You'll Learn
 
 - Why **boilerplate matters** and how TableGen addresses it
 - The **mental model shift** from "abstraction" to "transparent generation"

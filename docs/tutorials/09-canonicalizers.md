@@ -6,7 +6,7 @@
 
 ---
 
-## 📖 Navigation Guide
+## 🧭 Navigation Guide
 
 This tutorial uses emojis to help you navigate:
 - **📖 Reading sections** - Conceptual explanations and background
@@ -16,7 +16,7 @@ This tutorial uses emojis to help you navigate:
 
 ---
 
-## 📖 What You'll Learn
+## 💡 What You'll Learn
 
 - Understanding **canonicalization** vs **folding**
 - Implementing **canonicalizers** with C++ patterns
