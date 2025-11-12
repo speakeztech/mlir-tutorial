@@ -174,7 +174,7 @@ MLIR provides infrastructure so you only implement domain-specific logic.
 ```
 ┌─────────────────────────────────┐
 │   DataflowSolver                │  ← Orchestrates analysis
-│   - Fixed-point iteration      │
+│   - Fixed-point iteration       │
 │   - Dependency tracking         │
 │   - Lattice management          │
 └─────────────────────────────────┘
@@ -984,6 +984,454 @@ solver.load<DeadCodeAnalysis>();
 - **Classic Dataflow:** "Compilers: Principles, Techniques, and Tools" (Dragon Book)
 - **Kildall's Algorithm:** "A Unified Approach to Global Program Optimization" (1973)
 - **Original Article:** [jeremykun.com](https://jeremykun.com/2023/11/15/mlir-a-global-optimization-and-dataflow-analysis/)
+
+---
+
+---
+
+## 🔍 Addendum: Control Flow vs Dataflow - The Architecture Gradient
+
+### The Two Paradigms of Computation
+
+The dataflow analysis framework in MLIR operates within a **control flow** paradigm, the dominant model inherited from Von Neumann architecture. But understanding the distinction between control flow and dataflow computation reveals why next-generation compilers, including the Fidelity Framework's Firefly compiler, need to manage both paradigms deftly.
+
+#### Control Flow: The Von Neumann Sequential Model
+
+**Traditional CPUs (x86, ARM, RISC-V)** execute programs as sequences of instructions:
+
+```
+1. Fetch instruction from memory
+2. Decode instruction
+3. Execute operation
+4. Store result
+5. Update program counter
+6. Repeat
+```
+
+**Characteristics:**
+- **Sequential execution** - one instruction at a time (or small instruction windows)
+- **Implicit data dependencies** - instructions reference memory locations
+- **Program counter driven** - "what to do next" determined by control flow
+- **Memory-centric** - data moves between registers and memory hierarchy
+
+**MLIR's role:** The dataflow analysis framework computes abstract properties by analyzing control flow graphs (CFGs). As we've seen in this tutorial, information propagates through basic blocks, joins at merge points, and iterates to fixed points. This matches the control flow execution model perfectly.
+
+```mlir
+// Control flow representation
+func.func @example(%cond: i1) -> i32 {
+  cf.cond_br %cond, ^bb1, ^bb2
+^bb1:
+  %c5 = arith.constant 5 : i32
+  cf.br ^bb3(%c5 : i32)
+^bb2:
+  %c10 = arith.constant 10 : i32
+  cf.br ^bb3(%c10 : i32)
+^bb3(%result: i32):
+  return %result : i32
+}
+```
+
+**Analysis perspective:** At `^bb3`, dataflow analysis must join the lattice values from both paths. If one path provides `[5,5]` and the other `[10,10]`, the result is `[5,10]`. This is fundamentally **control-flow reasoning**.
+
+#### Dataflow: The Post-Von Neumann Spatial Model
+
+**Emerging architectures (Groq, Tenstorrent, NextSilicon, SambaNova)** execute programs as graphs of operations where data availability triggers computation:
+
+```
+When all inputs to an operation are ready → Execute operation → Outputs become available
+```
+
+**Characteristics:**
+- **Spatial parallelism** - thousands of operations execute simultaneously
+- **Explicit data dependencies** - operations connected by dataflow edges
+- **Data-driven execution** - "what can execute now" determined by data availability
+- **Communication-centric** - data flows directly between compute units
+
+**MLIR's representation:** Operations naturally express dataflow through SSA (Static Single Assignment):
+
+```mlir
+// The same computation as dataflow
+func.func @example_dataflow(%cond: i1) -> i32 {
+  %c5 = arith.constant 5 : i32
+  %c10 = arith.constant 10 : i32
+
+  // This select expresses dataflow: result depends on data, not control flow
+  %result = arith.select %cond, %c5, %c10 : i32
+  return %result : i32
+}
+```
+
+**Execution perspective:** On a dataflow processor, `%c5` and `%c10` compute in parallel immediately. When both values and `%cond` are ready, the select operation fires. No program counter, no sequential ordering, pure data availability.
+
+### The Architecture Gradient
+
+Real-world systems exist on a spectrum:
+
+| Architecture Type | Control Flow Emphasis | Dataflow Emphasis | Examples |
+|------------------|----------------------|-------------------|----------|
+| **Traditional CPU** | ████████████░░░░ 80% | ░░░░░░░░░░░░░░░░ 20% | x86, ARM, RISC-V |
+| **Hybrid CPU+GPU** | ████████░░░░░░░░ 60% | ░░░░░░░░████████ 40% | CUDA, ROCm, oneAPI |
+| **Dataflow CGRA** | ████░░░░░░░░░░░░ 30% | ░░░░████████████ 70% | NextSilicon, SambaNova |
+| **Pure Dataflow** | ░░░░░░░░░░░░░░░░ 5% | ████████████████ 95% | Groq, Tenstorrent |
+
+### Why Compilers Must Handle Both
+
+**The semantic gap:** Traditional compilers, including LLVM, force all programs into control flow representations. This creates a fundamental mismatch when targeting dataflow hardware.
+
+**Multi-way relationships lost:** Consider a simple computation:
+
+```fsharp
+// High-level semantic relationships
+let result =
+    if condition then
+        compute_expensive_A x y z
+    else
+        compute_expensive_B x y z
+```
+
+**What the compiler sees (natural hypergraph):**
+- Three inputs (`x`, `y`, `z`) participate in **both** branches
+- Multi-way relationship: `{condition, x, y, z} → {compute_A OR compute_B} → result`
+- This is naturally a **hyperedge** (3+ participants)
+
+**What LLVM forces (binary graph):**
+```
+condition → branch_decision
+branch_decision → phi_node_x
+x → phi_node_x
+branch_decision → phi_node_y
+y → phi_node_y
+branch_decision → phi_node_z
+z → phi_node_z
+phi_node_x → compute_result
+phi_node_y → compute_result
+phi_node_z → compute_result
+```
+
+The natural 3-way relationship becomes 9 binary edges. Semantic richness is destroyed.
+
+### The Program Hypergraph Solution
+
+The Fidelity Framework's **Firefly compiler** uses a **Program Hypergraph (PHG)** as its central intermediate representation. Unlike traditional compiler IRs that represent programs as either control flow graphs or dataflow graphs, PHG preserves both paradigms simultaneously.
+
+#### Hyperedges Express Multi-Way Relationships
+
+**Traditional graph edge (binary):**
+```fsharp
+type Edge = Node * Node  // Can only connect two participants
+```
+
+**Hyperedge (N-ary):**
+```fsharp
+type Hyperedge = {
+    Participants: Set<Node>      // 3, 4, 5... any number
+    Relationship: RelationType    // What connects them
+    Temporal: TemporalProperties  // When/how they interact
+}
+```
+
+**Example - dataflow relationship:**
+```fsharp
+// Multi-way dataflow operation
+let hyperedge = {
+    Participants = { input_x, input_y, input_z, operation, output }
+    Relationship = DataflowComputation
+    Temporal = Simultaneous  // All inputs needed at once
+}
+```
+
+This single hyperedge expresses what LLVM needs 5+ binary edges to represent.
+
+#### Dual Compilation: One Graph, Multiple Targets
+
+**The key insight:** The same hypergraph can be projected into different execution models depending on target architecture.
+
+**For traditional CPUs (control flow):**
+```fsharp
+// PHG → LLVM IR control flow
+let compileToControlFlow (hypergraph: ProgramHypergraph) =
+    hypergraph.Hyperedges
+    |> projectToControlFlow
+    |> generateBasicBlocks
+    |> insertBranches
+    |> lowerToLLVM
+```
+
+**For dataflow processors:**
+```fsharp
+// PHG → Spatial dataflow
+let compileToDataflow (hypergraph: ProgramHypergraph) =
+    hypergraph.Hyperedges
+    |> preserveDataflowSemantics
+    |> mapToComputeUnits
+    |> routeDataPaths
+    |> generateSpatialConfig
+```
+
+**For hybrid systems (CPU + GPU):**
+```fsharp
+// PHG → Heterogeneous partitioning
+let compileToHybrid (hypergraph: ProgramHypergraph) =
+    hypergraph.Hyperedges
+    |> partitionByCharacteristics
+    |> Map.ofList [
+        ControlFlowDominant, compileToCPU
+        DataflowDominant, compileToGPU
+        Mixed, compileToAccelerator
+    ]
+    |> coordinateExecution
+```
+
+#### Temporal Learning Across Compilations
+
+The PHG isn't just a static representation - it's a **learning system** that improves with each compilation:
+
+```fsharp
+type TemporalProgramHypergraph = {
+    Current: ProgramHypergraph
+    History: TemporalProjection list
+    LearnedPatterns: CompilationKnowledge
+    RecursionSchemes: SchemeLibrary
+}
+
+and TemporalProjection = {
+    Timestamp: DateTime
+    GraphSnapshot: ProgramHypergraph
+    CompilationDecisions: Decision list
+    PerformanceMetrics: Metrics
+    ArchitectureTarget: HardwareType
+}
+```
+
+**Learning parallelization through graph coloring:**
+
+Traditional compilers use static heuristics for parallelization. The PHG learns optimal patterns:
+
+```fsharp
+// First compilation: Conservative
+let firstCompile graph =
+    graph.ColorNodes BasicStrategy  // Safe, limited parallelism
+    |> measurePerformance
+    |> storeInHistory
+
+// Tenth compilation: Learned patterns
+let laterCompile graph history =
+    let patterns = learnFromHistory history
+    graph.ColorNodes (OptimizedStrategy patterns)  // Aggressive, proven safe
+    |> measurePerformance
+    |> updateKnowledge
+```
+
+**Example - loop parallelization:**
+
+```mlir
+// MLIR input (control flow)
+scf.for %i = %c0 to %c1000 step %c1 {
+    %val = compute %i
+    store %val, %array[%i]
+}
+```
+
+**After temporal learning:**
+- **First compilation:** Sequential execution (safe, unknown dependencies)
+- **Fifth compilation:** 4-way parallelization (observed no dependencies)
+- **Tenth compilation:** Full vectorization + GPU offload (learned access pattern)
+
+The hypergraph accumulates knowledge:
+```fsharp
+{
+    PatternID = "loop_array_compute_store"
+    SeenCount = 10
+    SafeParallelism = VectorWidth 16
+    PreferredTarget = GPU
+    Confidence = 0.95
+}
+```
+
+### Connecting to MLIR Dataflow Analysis
+
+**How does this relate to Tutorial 12?**
+
+MLIR's dataflow analysis framework operates **within the control flow paradigm** - it propagates abstract values through CFGs, joins at merge points, and reasons about program states at control flow boundaries.
+
+**The PHG extends this in two critical ways:**
+
+**1. Unified analysis across paradigms:**
+
+MLIR analysis:
+```cpp
+// Traditional: propagate through control flow
+void visitOperation(Operation *op,
+                   ArrayRef<const NoiseLattice *> operands,
+                   ArrayRef<NoiseLattice *> results) {
+    // Transfer function for this operation
+    // Join at control flow merges
+}
+```
+
+PHG analysis:
+```fsharp
+// Extended: propagate through hypergraph
+let analyzeHyperedge edge lattices =
+    match edge.Relationship with
+    | ControlFlowMerge ->
+        joinLattices lattices edge.ControlFlowSemantics
+    | DataflowComputation ->
+        transferThroughDataflow lattices edge.DataflowSemantics
+    | HybridPattern ->
+        analyzeWithBothSemantics lattices edge
+```
+
+**2. Architecture-aware optimization:**
+
+MLIR (target-agnostic):
+```cpp
+// Optimize based on analysis results
+if (noise.getMax() <= threshold) {
+    // Insert reduce_noise operation
+}
+```
+
+PHG (target-adaptive):
+```fsharp
+// Optimize based on analysis AND target architecture
+let optimize analysis targetArch =
+    match targetArch with
+    | VonNeumann cpu ->
+        // Control flow optimization
+        insertNoiseReductionSequentially analysis cpu
+    | Dataflow accel ->
+        // Spatial optimization
+        fuseNoiseReductionPipeline analysis accel
+    | Hybrid (cpu, gpu) ->
+        // Partition optimization
+        partitionNoiseComputation analysis cpu gpu
+```
+
+### The Architecture Reality
+
+**Why this matters now:**
+
+Modern heterogeneous systems already mix paradigms:
+- **On-die integration:** CPU cores + GPU units + AI accelerators on same chip
+- **CXL coherent memory:** Shared memory between control flow and dataflow processors
+- **PCIe accelerators:** Dataflow cards (GPUs, FPGAs, custom ASICs) in control flow hosts
+- **Edge hybrids:** Low-power dataflow units paired with control flow microcontrollers
+
+**Firefly's strategy:** Rather than forcing programs into one paradigm, preserve the natural computational semantics in the hypergraph, then project to the appropriate execution model for each hardware target.
+
+### Recursion Schemes and Bidirectional Zippers
+
+**Advanced PHG traversal:**
+
+Traditional compiler passes walk IRs with fixed traversal patterns (pre-order, post-order, etc.). PHG uses **recursion schemes** and **bidirectional zippers** for intelligent navigation.
+
+**Catamorphism (fold):** Collapse structure bottom-up
+```fsharp
+// Constant propagation as catamorphism
+let propagateConstants =
+    cata (fun node children ->
+        match node, children with
+        | Add, [Constant a; Constant b] -> Constant (a + b)
+        | _, _ -> node)
+```
+
+**Anamorphism (unfold):** Generate structure top-down
+```fsharp
+// Loop unrolling as anamorphism
+let unrollLoop bound =
+    ana (fun count ->
+        if count >= bound then None
+        else Some (iteration count, count + 1))
+```
+
+**Hylomorphism (fold after unfold):** Transform through intermediate structure
+
+**Bidirectional zipper:** Navigate with context
+```fsharp
+type Zipper<'a> = {
+    Focus: 'a              // Current location
+    Left: 'a list          // Already visited (backward context)
+    Right: 'a list         // Not yet visited (forward context)
+    Up: Zipper<'a> option  // Parent context
+}
+
+// Intelligent traversal with learning
+let traverseWithLearning zipper history =
+    match lookupPattern zipper.Focus history with
+    | Some learnedPath ->
+        // Jump directly based on previous compilation
+        moveToOptimal zipper learnedPath
+    | None ->
+        // Explore and record new pattern
+        exploreAndLearn zipper
+```
+
+This enables **event-sourced compilation intelligence** - each compilation leaves a trail that future compilations leverage.
+
+### Implications for MLIR Users
+
+**As an MLIR developer, how does this affect you?**
+
+**Today:**
+- Build dialects and analyses within MLIR's control flow framework
+- Use dataflow analysis for optimization within that paradigm
+- Lower to LLVM IR for CPU targets, extend for GPU/accelerators
+
+**Tomorrow (with hypergraph-aware compilers):**
+- Same MLIR dialects, but intermediate compilation through PHG
+- Analysis results inform both control flow and dataflow projections
+- Single source compiles optimally to heterogeneous targets
+- Temporal learning improves compilation over time
+
+**Practical integration:**
+```fsharp
+// MLIR dialect → PHG → Multiple targets
+let compileThroughFirefly mlirModule =
+    mlirModule
+    |> parseMLIR
+    |> liftToHypergraph          // MLIR ops → Hyperedges
+    |> applyMLIRAnalysis         // Reuse MLIR dataflow analysis
+    |> temporalOptimization      // Learn from history
+    |> projectToTargets [        // Generate multiple outputs
+        LLVM_IR                   // Control flow (CPU)
+        CUDA_PTX                  // Hybrid (GPU)
+        SambaNova_SDF             // Dataflow (CGRA)
+        Groq_Config               // Pure dataflow
+    ]
+```
+
+### Key Insights
+
+**🔬 Control flow and dataflow are projection paradigms, not fundamental truths**
+
+Programs have natural computational semantics. Control flow (sequential instructions) and dataflow (data-driven execution) are **execution models** we impose. Hypergraphs preserve the semantics, letting the compiler choose the right projection.
+
+**🔬 Multi-way relationships are first-class citizens**
+
+Traditional graphs force N-way relationships into N binary edges, losing semantic information. Hyperedges maintain the natural arity of computational relationships, enabling better analysis and optimization.
+
+**🔬 Temporal learning bridges compilation and runtime**
+
+Traditional compilers forget everything between compilations. PHG accumulates knowledge about what optimizations work, building a library of proven patterns that accelerate future compilations and improve quality.
+
+**🔬 Heterogeneous architectures need unified abstractions**
+
+Modern systems mix CPUs, GPUs, FPGAs, custom accelerators. Rather than maintaining separate compilation paths for each, hypergraph representations compile naturally to all targets from a single unified semantic representation.
+
+**🔬 MLIR's dataflow analysis is the foundation, not the ceiling**
+
+The lattice theory, transfer functions, and fixed-point iteration you've learned in this tutorial apply regardless of execution paradigm. Hypergraph compilers extend these principles across both control flow and dataflow execution models.
+
+---
+
+### Further Reading
+
+- **"Hyping Hypergraphs"** - SpeakEZ Blog: Deep dive into Program Hypergraph architecture
+- **"Unified Cognitive Architecture"** - SpeakEZ Blog: Hypergraphs for AI and compilation convergence
+- **"Advent of Neuromorphic AI"** - SpeakEZ Blog: Dataflow architectures and forward gradient learning
+- **MLIR Dataflow Framework Documentation:** [mlir.llvm.org/docs/DataFlowAnalysis/](https://mlir.llvm.org/docs/DataFlowAnalysis/)
+- **Kildall's Algorithm (1973):** "A Unified Approach to Global Program Optimization"
 
 ---
 

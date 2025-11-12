@@ -657,7 +657,7 @@ module {
 }
 ```
 
-### Complete Lowering Commands
+### 👉 Complete Lowering Commands
 
 ```powershell
 # Step 1: Lower Poly → Standard
@@ -774,7 +774,7 @@ options.transformer = mlir::makeOptimizingTransformer(3, 0, nullptr);
 options.transformer = mlir::makeOptimizingTransformer(2, 1, nullptr);
 ```
 
-### Enabling LLVM Passes
+### 👉 Enabling LLVM Passes
 
 ```powershell
 # Run LLVM optimization passes
