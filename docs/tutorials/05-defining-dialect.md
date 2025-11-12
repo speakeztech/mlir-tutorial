@@ -628,8 +628,8 @@ mkdir build
 cd build
 cmake -G Ninja `
       -DCMAKE_BUILD_TYPE=Debug `
-      -DMLIR_DIR="C:\msys64\mingw64\lib\cmake\mlir" `
-      -DLLVM_DIR="C:\msys64\mingw64\lib\cmake\llvm" `
+      -DMLIR_DIR="C:\msys64\clang64\lib\cmake\mlir" `
+      -DLLVM_DIR="C:\msys64\clang64\lib\cmake\llvm" `
       ..
 
 # Build just the Poly dialect
@@ -1084,12 +1084,12 @@ affine.for %i = 0 to 100 {
 1. **[Tutorial 06: Using Traits](06-using-traits.md)** - Add reusable behaviors to operations
 2. **Explore** `lib/Dialect/Poly/` in the repository
 3. **Experiment** with adding new operations to the Poly dialect
-4. **Study** other dialects in `C:\msys64\mingw64\include\mlir\Dialect\`
+4. **Study** other dialects in `C:\msys64\clang64\include\mlir\Dialect\`
 
 ## Additional Resources
 
 - **MLIR Dialect Documentation:** [mlir.llvm.org/docs/Dialects/](https://mlir.llvm.org/docs/Dialects/)
-- **OpBase.td Reference:** `C:\msys64\mingw64\include\mlir\IR\OpBase.td`
+- **OpBase.td Reference:** `C:\msys64\clang64\include\mlir\IR\OpBase.td`
 - **Toy Tutorial:** [mlir.llvm.org/docs/Tutorials/Toy/](https://mlir.llvm.org/docs/Tutorials/Toy/)
 - **Original Article:** [jeremykun.com](https://jeremykun.com/2023/08/21/mlir-defining-a-new-dialect/)
 

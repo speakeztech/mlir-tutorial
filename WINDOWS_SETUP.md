@@ -1,11 +1,11 @@
 # Windows Native Development Guide for MLIR Tutorial
 
-This guide provides comprehensive instructions for setting up and using the MLIR tutorial on Windows with native tooling (MSYS2/MinGW64), without WSL or virtualization.
+This guide provides comprehensive instructions for setting up and using the MLIR tutorial on Windows with native tooling (MSYS2/CLANG64), without WSL or virtualization.
 
 ## Table of Contents
 
 - [Quick Start](#quick-start)
-- [Understanding MSYS2 and MinGW64](#understanding-msys2-and-mingw64)
+- [Understanding MSYS2 and CLANG64](#understanding-msys2-and-clang64)
 - [Detailed Installation Steps](#detailed-installation-steps)
 - [IDE Configuration](#ide-configuration)
 - [Building the Tutorial](#building-the-tutorial)
@@ -29,7 +29,7 @@ For experienced users who just want to get started:
 .\build\bin\tutorial-opt.exe --help
 ```
 
-## Understanding MSYS2 and MinGW64
+## Understanding MSYS2 and CLANG64
 
 ### What is MSYS2?
 
@@ -38,37 +38,38 @@ For experienced users who just want to get started:
 - The `pacman` package manager (from Arch Linux)
 - Pre-built packages for development tools, including LLVM/MLIR
 
-### MSYS2 vs MinGW64: Critical Distinction
+### MSYS2 Environments: Critical Distinction
 
-MSYS2 provides **three different environments**:
+MSYS2 provides **four different environments**:
 
-| Environment | Purpose | Binary Type | Use Case |
-|-------------|---------|-------------|----------|
-| **MSYS** (`/usr/bin`) | Unix compatibility layer | Depends on `msys-2.0.dll` | Running Unix build scripts |
-| **MINGW64** (`/mingw64/bin`) | Native Windows 64-bit | Standalone `.exe` files | **Use this for MLIR** |
-| **MINGW32** (`/mingw32/bin`) | Native Windows 32-bit | Standalone `.exe` files | Legacy 32-bit support |
+| Environment | Purpose | Binary Type | Compiler | Use Case |
+|-------------|---------|-------------|----------|----------|
+| **MSYS** (`/usr/bin`) | Unix compatibility layer | Depends on `msys-2.0.dll` | GCC | Running Unix build scripts |
+| **MINGW64** (`/mingw64/bin`) | Native Windows 64-bit | Standalone `.exe` files | GCC | GCC-based Windows development |
+| **MINGW32** (`/mingw32/bin`) | Native Windows 32-bit | Standalone `.exe` files | GCC | Legacy 32-bit support |
+| **CLANG64** (`/clang64/bin`) | Native Windows 64-bit | Standalone `.exe` files | Clang/LLVM | **Use this for MLIR** |
 
-**For this tutorial, always use MINGW64!**
+**For this tutorial, always use CLANG64!** It uses the Clang compiler toolchain, which provides better compatibility with LLVM/MLIR.
 
 ### How to Tell Which Environment You're In
 
 **In MSYS2 terminal:**
 ```bash
 echo $MSYSTEM
-# Should show: MINGW64 (not MSYS)
+# Should show: CLANG64 (not MSYS or MINGW64)
 ```
 
 **Check which tools you're using:**
 ```bash
 which mlir-opt
-# CORRECT: /mingw64/bin/mlir-opt
-# WRONG:   /usr/bin/mlir-opt
+# CORRECT: /clang64/bin/mlir-opt
+# WRONG:   /usr/bin/mlir-opt or /clang64/bin/mlir-opt
 ```
 
 **In PowerShell:**
 ```powershell
 where.exe mlir-opt
-# CORRECT: C:\msys64\mingw64\bin\mlir-opt.exe
+# CORRECT: C:\msys64\clang64\bin\mlir-opt.exe
 # WRONG:   C:\msys64\usr\bin\mlir-opt.exe
 ```
 
@@ -81,12 +82,13 @@ Using the **wrong environment** results in:
 - ❌ Problems with Windows debugging tools
 - ❌ Path translation issues
 
-Using **MINGW64 (correct)** gives you:
+Using **CLANG64 (correct)** gives you:
 - ✅ True native Windows executables
 - ✅ Proper Windows calling conventions
 - ✅ Compatible with Windows debugging tools
 - ✅ Can link with any Windows library
 - ✅ Executables run on any Windows system
+- ✅ Better LLVM/MLIR integration (same compiler toolchain)
 
 ## Detailed Installation Steps
 
@@ -136,26 +138,26 @@ pacman -Su --noconfirm
 
 ### Step 3: Install LLVM/MLIR Toolchain
 
-1. Open **"MSYS2 MINGW64"** from Start Menu (blue icon, NOT purple)
-2. Verify you're in MINGW64:
+1. Open **"MSYS2 CLANG64"** from Start Menu (purple icon)
+2. Verify you're in CLANG64:
 ```bash
-echo $MSYSTEM  # Should show: MINGW64
+echo $MSYSTEM  # Should show: CLANG64
 ```
 3. Install packages:
 ```bash
-pacman -S mingw-w64-x86_64-llvm \
-          mingw-w64-x86_64-clang \
-          mingw-w64-x86_64-mlir \
-          mingw-w64-x86_64-cmake \
-          mingw-w64-x86_64-ninja \
-          mingw-w64-x86_64-gcc \
-          mingw-w64-x86_64-pkgconf
+pacman -S mingw-w64-clang-x86_64-llvm \
+          mingw-w64-clang-x86_64-clang \
+          mingw-w64-clang-x86_64-mlir \
+          mingw-w64-clang-x86_64-cmake \
+          mingw-w64-clang-x86_64-ninja \
+          mingw-w64-clang-x86_64-gcc \
+          mingw-w64-clang-x86_64-pkgconf
 ```
 
 4. Verify installation:
 ```bash
-which mlir-opt     # Should show: /mingw64/bin/mlir-opt
-which cmake        # Should show: /mingw64/bin/cmake
+which mlir-opt     # Should show: /clang64/bin/mlir-opt
+which cmake        # Should show: /clang64/bin/cmake
 mlir-opt --version
 ```
 
@@ -170,7 +172,7 @@ Run in **PowerShell as Administrator**:
 ```powershell
 [System.Environment]::SetEnvironmentVariable(
     "Path",
-    "$env:Path;C:\msys64\mingw64\bin;C:\msys64\usr\bin",
+    "$env:Path;C:\msys64\clang64\bin;C:\msys64\usr\bin",
     [System.EnvironmentVariableTarget]::Machine
 )
 ```
@@ -198,7 +200,7 @@ cmake --version
 
 # Verify you're getting the MINGW64 version
 where.exe mlir-opt
-# Should show: C:\msys64\mingw64\bin\mlir-opt.exe
+# Should show: C:\msys64\clang64\bin\mlir-opt.exe
 ```
 
 ## IDE Configuration
@@ -231,7 +233,7 @@ This repository includes pre-configured VSCode settings in `.vscode/`:
 VSCode provides three terminal profiles:
 
 1. **PowerShell** (default) - For running build scripts and Windows commands
-2. **MSYS2 MINGW64** - For native Windows development (use this for MLIR)
+2. **MSYS2 CLANG64** - For native Windows development (use this for MLIR)
 3. **MSYS2 MSYS** - For Unix compatibility (rarely needed)
 
 Switch terminals: Click the dropdown next to "+" in terminal panel.
@@ -264,12 +266,12 @@ Switch terminals: Click the dropdown next to "+" in terminal panel.
 
 | Setting | Path |
 |---------|------|
-| Environment | `C:\msys64\mingw64` |
-| CMake | `C:\msys64\mingw64\bin\cmake.exe` |
-| Make | `C:\msys64\mingw64\bin\ninja.exe` |
-| C Compiler | `C:\msys64\mingw64\bin\gcc.exe` |
-| C++ Compiler | `C:\msys64\mingw64\bin\g++.exe` |
-| Debugger | `C:\msys64\mingw64\bin\gdb.exe` |
+| Environment | `C:\msys64\clang64` |
+| CMake | `C:\msys64\clang64\bin\cmake.exe` |
+| Make | `C:\msys64\clang64\bin\ninja.exe` |
+| C Compiler | `C:\msys64\clang64\bin\gcc.exe` |
+| C++ Compiler | `C:\msys64\clang64\bin\g++.exe` |
+| Debugger | `C:\msys64\clang64\bin\gdb.exe` |
 
 5. Move "MinGW-w64 MSYS2" to top of toolchain list
 6. Apply changes
@@ -285,8 +287,8 @@ CLion should auto-detect `CMakeLists.txt`. If not:
    - Toolchain: MinGW-w64 MSYS2
    - CMake options:
      ```
-     -DMLIR_DIR=C:/msys64/mingw64/lib/cmake/mlir
-     -DLLVM_DIR=C:/msys64/mingw64/lib/cmake/llvm
+     -DMLIR_DIR=C:/msys64/clang64/lib/cmake/mlir
+     -DLLVM_DIR=C:/msys64/clang64/lib/cmake/llvm
      ```
 
 #### Building and Running
@@ -304,7 +306,7 @@ For F# development with Fidelity Framework:
 3. Configure external tools:
    - **Tools → External Tools → Add**
    - Name: MLIR Opt
-   - Program: `C:\msys64\mingw64\bin\mlir-opt.exe`
+   - Program: `C:\msys64\clang64\bin\mlir-opt.exe`
    - Arguments: `$FilePath$`
    - Working directory: `$ProjectFileDir$`
 
@@ -336,8 +338,8 @@ cd build
 # Configure with CMake
 cmake -G Ninja `
       -DCMAKE_BUILD_TYPE=Debug `
-      -DMLIR_DIR="C:\msys64\mingw64\lib\cmake\mlir" `
-      -DLLVM_DIR="C:\msys64\mingw64\lib\cmake\llvm" `
+      -DMLIR_DIR="C:\msys64\clang64\lib\cmake\mlir" `
+      -DLLVM_DIR="C:\msys64\clang64\lib\cmake\llvm" `
       ..
 
 # Build
@@ -421,7 +423,7 @@ $opt = ".\build\bin\tutorial-opt.exe"
 # Check PATH
 where.exe mlir-opt
 
-# Should show: C:\msys64\mingw64\bin\mlir-opt.exe
+# Should show: C:\msys64\clang64\bin\mlir-opt.exe
 # If not found, verify PATH was updated
 
 # Restart PowerShell to apply PATH changes
@@ -429,7 +431,7 @@ exit
 # Open new PowerShell window
 
 # If still not found, manually add to PATH
-$env:Path += ";C:\msys64\mingw64\bin"
+$env:Path += ";C:\msys64\clang64\bin"
 ```
 
 ### CMake Can't Find MLIR
@@ -439,17 +441,17 @@ $env:Path += ";C:\msys64\mingw64\bin"
 **Solution:**
 ```powershell
 # Check if MLIR cmake files exist
-ls C:\msys64\mingw64\lib\cmake\mlir
-ls C:\msys64\mingw64\lib\cmake\llvm
+ls C:\msys64\clang64\lib\cmake\mlir
+ls C:\msys64\clang64\lib\cmake\llvm
 
 # If missing, reinstall MLIR package
-# In MINGW64 terminal:
-pacman -S mingw-w64-x86_64-mlir --force
+# In CLANG64 terminal:
+pacman -S mingw-w64-clang-x86_64-mlir --force
 ```
 
 ### Wrong MSYS2 Environment
 
-**Symptom:** Tools installed but `which mlir-opt` shows `/usr/bin/mlir-opt` instead of `/mingw64/bin/mlir-opt`.
+**Symptom:** Tools installed but `which mlir-opt` shows `/usr/bin/mlir-opt` instead of `/clang64/bin/mlir-opt`.
 
 **Solution:**
 ```bash
@@ -458,10 +460,10 @@ echo $MSYSTEM
 # If shows "MSYS", you're in wrong environment
 
 # Switch to MINGW64
-export MSYSTEM=MINGW64
+export MSYSTEM=CLANG64
 source /etc/profile
 
-# Or close terminal and open "MSYS2 MINGW64" instead
+# Or close terminal and open "MSYS2 CLANG64" instead
 ```
 
 ### Build Fails with or-tools Error
@@ -511,10 +513,10 @@ Add-MpPreference -ExclusionProcess "ninja.exe"
 **Solution:**
 ```powershell
 # Verify GDB is installed
-C:\msys64\mingw64\bin\gdb.exe --version
+C:\msys64\clang64\bin\gdb.exe --version
 
 # If missing, install in MINGW64 terminal:
-pacman -S mingw-w64-x86_64-gdb
+pacman -S mingw-w64-clang-x86_64-gdb
 
 # Use Visual Studio debugger instead (cppvsdbg in launch.json)
 ```
@@ -528,8 +530,8 @@ If you installed MSYS2 on an external drive (e.g., D:), update all paths accordi
 **Update VSCode settings.json:**
 ```json
 {
-    "mlir.server_path": "D:\\msys64\\mingw64\\bin\\mlir-lsp-server.exe",
-    "cmake.cmakePath": "D:\\msys64\\mingw64\\bin\\cmake.exe"
+    "mlir.server_path": "D:\\msys64\\clang64\\bin\\mlir-lsp-server.exe",
+    "cmake.cmakePath": "D:\\msys64\\clang64\\bin\\cmake.exe"
 }
 ```
 
@@ -551,11 +553,11 @@ See: [LLVM Getting Started](https://llvm.org/docs/GettingStarted.html)
 
 ```powershell
 # Install specific version
-# In MINGW64 terminal:
-pacman -S mingw-w64-x86_64-llvm18  # or llvm17, llvm19, etc.
+# In CLANG64 terminal:
+pacman -S mingw-w64-clang-x86_64-llvm18  # or llvm17, llvm19, etc.
 
 # Use specific version
-cmake -DLLVM_DIR=C:/msys64/mingw64/lib/cmake/llvm18 ...
+cmake -DLLVM_DIR=C:/msys64/clang64/lib/cmake/llvm18 ...
 ```
 
 ### Cross-Compilation
@@ -564,8 +566,8 @@ MinGW64 supports cross-compilation to other architectures:
 
 ```powershell
 # Install cross-compiler
-# In MINGW64 terminal:
-pacman -S mingw-w64-x86_64-aarch64-w64-mingw32-gcc
+# In CLANG64 terminal:
+pacman -S mingw-w64-clang-x86_64-aarch64-w64-mingw32-gcc
 
 # Configure CMake for ARM64
 cmake -DCMAKE_C_COMPILER=aarch64-w64-mingw32-gcc ...
@@ -580,8 +582,8 @@ cmake -DCMAKE_C_COMPILER=aarch64-w64-mingw32-gcc ...
 
 **Faster linker:**
 ```bash
-# In MINGW64 terminal:
-pacman -S mingw-w64-x86_64-lld
+# In CLANG64 terminal:
+pacman -S mingw-w64-clang-x86_64-lld
 
 # Use lld in CMake
 cmake -DCMAKE_LINKER=ld.lld ...
@@ -589,8 +591,8 @@ cmake -DCMAKE_LINKER=ld.lld ...
 
 **CCache for faster rebuilds:**
 ```bash
-# In MINGW64 terminal:
-pacman -S mingw-w64-x86_64-ccache
+# In CLANG64 terminal:
+pacman -S mingw-w64-clang-x86_64-ccache
 
 # Enable in CMake
 cmake -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ...

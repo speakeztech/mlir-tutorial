@@ -990,7 +990,7 @@ You start recognizing the three-section pattern. You understand that `GEN_PASS_D
 
 TableGen becomes mundane. You know the syntax for options and statistics. You understand when to use TableGen and when manual C++ is simpler. You can debug TableGen-related compilation errors efficiently.
 
-**What helps:** Read MLIR's built-in `.td` files (in `C:\msys64\mingw64\include\mlir\`). See how the professionals structure complex pass definitions.
+**What helps:** Read MLIR's built-in `.td` files (in `C:\msys64\clang64\include\mlir\`). See how the professionals structure complex pass definitions.
 
 ### Stage 4: Appreciation (Week 3+)
 
@@ -1043,7 +1043,7 @@ The next tutorial moves beyond passes to defining custom dialects, where TableGe
 ## Next Steps
 
 1. **[Tutorial 05: Defining a New Dialect](05-defining-dialect.md)** - Create custom MLIR dialects using TableGen
-2. **Explore MLIR's built-in pass definitions** - Read `C:\msys64\mingw64\include\mlir\Dialect\*\Passes.td`
+2. **Explore MLIR's built-in pass definitions** - Read `C:\msys64\clang64\include\mlir\Dialect\*\Passes.td`
 3. **Experiment with pass options** - Add command-line arguments to your passes
 4. **Read PassBase.td** - Understanding the base definitions helps decode generated code
 
@@ -1051,7 +1051,7 @@ The next tutorial moves beyond passes to defining custom dialects, where TableGe
 
 - **TableGen Language Reference:** [llvm.org/docs/TableGen/](https://llvm.org/docs/TableGen/)
 - **MLIR Pass Infrastructure:** [mlir.llvm.org/docs/PassManagement/](https://mlir.llvm.org/docs/PassManagement/)
-- **PassBase.td Source:** `C:\msys64\mingw64\include\mlir\Pass\PassBase.td`
+- **PassBase.td Source:** `C:\msys64\clang64\include\mlir\Pass\PassBase.td`
 - **Original Tutorial:** [jeremykun.com](https://jeremykun.com/2023/08/10/mlir-using-tablegen-for-passes/)
 - **LLVM TableGen Backend Development:** For those interested in how TableGen itself works
 

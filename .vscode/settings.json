@@ -1,25 +1,25 @@
 {
-    // Windows MSYS2/MinGW64 Configuration for MLIR Tutorial
+    // Windows MSYS2/CLANG64 Configuration for MLIR Tutorial
     "terminal.integrated.defaultProfile.windows": "PowerShell",
     "terminal.integrated.profiles.windows": {
         "PowerShell": {
             "source": "PowerShell",
             "icon": "terminal-powershell",
             "env": {
-                "PATH": "${env:PATH};C:\\msys64\\mingw64\\bin;C:\\msys64\\usr\\bin"
+                "PATH": "${env:PATH};D:\\msys64\\clang64\\bin;D:\\msys64\\usr\\bin"
             }
         },
-        "MSYS2 MINGW64": {
-            "path": "C:\\msys64\\usr\\bin\\bash.exe",
+        "MSYS2 CLANG64": {
+            "path": "D:\\msys64\\usr\\bin\\bash.exe",
             "args": ["--login", "-i"],
             "env": {
-                "MSYSTEM": "MINGW64",
+                "MSYSTEM": "CLANG64",
                 "CHERE_INVOKING": "1"
             },
             "icon": "terminal-linux"
         },
         "MSYS2 MSYS": {
-            "path": "C:\\msys64\\usr\\bin\\bash.exe",
+            "path": "D:\\msys64\\usr\\bin\\bash.exe",
             "args": ["--login", "-i"],
             "env": {
                 "MSYSTEM": "MSYS",
@@ -30,33 +30,33 @@
     },
 
     // MLIR Language Server Configuration
-    "mlir.server_path": "C:\\msys64\\mingw64\\bin\\mlir-lsp-server.exe",
-    "mlir.opt_path": "C:\\msys64\\mingw64\\bin\\mlir-opt.exe",
-    "mlir.translate_path": "C:\\msys64\\mingw64\\bin\\mlir-translate.exe",
+    "mlir.server_path": "D:\\msys64\\clang64\\bin\\mlir-lsp-server.exe",
+    "mlir.opt_path": "D:\\msys64\\clang64\\bin\\mlir-opt.exe",
+    "mlir.translate_path": "D:\\msys64\\clang64\\bin\\mlir-translate.exe",
 
     // LLVM Tools Configuration
-    "llvm-vs-code-extensions.llc": "C:\\msys64\\mingw64\\bin\\llc.exe",
-    "llvm-vs-code-extensions.lli": "C:\\msys64\\mingw64\\bin\\lli.exe",
-    "llvm-vs-code-extensions.opt": "C:\\msys64\\mingw64\\bin\\opt.exe",
+    "llvm-vs-code-extensions.llc": "D:\\msys64\\clang64\\bin\\llc.exe",
+    "llvm-vs-code-extensions.lli": "D:\\msys64\\clang64\\bin\\lli.exe",
+    "llvm-vs-code-extensions.opt": "D:\\msys64\\clang64\\bin\\opt.exe",
 
     // CMake Configuration
-    "cmake.cmakePath": "C:\\msys64\\mingw64\\bin\\cmake.exe",
+    "cmake.cmakePath": "D:\\msys64\\clang64\\bin\\cmake.exe",
     "cmake.generator": "Ninja",
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.configureArgs": [
         "-DCMAKE_BUILD_TYPE=Debug",
-        "-DMLIR_DIR=C:/msys64/mingw64/lib/cmake/mlir",
-        "-DLLVM_DIR=C:/msys64/mingw64/lib/cmake/llvm"
+        "-DMLIR_DIR=D:/msys64/clang64/lib/cmake/mlir",
+        "-DLLVM_DIR=D:/msys64/clang64/lib/cmake/llvm"
     ],
 
     // C++ Configuration
-    "C_Cpp.default.compilerPath": "C:\\msys64\\mingw64\\bin\\g++.exe",
+    "C_Cpp.default.compilerPath": "D:\\msys64\\clang64\\bin\\clang++.exe",
     "C_Cpp.default.cStandard": "c17",
     "C_Cpp.default.cppStandard": "c++17",
     "C_Cpp.default.includePath": [
         "${workspaceFolder}/**",
-        "C:/msys64/mingw64/include",
-        "C:/msys64/mingw64/lib/clang/*/include"
+        "D:/msys64/clang64/include",
+        "D:/msys64/clang64/lib/clang/*/include"
     ],
 
     // File Associations

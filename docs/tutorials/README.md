@@ -1,6 +1,6 @@
 # MLIR Tutorial Series - Windows Native Edition
 
-This directory contains Windows-adapted versions of Jeremy Kun's excellent [MLIR tutorial series](https://jeremykun.com). These tutorials focus on MLIR concepts while using **Windows-native tooling** (MSYS2/MinGW64 and CMake) instead of Bazel.
+This directory contains Windows-adapted versions of Jeremy Kun's excellent [MLIR tutorial series](https://jeremykun.com). These tutorials focus on MLIR concepts while using **Windows-native tooling** (MSYS2/CLANG64 and CMake) instead of Bazel.
 
 **📘 For complete details about these tutorials, see [TUTORIAL_COMPLETION_SUMMARY.md](../TUTORIAL_COMPLETION_SUMMARY.md)**
 
@@ -54,7 +54,7 @@ Given these tutorials' tensor-processing focus and Python-centric bias, the chal
 
 1. **[Getting Started](01-getting-started.md)**
    - What is MLIR and why use it?
-   - Setting up MSYS2/MinGW64 on Windows
+   - Setting up MSYS2/CLANG64 on Windows
    - Building the tutorial with CMake
    - Your first MLIR program
    - Understanding dialects and progressive lowering

@@ -258,7 +258,7 @@ mlir-opt .\tests\ctlz.mlir `
 mlir-cpu-runner .\tests\ctlz_runner.mlir `
   --entry-point-result=i32 `
   -e main `
-  --shared-libs=C:\msys64\mingw64\bin\mlir_runner_utils.dll
+  --shared-libs=C:\msys64\clang64\bin\mlir_runner_utils.dll
 ```
 
 ## 📖 Testing with lit and FileCheck: The Philosophy of Compiler Testing
@@ -896,7 +896,7 @@ func.func @main() -> i32 {
 mlir-cpu-runner .\tests\example.mlir `
   --entry-point-result=i32 `
   -e main `
-  --shared-libs=C:\msys64\mingw64\bin\mlir_runner_utils.dll
+  --shared-libs=C:\msys64\clang64\bin\mlir_runner_utils.dll
 ```
 
 ## 📖 Best Practices

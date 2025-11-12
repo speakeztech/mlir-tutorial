@@ -967,7 +967,7 @@ OpFoldResult tensor::DimOp::fold(FoldAdaptor adaptor) {
 
 - **MLIR Canonicalization:** [mlir.llvm.org/docs/Canonicalization/](https://mlir.llvm.org/docs/Canonicalization/)
 - **Pattern Rewriting:** [mlir.llvm.org/docs/PatternRewriter/](https://mlir.llvm.org/docs/PatternRewriter/)
-- **Arithmetic Dialect Source:** `C:\msys64\mingw64\include\mlir\Dialect\Arith\IR\ArithOps.cpp`
+- **Arithmetic Dialect Source:** `C:\msys64\clang64\include\mlir\Dialect\Arith\IR\ArithOps.cpp`
 - **Original Article:** [jeremykun.com](https://jeremykun.com/2023/09/11/mlir-folders/)
 
 ---

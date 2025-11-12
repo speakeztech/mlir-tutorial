@@ -932,7 +932,7 @@ LogicalResult ConstantOp::verify() {
 ## Additional Resources
 
 - **MLIR Verification:** [mlir.llvm.org/docs/Diagnostics/](https://mlir.llvm.org/docs/Diagnostics/)
-- **OpBase.td Traits:** `C:\msys64\mingw64\include\mlir\IR\OpBase.td`
+- **OpBase.td Traits:** `C:\msys64\clang64\include\mlir\IR\OpBase.td`
 - **Testing with verify-diagnostics:** [mlir.llvm.org/docs/TestingGuide/](https://mlir.llvm.org/docs/TestingGuide/)
 - **Original Article:** [jeremykun.com](https://jeremykun.com/2023/09/13/mlir-verifiers/)
 

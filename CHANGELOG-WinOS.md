@@ -16,7 +16,41 @@ This branch provides a Windows-first approach to the MLIR tutorial, replacing Ba
 4. **IDE Support** - First-class VSCode and JetBrains integration
 5. **Beginner Friendly** - Clear documentation, automated scripts
 
-## Major Changes
+## Recent Updates
+
+### 2025-11-12: Migration to CLANG64 Environment
+
+**Breaking Change: MINGW64 → CLANG64**
+
+The tutorial now uses the MSYS2 CLANG64 environment instead of MINGW64 for better LLVM/MLIR compatibility.
+
+**Why the change?**
+- **Better toolchain alignment**: CLANG64 uses Clang/LLVM compiler, matching the MLIR infrastructure
+- **Improved linker compatibility**: LLD (LLVM linker) avoids library ordering issues present with GNU ld
+- **Consistent compilation**: Same compiler toolchain from source through MLIR to final binary
+
+**What changed:**
+- All documentation updated to reference CLANG64 (`/clang64/bin`) instead of MINGW64 (`/mingw64/bin`)
+- Package names changed from `mingw-w64-x86_64-*` to `mingw-w64-clang-x86_64-*`
+- Scripts updated: `setup-msys2.ps1`, `verify-setup.ps1`, `build-windows.ps1`
+- VSCode settings updated to use CLANG64 paths
+- All tutorial markdown files updated with CLANG64 paths
+- MSYS2 environment table now includes CLANG64 as the recommended option
+
+**Migration guide:**
+- Existing MINGW64 users should install CLANG64 packages: `pacman -S mingw-w64-clang-x86_64-llvm mingw-w64-clang-x86_64-mlir mingw-w64-clang-x86_64-cmake mingw-w64-clang-x86_64-ninja`
+- Update PATH to use `/clang64/bin` instead of `/mingw64/bin`
+- Update CMake configuration to point to `/clang64/lib/cmake/mlir` and `/clang64/lib/cmake/llvm`
+- Rebuild the project with the new toolchain
+
+**Files updated:**
+- `QUICKSTART.md`, `WINDOWS_SETUP.md`, `README.md`
+- `.vscode/settings.json` (also updated to D: drive for local environment)
+- `scripts/setup-msys2.ps1`, `scripts/verify-setup.ps1`
+- All tutorial files in `docs/tutorials/*.md`
+- Note: `CHANGELOG-WinOS.md` preserves historical MINGW64 references
+
+## Major Changes (Historical)
 
 ### Documentation
 

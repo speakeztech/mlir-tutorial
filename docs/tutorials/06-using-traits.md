@@ -919,12 +919,12 @@ This trait ensures polynomial operations only work with matching degree bounds.
 1. **[Tutorial 07: Folders and Constant Propagation](07-folders-constant-propagation.md)** - Implement constant folding
 2. **Add traits** to your custom operations
 3. **Experiment** with different optimization passes
-4. **Study** trait definitions in `C:\msys64\mingw64\include\mlir\IR\OpBase.td`
+4. **Study** trait definitions in `C:\msys64\clang64\include\mlir\IR\OpBase.td`
 
 ## Additional Resources
 
-- **OpBase.td:** `C:\msys64\mingw64\include\mlir\IR\OpBase.td`
-- **SideEffectInterfaces:** `C:\msys64\mingw64\include\mlir\Interfaces\SideEffectInterfaces.td`
+- **OpBase.td:** `C:\msys64\clang64\include\mlir\IR\OpBase.td`
+- **SideEffectInterfaces:** `C:\msys64\clang64\include\mlir\Interfaces\SideEffectInterfaces.td`
 - **MLIR Traits Documentation:** [mlir.llvm.org/docs/Traits/](https://mlir.llvm.org/docs/Traits/)
 - **Original Article:** [jeremykun.com](https://jeremykun.com/2023/09/07/mlir-using-traits/)
 

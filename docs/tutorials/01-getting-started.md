@@ -362,8 +362,8 @@ cd build
 # 2. Configure CMake
 cmake -G Ninja `
       -DCMAKE_BUILD_TYPE=Debug `
-      -DMLIR_DIR="C:\msys64\mingw64\lib\cmake\mlir" `
-      -DLLVM_DIR="C:\msys64\mingw64\lib\cmake\llvm" `
+      -DMLIR_DIR="C:\msys64\clang64\lib\cmake\mlir" `
+      -DLLVM_DIR="C:\msys64\clang64\lib\cmake\llvm" `
       ..
 
 # 3. Build
@@ -778,11 +778,11 @@ Notice: I don't write perfect code. I iterate rapidly, using the compiler as a g
 **Solution:**
 ```powershell
 # Verify MLIR is installed
-ls C:\msys64\mingw64\lib\cmake\mlir
+ls C:\msys64\clang64\lib\cmake\mlir
 
 # If missing, reinstall
-# In MINGW64 terminal:
-pacman -S mingw-w64-x86_64-mlir --force
+# In CLANG64 terminal:
+pacman -S mingw-w64-clang-x86_64-mlir --force
 ```
 
 ### "ninja: command not found"
@@ -792,7 +792,7 @@ pacman -S mingw-w64-x86_64-mlir --force
 **Solution:**
 ```powershell
 # Add to current session
-$env:Path += ";C:\msys64\mingw64\bin"
+$env:Path += ";C:\msys64\clang64\bin"
 
 # Or use the build script which handles this
 .\scripts\build-windows.ps1
@@ -888,10 +888,10 @@ Windows uses backslashes (`\`) for paths, but MSYS2 tools expect Unix paths (`/`
 Use forward slashes or escape backslashes in PowerShell:
 ```powershell
 # Good
---shared-libs=C:/msys64/mingw64/bin/mlir_runner_utils.dll
+--shared-libs=C:/msys64/clang64/bin/mlir_runner_utils.dll
 
 # Or
---shared-libs="C:\msys64\mingw64\bin\mlir_runner_utils.dll"
+--shared-libs="C:\msys64\clang64\bin\mlir_runner_utils.dll"
 ```
 
 ### Design Decision: Why These Pitfalls Exist
