@@ -66,7 +66,7 @@ function Test-Requirement {
 Test-Requirement -Name "MSYS2 Installation" -Test {
     $msys2Paths = @("C:\msys64", "D:\msys64")
     foreach ($path in $msys2Paths) {
-        if (Test-Path "$path\mingw64\bin") {
+        if (Test-Path "$path\clang64\bin") {
             return $path
         }
     }
@@ -84,19 +84,19 @@ $mlirOptFound = Test-Requirement -Name "mlir-opt" -Test {
     }
     return $false
 } -FailureMessage "mlir-opt not found in PATH" `
-  -FixSuggestion "Install: pacman -S mingw-w64-x86_64-mlir (in MINGW64 terminal)"
+  -FixSuggestion "Install: pacman -S mingw-w64-clang-x86_64-mlir (in CLANG64 terminal)"
 
-# Test 3: Verify mlir-opt is MINGW64 version (not MSYS)
+# Test 3: Verify mlir-opt is CLANG64 version (not MSYS)
 if ($mlirOptFound) {
-    Test-Requirement -Name "mlir-opt (MINGW64)" -Test {
+    Test-Requirement -Name "mlir-opt (CLANG64)" -Test {
         $path = (Get-Command mlir-opt).Source
-        if ($path -like "*\mingw64\bin\*") {
+        if ($path -like "*\clang64\bin\*") {
             return $true
         }
         throw "Wrong version: $path"
-    } -SuccessMessage "Correct MINGW64 version" `
-      -FailureMessage "Using MSYS version instead of MINGW64" `
-      -FixSuggestion "Update PATH to prioritize C:\msys64\mingw64\bin"
+    } -SuccessMessage "Correct CLANG64 version" `
+      -FailureMessage "Using MSYS version instead of CLANG64" `
+      -FixSuggestion "Update PATH to prioritize C:\msys64\clang64\bin or D:\msys64\clang64\bin"
 }
 
 # Test 4: cmake
@@ -109,7 +109,7 @@ Test-Requirement -Name "CMake" -Test {
     }
     return $false
 } -FailureMessage "CMake not found" `
-  -FixSuggestion "Install: pacman -S mingw-w64-x86_64-cmake (in MINGW64 terminal)"
+  -FixSuggestion "Install: pacman -S mingw-w64-clang-x86_64-cmake (in CLANG64 terminal)"
 
 # Test 5: ninja
 Test-Requirement -Name "Ninja" -Test {
@@ -121,7 +121,7 @@ Test-Requirement -Name "Ninja" -Test {
     }
     return $false
 } -FailureMessage "Ninja not found" `
-  -FixSuggestion "Install: pacman -S mingw-w64-x86_64-ninja (in MINGW64 terminal)"
+  -FixSuggestion "Install: pacman -S mingw-w64-clang-x86_64-ninja (in CLANG64 terminal)"
 
 # Test 6: clang
 Test-Requirement -Name "Clang" -Test {
@@ -133,7 +133,7 @@ Test-Requirement -Name "Clang" -Test {
     }
     return $false
 } -FailureMessage "Clang not found" `
-  -FixSuggestion "Install: pacman -S mingw-w64-x86_64-clang (in MINGW64 terminal)"
+  -FixSuggestion "Install: pacman -S mingw-w64-clang-x86_64-clang (in CLANG64 terminal)"
 
 # Test 7: MLIR tools
 $mlirTools = @("mlir-translate", "mlir-tblgen", "llc", "opt")
@@ -142,12 +142,12 @@ foreach ($tool in $mlirTools) {
         $cmd = Get-Command $tool -ErrorAction SilentlyContinue
         return $null -ne $cmd
     } -FailureMessage "$tool not found" `
-      -FixSuggestion "Install: pacman -S mingw-w64-x86_64-llvm mingw-w64-x86_64-mlir"
+      -FixSuggestion "Install: pacman -S mingw-w64-clang-x86_64-llvm mingw-w64-clang-x86_64-mlir"
 }
 
 # Test 8: MLIR cmake config files
 Test-Requirement -Name "MLIR CMake Config" -Test {
-    $paths = @("C:\msys64\mingw64\lib\cmake\mlir", "D:\msys64\mingw64\lib\cmake\mlir")
+    $paths = @("C:\msys64\clang64\lib\cmake\mlir", "D:\msys64\clang64\lib\cmake\mlir")
     foreach ($path in $paths) {
         if (Test-Path "$path\MLIRConfig.cmake") {
             Write-Host "  Found: $path" -ForegroundColor Gray
@@ -156,11 +156,11 @@ Test-Requirement -Name "MLIR CMake Config" -Test {
     }
     return $false
 } -FailureMessage "MLIR CMake config not found" `
-  -FixSuggestion "Reinstall: pacman -S mingw-w64-x86_64-mlir --force"
+  -FixSuggestion "Reinstall: pacman -S mingw-w64-clang-x86_64-mlir --force"
 
 # Test 9: LLVM cmake config files
 Test-Requirement -Name "LLVM CMake Config" -Test {
-    $paths = @("C:\msys64\mingw64\lib\cmake\llvm", "D:\msys64\mingw64\lib\cmake\llvm")
+    $paths = @("C:\msys64\clang64\lib\cmake\llvm", "D:\msys64\clang64\lib\cmake\llvm")
     foreach ($path in $paths) {
         if (Test-Path "$path\LLVMConfig.cmake") {
             Write-Host "  Found: $path" -ForegroundColor Gray
@@ -169,7 +169,7 @@ Test-Requirement -Name "LLVM CMake Config" -Test {
     }
     return $false
 } -FailureMessage "LLVM CMake config not found" `
-  -FixSuggestion "Reinstall: pacman -S mingw-w64-x86_64-llvm --force"
+  -FixSuggestion "Reinstall: pacman -S mingw-w64-clang-x86_64-llvm --force"
 
 # Test 10: Git
 Test-Requirement -Name "Git" -Test {

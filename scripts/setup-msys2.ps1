@@ -66,7 +66,7 @@ This script should be run as Administrator to:
 If you don't have admin rights:
   1. Manually install MSYS2 from https://www.msys2.org/
   2. Run this script with -SkipMSYS2Install -SkipPathSetup
-  3. Manually add to your user PATH: $InstallPath\mingw64\bin
+  3. Manually add to your user PATH: $InstallPath\clang64\bin
 
 Continue anyway? (Press Ctrl+C to cancel)
 "@
@@ -147,13 +147,13 @@ Write-Host "  Running pacman -Syu..." -ForegroundColor Gray
 Write-Host "`n[3/5] Installing LLVM/MLIR toolchain..." -ForegroundColor Green
 
 $packages = @(
-    "mingw-w64-x86_64-llvm",
-    "mingw-w64-x86_64-clang",
-    "mingw-w64-x86_64-mlir",
-    "mingw-w64-x86_64-cmake",
-    "mingw-w64-x86_64-ninja",
-    "mingw-w64-x86_64-gcc",
-    "mingw-w64-x86_64-pkgconf"
+    "mingw-w64-clang-x86_64-llvm",
+    "mingw-w64-clang-x86_64-clang",
+    "mingw-w64-clang-x86_64-mlir",
+    "mingw-w64-clang-x86_64-cmake",
+    "mingw-w64-clang-x86_64-ninja",
+    "mingw-w64-clang-x86_64-gcc",
+    "mingw-w64-clang-x86_64-pkgconf"
 )
 
 Write-Host "  Installing packages:" -ForegroundColor Gray
@@ -162,7 +162,7 @@ foreach ($pkg in $packages) {
 }
 
 $packageList = $packages -join " "
-& $msysBash -lc "export MSYSTEM=MINGW64 && pacman -S --noconfirm $packageList"
+& $msysBash -lc "export MSYSTEM=CLANG64 && pacman -S --noconfirm $packageList"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Failed to install MLIR/LLVM packages"
@@ -183,7 +183,7 @@ $toolsToVerify = @(
 
 $allFound = $true
 foreach ($tool in $toolsToVerify) {
-    $toolPath = "$InstallPath\mingw64\bin\$tool"
+    $toolPath = "$InstallPath\clang64\bin\$tool"
     if (Test-Path $toolPath) {
         Write-Host "  Found: $tool" -ForegroundColor Gray
     } else {
@@ -200,7 +200,7 @@ if (-not $allFound) {
 if (-not $SkipPathSetup) {
     Write-Host "`n[5/5] Configuring Windows PATH..." -ForegroundColor Green
 
-    $mingw64Path = "$InstallPath\mingw64\bin"
+    $clang64Path = "$InstallPath\clang64\bin"
     $msysUsrPath = "$InstallPath\usr\bin"
 
     $currentPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
@@ -208,8 +208,8 @@ if (-not $SkipPathSetup) {
     $needsUpdate = $false
     $pathsToAdd = @()
 
-    if ($currentPath -notlike "*$mingw64Path*") {
-        $pathsToAdd += $mingw64Path
+    if ($currentPath -notlike "*$clang64Path*") {
+        $pathsToAdd += $clang64Path
         $needsUpdate = $true
     }
 
@@ -239,7 +239,7 @@ if (-not $SkipPathSetup) {
 Failed to update system PATH automatically.
 
 Please add these paths manually to your system PATH:
-  1. $mingw64Path
+  1. $clang64Path
   2. $msysUsrPath
 
 Instructions:
@@ -256,7 +256,7 @@ Instructions:
     Write-Host @"
 
   To use MLIR tools, add to your PATH:
-    $InstallPath\mingw64\bin
+    $InstallPath\clang64\bin
     $InstallPath\usr\bin
 
 "@ -ForegroundColor Yellow

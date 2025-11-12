@@ -69,7 +69,7 @@ cd mlir-tutorial
 sudo apt install build-essential cmake ninja-build llvm-dev mlir-tools libmlir-dev
 
 # Clone and build
-git clone https://github.com/j2kun/mlir-tutorial.git
+git clone https://github.com/speakeztech/mlir-tutorial.git
 cd mlir-tutorial
 mkdir build && cd build
 cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
