@@ -1,4 +1,4 @@
-# MLIR For Beginners - Windows Native Edition
+# MLIR From a Warm Start - Windows Native Edition
 
 This is a Windows-native fork of the [MLIR tutorial series](https://jeremykun.com/2023/08/10/mlir-getting-started/) focused on providing a low-burden path to learning MLIR on Windows using **MSYS2/MinGW64** and **CMake**.
 
