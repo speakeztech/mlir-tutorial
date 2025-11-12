@@ -33,18 +33,18 @@ pacman -Syu --noconfirm
 # Close and reopen terminal
 pacman -Su --noconfirm
 
-# 3. Install tools (in "MSYS2 MINGW64" terminal - blue icon)
-pacman -S mingw-w64-x86_64-llvm \
-          mingw-w64-x86_64-clang \
-          mingw-w64-x86_64-mlir \
-          mingw-w64-x86_64-cmake \
-          mingw-w64-x86_64-ninja \
-          mingw-w64-x86_64-gcc
+# 3. Install tools (in "MSYS2 CLANG64" terminal - purple icon)
+pacman -S mingw-w64-clang-x86_64-llvm \
+          mingw-w64-clang-x86_64-clang \
+          mingw-w64-clang-x86_64-mlir \
+          mingw-w64-clang-x86_64-cmake \
+          mingw-w64-clang-x86_64-ninja \
+          mingw-w64-clang-x86_64-gcc
 
 # 4. Add to Windows PATH (in PowerShell as Admin)
 [System.Environment]::SetEnvironmentVariable(
     "Path",
-    "$env:Path;C:\msys64\mingw64\bin",
+    "$env:Path;C:\msys64\clang64\bin",
     [System.EnvironmentVariableTarget]::Machine
 )
 
@@ -106,11 +106,11 @@ ninja check-mlir-tutorial
 ### CLion
 
 1. File → Settings → Toolchains
-2. Add "MinGW-w64 MSYS2" toolchain:
-   - Environment: `C:\msys64\mingw64`
-   - CMake: `C:\msys64\mingw64\bin\cmake.exe`
-   - Make: `C:\msys64\mingw64\bin\ninja.exe`
-   - C/C++ Compiler: `C:\msys64\mingw64\bin\gcc.exe` / `g++.exe`
+2. Add "CLANG64 MSYS2" toolchain:
+   - Environment: `C:\msys64\clang64`
+   - CMake: `C:\msys64\clang64\bin\cmake.exe`
+   - Make: `C:\msys64\clang64\bin\ninja.exe`
+   - C/C++ Compiler: `C:\msys64\clang64\bin\clang.exe` / `clang++.exe`
 
 3. Build: `Ctrl+F9`
 
@@ -121,20 +121,20 @@ ninja check-mlir-tutorial
 ```powershell
 # Verify PATH includes MSYS2
 where.exe mlir-opt
-# Should show: C:\msys64\mingw64\bin\mlir-opt.exe
+# Should show: C:\msys64\clang64\bin\mlir-opt.exe
 
 # If not found, restart PowerShell or add to PATH:
-$env:Path += ";C:\msys64\mingw64\bin"
+$env:Path += ";C:\msys64\clang64\bin"
 ```
 
 ### CMake can't find MLIR
 
 ```powershell
 # Check MLIR cmake files exist
-ls C:\msys64\mingw64\lib\cmake\mlir
+ls C:\msys64\clang64\lib\cmake\mlir
 
-# If missing, reinstall (in MINGW64 terminal):
-pacman -S mingw-w64-x86_64-mlir --force
+# If missing, reinstall (in CLANG64 terminal):
+pacman -S mingw-w64-clang-x86_64-mlir --force
 ```
 
 ### Build errors with or-tools
@@ -155,19 +155,19 @@ pacman -S mingw-w64-x86_64-mlir --force
 ### MSYS2 Environments
 
 - **MSYS** (`/usr/bin`) - Unix compatibility ❌ Don't use for MLIR
-- **MINGW64** (`/mingw64/bin`) - Native Windows ✅ Use this
+- **CLANG64** (`/clang64/bin`) - Native Windows with Clang ✅ Use this
 
-### Verify you're using MINGW64:
+### Verify you're using CLANG64:
 
 ```bash
 # In MSYS2 terminal
-echo $MSYSTEM  # Should be "MINGW64"
-which mlir-opt # Should be "/mingw64/bin/mlir-opt"
+echo $MSYSTEM  # Should be "CLANG64"
+which mlir-opt # Should be "/clang64/bin/mlir-opt"
 ```
 
 ```powershell
 # In PowerShell
-where.exe mlir-opt # Should be "C:\msys64\mingw64\bin\mlir-opt.exe"
+where.exe mlir-opt # Should be "C:\msys64\clang64\bin\mlir-opt.exe"
 ```
 
 ## Getting Help
