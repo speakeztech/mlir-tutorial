@@ -8,19 +8,25 @@
 
 ## What is MLIR? (And Why Should You Care?)
 
-When I first encountered MLIR, I thought it was "just another compiler framework." I was wrong. MLIR represents a fundamental rethinking of how we build compilers, and understanding its philosophy will change how you approach language implementation forever.
+MLIR (Multi-Level Intermediate Representation) emerged from a recognition by Chris Lattner and the compiler community that LLVM, despite its tremendous success, had "painted itself into a corner" in certain fundamental ways. Understanding what MLIR addresses helps us see why it matters for modern compiler construction.
 
-### The Historical Problem
+### The LLVM Success Story and Its Limits
 
-Let me take you back to 2017. Google's TensorFlow team had a problem: LLVM wasn't cutting it for machine learning workloads. Why not? Because LLVM was designed for general-purpose CPU code generation in the 1990s-2000s era. It operated at a low abstraction level, think pointers, registers, and basic blocks, and had accumulated decades of technical debt.
+LLVM revolutionized compiler infrastructure when it emerged in the early 2000s. Its clean IR design, modular architecture, and permissive licensing made it the foundation for countless projects from Clang to Swift to CUDA. But as Chris Lattner observed, LLVM's single-level IR approach created constraints that became increasingly apparent:
 
-But here's the deeper issue: **modern compilers need to optimize at multiple abstraction levels**. When you're compiling a neural network, you need to:
+**The abstraction mismatch:** LLVM IR was designed for general-purpose CPU code generation. It operates at a relatively low abstraction level with pointers, registers, and basic blocks. This works beautifully for C-like languages targeting CPUs, but creates challenges for:
+- Machine learning workloads that need tensor-level reasoning
+- Polyhedral loop optimizations that require structured loop representations
+- Domain-specific accelerators (GPUs, TPUs, FPGAs, neuromorphic processors)
+- High-level algebraic transformations before lowering to machine operations
+
+**The core tension:** Modern compilers need to optimize at multiple abstraction levels simultaneously. When compiling a neural network, you want to:
 - Reason about tensor shapes and dimensions (high-level)
 - Apply algebraic simplifications (mid-level)
 - Generate efficient SIMD code (low-level)
-- Target GPUs, TPUs, or custom accelerators (hardware-specific)
+- Target diverse hardware (CPUs, GPUs, custom accelerators)
 
-Traditional compilers force you into a single intermediate representation (IR). You start with high-level source code, immediately lower to the single IR, optimize there, and emit machine code. **The problem?** Once you've lowered to that single IR, you've lost the high-level structure you need for sophisticated optimizations.
+Traditional compilers, including LLVM-based ones, force an immediate descent to a single IR. You start with high-level source code, lower to the IR, optimize there, and emit machine code. But once you've lowered to that IR, you've discarded the high-level structure you need for sophisticated domain-specific optimizations. As Jeremy Kun notes, "the rigid for loop structure had been discarded" by the time code reaches traditional optimizers. You can't optimize what you can no longer see.
 
 ### Enter MLIR: A Philosophy, Not Just a Tool
 
@@ -436,7 +442,19 @@ If you're building a production MLIR compiler, consider Bazel once you understan
 
 I believe tutorials should minimize friction **orthogonal to the learning goal**. Your goal is to understand MLIR concepts, dialects, passes, operations, lowering. The build system is infrastructure. Spending hours debugging Bazel configurations doesn't teach you MLIR; it teaches you Bazel. We choose CMake so you can focus on what matters.
 
-## Your First MLIR Program: Understanding SSA and Dialects
+---
+
+## 🧭 Navigation Guide
+
+All of these tutorials use emojis to help you find your way:
+- **📖 Reading sections** - Conceptual explanations and background
+- **🔬 Examples** - Code samples and detailed examination
+- **🔍 Deep dives** - Feature exploration and sage advice
+- **👉 Action sections** - Commands to run and tasks to complete
+
+---
+
+## 👉 Your First MLIR Program: Understanding SSA and Dialects
 
 Let's create a simple MLIR program. But before you type it in, I want to highlight what makes MLIR syntax feel alien if you're coming from traditional programming languages.
 
@@ -518,7 +536,7 @@ mlir-opt --show-dialects
 mlir-opt --help | Select-String "pass"
 ```
 
-## Exploring the Tutorial Examples
+## 🔬 Exploring the Tutorial Examples
 
 The repository includes several example MLIR files in `tests/`:
 
@@ -543,7 +561,7 @@ Watch how repeated computations are eliminated.
 
 See how loops are transformed.
 
-## Understanding MLIR Tools
+## 📖 Understanding MLIR Tools
 
 ### mlir-opt
 
@@ -583,7 +601,7 @@ Our custom tool (in `tools/tutorial-opt.cpp`):
 .\build\bin\tutorial-opt.exe --help
 ```
 
-## Development Workflow: The Reality of MLIR Development
+## 🔍 Development Workflow: The Reality of MLIR Development
 
 Now that you understand the structure, let's talk about the **actual workflow** you'll use when developing MLIR code. This isn't the idealized "write-compile-run" of textbooks, it's the messy reality of compiler development.
 
@@ -751,7 +769,7 @@ When I add a new operation, here's my actual process:
 
 Notice: I don't write perfect code. I iterate rapidly, using the compiler as a guide. This is pragmatic MLIR development.
 
-## Common Build Issues
+## 👉 Common Build Issues
 
 ### "Could not find MLIR"
 
@@ -790,7 +808,7 @@ $env:Path += ";C:\msys64\mingw64\bin"
 .\scripts\build-windows.ps1 -DisableOrTools
 ```
 
-## Common Pitfalls and Gotchas
+## 🔍 Common Pitfalls and Gotchas
 
 Let me save you from the mistakes I made when starting with MLIR.
 
@@ -887,7 +905,7 @@ The answer is **MLIR's philosophy of explicitness**. It's designed for compiler 
 
 This makes MLIR powerful but not beginner-friendly. The tradeoff is intentional: MLIR prioritizes **correctness and control** over convenience. As you build real compilers, you'll appreciate this design.
 
-## Comparing to Original Tutorial
+## 🔍 Comparing to Original Tutorial
 
 ### What's Different?
 
@@ -937,7 +955,7 @@ This makes MLIR powerful but not beginner-friendly. The tradeoff is intentional:
 
 Both approaches teach the same MLIR concepts. The build system is infrastructure, choose what lets you focus on learning.
 
-## Next Steps
+## 👉 Next Steps
 
 Now that you have MLIR building and running, you're ready to:
 
