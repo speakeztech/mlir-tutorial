@@ -1,0 +1,15 @@
+// This is an intentionally failing test to demonstrate FileCheck error output.
+// To run this test and see the failure, rename it to remove the .disabled extension:
+//   mv example_failing_test.mlir.disabled example_failing_test.mlir
+//
+// Then run: ninja check-mlir-tutorial
+//
+// RUN: mlir-opt %s --convert-math-to-funcs=convert-ctlz | FileCheck %s
+
+func.func @main(%arg0: i32) -> i32 {
+  // This CHECK is intentionally wrong - we expect "math.ctlz" but the pass removes it!
+  // CHECK: math.ctlz
+  // CHECK: func.return
+  %0 = math.ctlz %arg0 : i32
+  func.return %0 : i32
+}

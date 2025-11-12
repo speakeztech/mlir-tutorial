@@ -63,7 +63,7 @@ Given these tutorials' tensor-processing focus and Python-centric bias, the chal
    - Understanding MLIR dialects and lowering passes
    - Testing with lit and FileCheck
    - Writing test files with RUN: and CHECK: directives
-   - Running code with mlir-cpu-runner
+   - Running code with mlir-runner (JIT execution)
    - CMake test infrastructure
 
 3. **[Writing Your First Pass](03-writing-first-pass.md)**

@@ -240,6 +240,7 @@ func.func @main() -> i32 {
 ### 👉 Running the Example
 
 **Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
+**Terminal:** PowerShell (with CLANG64 tools in PATH from setup)
 
 ```powershell
 # Show the original MLIR
@@ -254,12 +255,20 @@ mlir-opt .\tests\ctlz.mlir `
   --convert-arith-to-llvm `
   --convert-func-to-llvm
 
-# Execute it!
-mlir-cpu-runner .\tests\ctlz_runner.mlir `
-  --entry-point-result=i32 `
-  -e main `
-  --shared-libs=C:\msys64\clang64\bin\mlir_runner_utils.dll
+# Execute it with mlir-runner (runs JIT-compiled code)
+# First, lower the code through the full pass pipeline
+mlir-opt .\tests\ctlz_runner.mlir `
+  --convert-math-to-funcs=convert-ctlz `
+  --convert-scf-to-cf `
+  --convert-arith-to-llvm `
+  --convert-func-to-llvm `
+  --convert-cf-to-llvm `
+  --reconcile-unrealized-casts `
+  | mlir-runner -e test_7i32_to_29 --entry-point-result=i32
+# Expected output: 29 (because 7 has 29 leading zeros in 32-bit representation)
 ```
+
+**Note:** All these commands run in PowerShell because the setup process added CLANG64 tools to your PATH. You don't need to switch to a CLANG64 terminal unless you're installing packages with `pacman`.
 
 ## 📖 Testing with lit and FileCheck: The Philosophy of Compiler Testing
 
@@ -617,20 +626,120 @@ func.func @simple_loop() {
 
 ### Using CMake/Ninja
 
-**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
+**Working directory:** Build directory (such as `D:\repos\mlir-tutorial\cmake-build\`)
+**Terminal:** PowerShell (with CLANG64 tools in PATH)
 
 ```powershell
 # Build and run all tests
-cd build
 ninja check-mlir-tutorial
 ```
 
-**Output:**
+**Expected output:**
 ```
-Testing Time: 2.34s
-  Passed: 15
-  Failed: 0
+[0/1] Running the MLIR tutorial regression tests
 ```
+
+**What this means:** When you see this with no errors, all tests passed! This is how lit works - **silence is success**.
+
+**Why minimal output?** The `lit` test runner only shows details when tests fail. When all tests pass (which they should after a successful build), you just see the summary line. This is intentional - compiler test suites can have thousands of tests, and showing every passing test would be overwhelming.
+
+**What actually ran:** Behind the scenes, lit:
+1. Found all `.mlir` test files in `tests/`
+2. Executed each `RUN:` command (running `mlir-opt` with various passes)
+3. Verified output matched `CHECK:` patterns using FileCheck
+4. Silently passed because everything worked
+
+**If a test fails:** You'll see detailed output showing:
+- Which test file failed
+- The exact RUN command that failed
+- The CHECK pattern that didn't match
+- The actual vs expected output
+
+**To see what tests exist:** Look in the `tests/` directory for `.mlir` files, or examine a test file to see its RUN/CHECK directives
+
+### 👉 Exercise: See What a Test Failure Looks Like
+
+Understanding what happens when tests **fail** is crucial for debugging. Let's intentionally create a failing test to see the error output.
+
+**Step 1: Enable the failing test**
+
+The repository includes an intentionally broken test file. Enable it:
+
+```powershell
+# From repository root
+cd tests
+mv example_failing_test.mlir.disabled example_failing_test.mlir
+cd ..
+```
+
+**Step 2: Run the FileCheck test manually**
+
+Since lit caches results, let's run the FileCheck test directly to see the failure:
+
+```powershell
+# From repository root - run the transformation and check it
+mlir-opt tests/example_failing_test.mlir --convert-math-to-funcs=convert-ctlz | FileCheck tests/example_failing_test.mlir
+```
+
+**Expected output (test failure):**
+
+```
+tests/example_failing_test.mlir:11:12: error: CHECK: expected string not found in input
+ // CHECK: math.ctlz
+           ^
+<stdin>:1:1: note: scanning from here
+module {
+^
+<stdin>:3:20: note: possible intended match here
+ %0 = call @__mlir_math_ctlz_i32(%arg0) : (i32) -> i32
+                   ^
+
+Input file: <stdin>
+Check file: tests/example_failing_test.mlir
+
+-dump-input=help explains the following input dump.
+
+Input was:
+<<<<<<
+            1: module {
+check:11'0     X~~~~~~~~ error: no match found
+            2:  func.func @main(%arg0: i32) -> i32 {
+check:11'0     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            3:  %0 = call @__mlir_math_ctlz_i32(%arg0) : (i32) -> i32
+check:11'0     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+check:11'1                        ?                                    possible intended match
+            4:  return %0 : i32
+check:11'0     ~~~~~~~~~~~~~~~~~
+>>>>>>
+```
+
+**What this shows:**
+
+1. **Test identification**: Which test file failed (`example_failing_test.mlir`)
+2. **Exact command**: The RUN line that was executed
+3. **Error location**: Line 12, column 12 in the test file
+4. **What was expected**: `CHECK: math.ctlz`
+5. **What was found**: The actual output showing `call @__mlir_math_ctlz_i32` instead
+6. **Why it failed**: The `--convert-math-to-funcs` pass replaced `math.ctlz` with a function call, but our CHECK directive still expected the old operation
+
+This is exactly the information you need to fix the test (or the code)!
+
+**Step 3: Disable the failing test again**
+
+```powershell
+# From repository root
+cd tests
+mv example_failing_test.mlir example_failing_test.mlir.disabled
+cd ..
+```
+
+Now `ninja check-mlir-tutorial` should pass again.
+
+**Key lesson:** FileCheck errors tell you:
+- **WHERE** the pattern was expected (line number in test file)
+- **WHAT** was expected (the CHECK pattern)
+- **WHAT** was actually found (with context showing nearby lines)
+- **SUGGESTIONS** for what might have been intended
 
 ### Running Individual Tests
 

@@ -29,7 +29,15 @@
       "Bash(cat:*)",
       "Bash(pkill:*)",
       "WebSearch",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(python -m pip:*)",
+      "Bash(cmake:*)",
+      "Bash(ninja check-mlir-tutorial:*)",
+      "Bash(ninja)",
+      "Bash(python:*)",
+      "Bash(timeout 30 python:*)",
+      "Bash(mlir-opt:*)",
+      "Bash(FileCheck:*)"
     ],
     "deny": [],
     "ask": []

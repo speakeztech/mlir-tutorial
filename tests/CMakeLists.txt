@@ -15,4 +15,5 @@ set (MLIR_TUTORIAL_TEST_DEPENDS
 add_lit_testsuite(check-mlir-tutorial "Running the MLIR tutorial regression tests"
     ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS ${MLIR_TUTORIAL_TEST_DEPENDS}
+    ARGS -v --show-unsupported --show-xfail
 )

@@ -781,9 +781,14 @@ Notice: I don't write perfect code. I iterate rapidly, using the compiler as a g
 ls C:\msys64\clang64\lib\cmake\mlir
 
 # If missing, reinstall
+# NOTE: pacman commands require the CLANG64 terminal, not PowerShell
 # In CLANG64 terminal:
 pacman -S mingw-w64-clang-x86_64-mlir --force
 ```
+
+**When to use which terminal:**
+- **PowerShell**: Building, running tools (`mlir-opt`, `tutorial-opt`, etc.), development work
+- **CLANG64 terminal**: Only for `pacman` package management commands
 
 ### "ninja: command not found"
 
