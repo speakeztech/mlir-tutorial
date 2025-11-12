@@ -11,7 +11,7 @@
 This tutorial uses emojis to help you navigate:
 - **📖 Reading sections** - Conceptual explanations and background
 - **🔬 Examples** - Code samples and detailed examination
-- **🔍 Deep dives** - Advanced features and detailed analysis
+- **🔍 Deep dives** - Feature exploration and sage advice
 - **👉 Action sections** - Commands to run and tasks to complete
 
 ---
