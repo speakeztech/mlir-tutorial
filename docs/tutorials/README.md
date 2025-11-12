@@ -2,6 +2,46 @@
 
 This directory contains Windows-adapted versions of Jeremy Kun's excellent [MLIR tutorial series](https://jeremykun.com). These tutorials focus on MLIR concepts while using **Windows-native tooling** (MSYS2/MinGW64 and CMake) instead of Bazel.
 
+**📘 For complete details about these tutorials, see [TUTORIAL_COMPLETION_SUMMARY.md](../TUTORIAL_COMPLETION_SUMMARY.md)**
+
+## Important Context for Tutorial Users
+
+### Origins and Timeline
+
+These tutorials are based on Jeremy Kun's blog articles **written in 2023** during his time at Google. While MLIR APIs evolve, the **fundamental concepts remain valid**. These tutorials have been enhanced with pedagogical narrative from those original articles and will be **updated as APIs change** to reflect 2025+ MLIR patterns as they emerge through practical use.
+
+### Understanding the Tutorial's Scope and Bias
+
+**Critical perspective:** Many of these tutorials carry a **subtle tensor processing bias** reflecting their origins in Google's machine learning infrastructure work. While tensor operations are important, they represent only **one domain** among many that MLIR serves.
+
+**The Fidelity Framework context:** These tutorials are hosted within the mlir-tutorial repository to support the **Fidelity Framework** and its **Firefly compiler**—an F# compiler targeting the full spectrum of LLVM backends **and beyond**:
+
+- **LLVM-supported targets:** CPU (x86, ARM, RISC-V), GPU (CUDA, ROCm, Vulkan), specialized accelerators
+- **Beyond LLVM:** IoT microcontrollers, FPGA fabric, CGRA (Coarse-Grained Reconfigurable Architectures), neuromorphic processors
+- **Future expansion:** Custom silicon, domain-specific hardware, emerging compute paradigms
+
+**The lesson:** View these tutorials as teaching **core MLIR infrastructure patterns**—dialect design, transformation passes, progressive lowering, analysis frameworks—that apply across all compilation targets. Do not over-index on tensor operations as the primary use case.
+
+### Compilation Philosophy: Correct by Construction
+
+**A subtle but crucial insight from the tutorials:** Many examples address challenges arising from **dynamic and gradually-typed languages** (Python, etc.) where:
+- Type information is incomplete or arrives late
+- IR must be reconstructed through multiple passes
+- Recursive compilation and re-lowering occur
+- Optimization passes spend significant effort "fixing" structural problems introduced by permissive source languages
+
+You'll notice throughout tutorials 7-11 that considerable pass complexity addresses **inserting structure that wasn't present semantically**—normalization, canonicalization, verification, type conversion, bufferization.
+
+**The Fidelity Framework difference:** F# is a **strongly-typed functional language** following the **"correct by construction"** philosophy:
+- Type correctness enforced at source level by design-time LSP/compiler services
+- Rich static type information propagates through compilation
+- Structural correctness guaranteed before lowering begins
+- Pattern matching and algebraic types map naturally to MLIR dialects
+
+**What this means for tutorial interpretation:** While the tutorials demonstrate comprehensive pass pipelines with many transformation stages, the Firefly compiler aims for **fewer passes** and **less churn** in lowering pathways. When a tutorial shows 5-7 passes to achieve a lowering, consider it demonstrative of MLIR's *capabilities*, not necessarily the *minimal path* for strongly-typed source languages.
+
+The high-level takeaway: **These tutorials teach essential MLIR infrastructure, but your actual compilation pipelines may be simpler and more direct** when working with languages that provide strong static guarantees.
+
 ## Tutorial Series
 
 ### Core Tutorials (Available Now)
@@ -103,11 +143,25 @@ This directory contains Windows-adapted versions of Jeremy Kun's excellent [MLIR
     - Compiling PDLL with mlir-pdll on Windows
     - CMake integration for PDLL patterns
 
+## Pedagogical Enhancement
+
+These tutorials go **beyond platform adaptation**. Eleven tutorials (01, 04-13) have been **pedagogically enhanced** with deep conceptual narrative extracted from Jeremy Kun's original 2023 blog articles:
+
+- **Philosophical depth** - Why features exist, design trade-offs, architectural insights
+- **Honest assessments** - Limitations, documentation gaps, learning curve realities, evolution status
+- **Contextual connections** - How features compose, when to use different approaches, why multiple mechanisms exist
+
+**Word count:** Enhanced tutorials average ~3,685 words vs ~2,500 in technical-only versions, providing rich learning experiences that explain **why** design decisions were made, **when** to apply techniques, and **what limitations** exist in practice.
+
+See [TUTORIAL_COMPLETION_SUMMARY.md](../TUTORIAL_COMPLETION_SUMMARY.md) for complete enhancement methodology and verification details.
+
 ## Original Articles
 
 All tutorials are based on Jeremy Kun's original articles at [jeremykun.com](https://jeremykun.com):
 - [Original tutorial index](https://jeremykun.com/2023/08/10/mlir-getting-started/)
 - [GitHub repository](https://github.com/j2kun/mlir-tutorial)
+
+**Attribution:** Jeremy Kun's pedagogical insights are preserved throughout these tutorials while maintaining professional clarity appropriate for technical education.
 
 ## What's Different in These Tutorials?
 
@@ -213,6 +267,18 @@ Found an error or have a suggestion? These tutorials are part of the WinOS-CMake
 2. Open an issue describing the problem
 3. Include your Windows version, MSYS2 version, and error messages
 
+### Future Tutorial Expansion
+
+The current 13 tutorials cover **core MLIR infrastructure**. As the Fidelity Framework and Firefly compiler evolve, **additional tutorials may be added** addressing:
+
+- **Non-tensor domains:** DSP pipelines, control flow-heavy applications, embedded systems patterns
+- **Alternative lowering paths:** Direct-to-hardware mappings bypassing LLVM, FPGA synthesis patterns
+- **Functional language patterns:** Algebraic data types, pattern matching compilation, tail recursion optimization
+- **Performance-critical paths:** Zero-copy transformations, minimal-pass pipelines, "correct by construction" dialect design
+- **Domain-specific targets:** Neuromorphic computing abstractions, CGRA configuration, custom accelerator integration
+
+These potential additions would complement the foundational knowledge established in the current tutorial series.
+
 ## Additional Resources
 
 ### MLIR Documentation
@@ -241,9 +307,17 @@ Same as the main repository: Apache 2.0 with LLVM Exceptions
 ## Credits
 
 - **Original Tutorials:** Jeremy Kun ([@j2kun](https://github.com/j2kun))
-- **Windows Adaptation:** WinOS-CMake branch maintainers
+  - Original blog articles (2023) at [jeremykun.com](https://jeremykun.com)
+  - Pedagogical insights integrated throughout these enhanced tutorials
+- **Windows Adaptation & Enhancement:** WinOS-CMake branch maintainers
+  - Platform adaptation for Windows/MSYS2/CMake
+  - Pedagogical narrative extraction and integration
+  - Fidelity Framework contextualization
 - **MLIR/LLVM:** LLVM Foundation and contributors
+- **Target Framework:** Fidelity Framework & Firefly Compiler (F# to diverse hardware targets)
 
 ---
 
 **Start Learning:** [Tutorial 01: Getting Started →](01-getting-started.md)
+
+**For complete context:** [TUTORIAL_COMPLETION_SUMMARY.md](../TUTORIAL_COMPLETION_SUMMARY.md)
