@@ -22,17 +22,17 @@ These tutorials are based on Jeremy Kun's blog articles **written in 2023** duri
 
 **The lesson:** View these tutorials as teaching **core MLIR infrastructure patterns**—dialect design, transformation passes, progressive lowering, analysis frameworks—that apply across all compilation targets. Do not over-index on tensor operations as the primary use case.
 
-### Compilation Philosophy: Correct by Construction
+### Fidelity Philosophy
 
 **A subtle but crucial insight from the tutorials:** Many examples address challenges arising from **dynamic and gradually-typed languages** (Python, etc.) where:
-- Type information is incomplete or arrives late
-- IR must be reconstructed through multiple passes
-- Recursive compilation and re-lowering occur
+- Type information is incomplete or must be reconstructed
+- IR must be reformulated through multiple passes
+- Recursive compilation and re-lowering can be triggered
 - Optimization passes spend significant effort "fixing" structural problems introduced by permissive source languages
 
 You'll notice throughout tutorials 7-11 that considerable pass complexity addresses **inserting structure that wasn't present semantically**—normalization, canonicalization, verification, type conversion, bufferization.
 
-**The Fidelity Framework difference:** F# is a **strongly-typed functional language** following the **"correct by construction"** philosophy:
+**The Fidelity Framework difference:** F# is a **strongly-typed functional language** making a good faith effort to embrace a **"correct by construction"** principle:
 - Type correctness enforced at source level by design-time LSP/compiler services
 - Rich static type information propagates through compilation
 - Structural correctness guaranteed before lowering begins
@@ -276,7 +276,7 @@ The current 13 tutorials cover **core MLIR infrastructure**. As the Fidelity Fra
 - **Non-tensor domains:** DSP pipelines, control flow-heavy applications, embedded systems patterns
 - **Alternative lowering paths:** Direct-to-hardware mappings bypassing LLVM, FPGA synthesis patterns
 - **Functional language patterns:** Algebraic data types, pattern matching compilation, tail recursion optimization
-- **Performance-critical paths:** Zero-copy transformations, minimal-pass pipelines, "correct by construction" dialect design
+- **Performance-critical paths:** Zero-copy transformations, minimal-pass pipelines
 - **Domain-specific targets:** Neuromorphic computing abstractions, CGRA configuration, custom accelerator integration
 
 These potential additions would complement the foundational knowledge established in the current tutorial series.
@@ -443,7 +443,7 @@ Complementing the compilation pathway, the **Alloy library** provides:
 - **Stack allocation patterns** - Structs, spans, and stack-only types for performance-critical paths
 - **Fidelity-aware APIs** - Library functions designed to preserve semantic information through compilation
 
-This ensures that even at the runtime support level, the "correct by construction" philosophy extends through execution.
+This ensures that even at the runtime, the "correct by construction" philosophy extends through execution.
 
 ### Key Takeaway
 
