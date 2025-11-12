@@ -453,7 +453,7 @@ This ensures that even at the runtime, the "correct by construction" philosophy 
 
 **But the Fidelity Framework demonstrates** that with strong static types, functional programming principles, and careful semantic preservation through FCS and PHG, many of the reconstruction passes shown in tutorials become unnecessary or significantly simplified.
 
-The tutorials show what's *possible*. The Fidelity Framework shows what's *efficient* for strongly-typed source languages.
+The tutorials show what's *possible*. The Fidelity Framework shows what's *efficient* for F#: a strongly-typed, functional-first source language.
 
 ## Credits
 
