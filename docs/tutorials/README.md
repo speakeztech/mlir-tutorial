@@ -131,7 +131,7 @@ Given these tutorials' tensor-processing focus and Python-centric bias, the chal
     - Handling bufferization (tensor → memref)
     - Converting func operations to LLVM
     - Translating MLIR to LLVM IR with mlir-translate
-    - JIT compilation and execution on Windows
+    - Pass pipeline construction on Windows
 
 12. **[A Global Optimization and Dataflow Analysis](12-dataflow-analysis.md)**
     - Understanding dataflow analysis fundamentals

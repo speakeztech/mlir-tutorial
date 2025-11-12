@@ -13,7 +13,6 @@
 - Handling **bufferization** (tensor → memref conversion)
 - Converting **func operations** to LLVM
 - Translating **MLIR to LLVM IR** with `mlir-translate`
-- **JIT compilation** and execution on Windows
 - **Pass pipeline construction** strategies
 - Integrating with **CMake build system**
 
@@ -50,7 +49,7 @@ The **LLVM dialect** serves a specific architectural role: it's the **exit diale
 **Why not target machine code directly?**
 1. **Architecture independence** - LLVM handles x86, ARM, RISC-V, etc.
 2. **Mature optimizations** - Decades of optimization passes
-3. **Tooling ecosystem** - Debuggers, profilers, JIT infrastructure
+3. **Tooling ecosystem** - Debuggers, profilers, linkers
 4. **Maintenance burden** - Let LLVM handle ISA evolution
 
 MLIR lowers to LLVM's representation, then delegates to LLVM's proven infrastructure. This is **reuse** at the architecture level.
