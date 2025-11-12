@@ -40,7 +40,9 @@ You'll notice throughout tutorials 7-11 that considerable pass complexity addres
 
 **What this means for tutorial interpretation:** While the tutorials demonstrate comprehensive pass pipelines with many transformation stages, the Firefly compiler aims for **fewer passes** and **less churn** in lowering pathways. When a tutorial shows 5-7 passes to achieve a lowering, consider it demonstrative of MLIR's *capabilities*, not necessarily the *minimal path* for strongly-typed source languages.
 
-The high-level takeaway: **These tutorials teach essential MLIR infrastructure, but your actual compilation pipelines may be simpler and more direct** when working with languages that provide strong static guarantees.
+The high-level takeaway: **These tutorials teach essential MLIR infrastructure, but your actual compilation pipelines may be simpler and more direct** when working with languages that provide strong static guarantees. This is still useful to know for understanding the Fidelity Framework's compilation pathway, though.
+
+**For technical details about how the Fidelity Framework achieves this efficiency, see the [Technical Addendum](#technical-addendum-fidelity-frameworks-compilation-pathway) below.**
 
 ## Tutorial Series
 
@@ -303,6 +305,153 @@ These potential additions would complement the foundational knowledge establishe
 ## License
 
 Same as the main repository: Apache 2.0 with LLVM Exceptions
+
+## Technical Addendum: Fidelity Framework's Compilation Pathway
+
+This section provides technical depth on how the Fidelity Framework achieves the "fewer passes, less churn" efficiency mentioned in the compilation philosophy above.
+
+### The FCS Foundation: Type-Checked AST as Starting Point
+
+Most compilation tutorials—including these MLIR tutorials—begin from **raw source text** or **loosely-typed ASTs** that require extensive analysis passes to establish semantic correctness. The Fidelity Framework starts differently.
+
+**F# Compiler Services (FCS)** provides:
+- **Fully type-checked Abstract Syntax Tree** - Complete type information for every expression, function, and binding
+- **Semantic resolution** - All symbols resolved, overloads determined, type inference completed
+- **Design-time correctness** - The same infrastructure powering your IDE's autocompletion and error squiggles guarantees correctness before compilation begins
+
+This means when Firefly begins lowering to MLIR, **structural correctness is already guaranteed**. No reconstruction needed.
+
+### Program Hypergraph (PHG): The Architectural Map
+
+Between FCS and MLIR sits the **Program Hypergraph (PHG)**—a symbolic/semantic representation that preserves:
+
+**Reachability and Tree Shaking:**
+- **Type-aware pruning** - Starting from entry points (main, exports), traverse only reachable code
+- **Dead code elimination at source** - Unused functions, types, and bindings never enter the compilation pipeline
+- **Zero-cost abstractions enforced** - Abstractions that compile away are verified to compile away *before* lowering
+
+**Natural Compilation Boundaries:**
+- **Coupling and cohesion analysis** - Measures inter-module dependencies to identify natural compilation units
+- **Modular compilation** - Strongly-bounded modules compile independently, avoiding whole-program overhead
+- **MLIR module organization** - PHG boundaries map to MLIR module boundaries, enabling parallel compilation
+
+### Program Hypergraph (PHG): Supporting Heterogeneous Targets
+
+The **Program Hypergraph (PHG)** is PHG's evolution for modern compilation challenges:
+
+**Multi-way Relationships:**
+- **Hyperedges** preserve relationships involving 3+ entities (not just binary call graphs)
+- **Supports control-flow** - Traditional CPU architectures with sequential execution
+- **Supports dataflow** - Emerging architectures (FPGA, CGRA, neuromorphic) where computation is inherently parallel
+
+**Architectural Flexibility:**
+- **Recursion schemes and bidirectional zippers** - Efficient traversal patterns for different optimization passes
+- **Hypergraph partitioning** - Natural splits for heterogeneous compilation (CPU kernel + GPU kernel + FPGA fabric)
+- **Temporal learning** - Future vision: compiler learns optimal patterns across compilations, storing knowledge in the hypergraph
+
+### The Direct Pathway: Fewer Passes, Less Churn
+
+Putting it together—the Firefly compilation pipeline:
+
+```
+F# Source Code
+    ↓
+F# Compiler Services (FCS)
+    ├─ Type checking
+    ├─ Symbol resolution
+    └─ Semantic analysis
+    ↓
+Fully Type-Checked AST
+    ↓
+Program Hypergraph (PHG)
+    ├─ Reachability analysis (tree shaking)
+    ├─ Coupling/cohesion boundaries
+    └─ Architecture mapping
+    ↓
+Type-Preserved Hypergraph
+    ↓
+MLIR High-Level Dialects
+    ├─ Domain-specific operations
+    ├─ Algebraic types preserved
+    └─ Pattern matching lowered
+    ↓
+Progressive Optimization
+    └─ Minimal passes (already structured)
+    ↓
+LLVM Dialect
+    ↓
+Native Binary / Hardware Configuration
+```
+
+**Why this is more direct than tutorial examples:**
+
+1. **No type reconstruction** - Types flow from FCS through PHG to MLIR, never needing inference or recovery
+2. **No structural normalization** - F#'s algebraic types and pattern matching map naturally to MLIR's SSA form
+3. **No verification by discovery** - Verifiers check contracts, not discover semantic problems (already impossible in well-typed F#)
+4. **No canonicalization churn** - FCS ensures canonical representations at source level (no `x + 0`, no `x * 1`)
+5. **No whole-program bufferization** - Explicit control over allocation strategy via effect types and region analysis
+
+### Comparison: Dynamic vs Strongly-Typed Pathways
+
+**Python/Dynamic Language Path (as seen in tutorials):**
+```
+Python Source → Parsing → Type Inference → Reconstruction →
+Canonicalization → Verification → Type Conversion → Bufferization →
+Dialect Lowering → More Canonicalization → LLVM → Binary
+```
+*Many passes reconstructing semantic information that was never explicit.*
+
+**F# via Firefly Path:**
+```
+F# Source → FCS (Type-Checked AST) → PHG (Hypergraph) →
+MLIR High-Level → Targeted Lowering → LLVM → Binary
+```
+*Semantic information preserved through compilation, not reconstructed.*
+
+### Proof-Aware Compilation: Optimization Through Verification
+
+What truly distinguishes the Fidelity Framework from traditional compilation approaches is **proof-aware compilation**—treating formal verification not as a constraint on optimization, but as an *enabler* of it.
+
+**The traditional false choice:** Safety checks impose runtime overhead, or trust the optimizer won't break invariants. Proof assistants generate conservative code. Verification and optimization oppose each other.
+
+**The Fidelity Framework approach:** Proofs are first-class hyperedges in the PHG that *guide aggressive optimization*. When the compiler understands what properties must be preserved, it can transform everything else with confidence. The proofs themselves reveal optimization opportunities.
+
+**Proofs as optimization enablers:**
+- **Array bounds elimination** - Proof hyperedges showing all accesses use the same pattern enable check hoisting outside loops
+- **Check fusion** - Multiple checks with shared preconditions combine into one when proof hyperedges reveal the relationship
+- **Zero-cost safety** - Memory layouts defined at F# level, verified through F* annotations, lowered to MLIR SMT dialect with verification preserved but runtime checks eliminated
+- **Performance guarantees** - Proofs of bounded loop iteration enable full unrolling; proofs of cache-aligned access enable confident SIMD usage
+
+**The three-layer strategy:**
+
+1. **PHG layer** - Complete visibility into structure and proof obligations. Most aggressive optimizations occur here: proof-guided fusion, algebraic simplification validated by proofs, abstraction elimination where proofs show semantic transparency.
+
+2. **MLIR layer with SMT dialect** - Proof constraints travel as operations in the MLIR SMT dialect (based on "First-Class Verification Dialects for MLIR" PLDI 2025). Optimizations are *translation-validated*: transformations are checked to ensure they preserve verified properties. Found 5 upstream MLIR bugs through this approach.
+
+3. **LLVM layer** - Architecture-specific tuning within boundaries established by proof metadata. LLVM isn't asked to preserve high-level properties it can't understand; it receives pre-optimized code with clear boundaries.
+
+**Opt-in verification with graduated formalism:** Developers write standard F# with optional verification annotations. The hypergraph automatically derives and maintains proof obligations. No separate verification languages required. Proofs can be applied to specific functions or code sections—not all-or-nothing.
+
+**Safety standards as reusable proof libraries:** MISRA-C, DO-178C, and similar patterns become instantiable proof hyperedges. A MISRA Rule 17.1 (pointer arithmetic) hyperedge doesn't just check compliance—it carries optimization knowledge about safe transformations.
+
+**Patent-pending innovation:** SpeakEZ has patent pending (US 63/786,264) for "Verification-Preserving Compilation Using Formal Certificate Guided Optimization"—maintaining verification properties across aggressive optimizations targeting heterogeneous hardware.
+
+### The Alloy Library: Zero-Allocation Runtime
+
+Complementing the compilation pathway, the **Alloy library** provides:
+- **BCL shadow** - Zero-allocation alternatives to Base Class Library operations
+- **Stack allocation patterns** - Structs, spans, and stack-only types for performance-critical paths
+- **Fidelity-aware APIs** - Library functions designed to preserve semantic information through compilation
+
+This ensures that even at the runtime support level, the "correct by construction" philosophy extends through execution.
+
+### Key Takeaway
+
+**These MLIR tutorials teach essential infrastructure knowledge**—dialect design, pass mechanisms, analysis frameworks, lowering strategies. This knowledge remains critical for understanding how MLIR works and how to extend it.
+
+**But the Fidelity Framework demonstrates** that with strong static types, functional programming principles, and careful semantic preservation through FCS and PHG, many of the reconstruction passes shown in tutorials become unnecessary or significantly simplified.
+
+The tutorials show what's *possible*. The Fidelity Framework shows what's *efficient* for strongly-typed source languages.
 
 ## Credits
 
