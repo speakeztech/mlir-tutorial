@@ -6,7 +6,17 @@
 
 ---
 
-## What You'll Learn
+## 📖 Navigation Guide
+
+This tutorial uses emojis to help you navigate:
+- **📖 Reading sections** - Conceptual explanations and background
+- **🔬 Examples** - Code samples and detailed examination
+- **🔍 Deep dives** - Advanced features and detailed analysis
+- **👉 Action sections** - Commands to run and tasks to complete
+
+---
+
+## 📖 What You'll Learn
 
 - Understanding **dialect architecture** in MLIR
 - Writing **TableGen definitions** for custom dialects
@@ -15,7 +25,7 @@
 - Building dialects with **CMake**
 - Making **semantic design decisions** for your domain
 
-## The Philosophy of Dialect Design
+## 📖 The Philosophy of Dialect Design
 
 When you define a custom dialect in MLIR, you're not just adding new syntax—you're **embedding domain knowledge into the compiler's type system**. This is a fundamentally different approach from traditional compiler design.
 
@@ -48,7 +58,7 @@ A computation dialect:
 
 Each domain has unique optimization opportunities that generic IRs can't express efficiently.
 
-## Introduction: Building the Poly Dialect
+## 📖 Introduction: Building the Poly Dialect
 
 Throughout this tutorial, we'll build a **Poly dialect** for polynomial mathematics. This example appears throughout the mlir-tutorial repository and demonstrates essential dialect design patterns.
 
@@ -116,7 +126,7 @@ Dialect design is iterative. You start with:
 
 This tutorial follows that progression. We'll start with basic type and operation definitions, then expand in later tutorials.
 
-## Dialect Architecture Overview
+## 📖 Dialect Architecture Overview
 
 A complete dialect consists of:
 
@@ -137,7 +147,7 @@ Poly Dialect
     └── Operation methods
 ```
 
-## Step 1: Basic Dialect Definition
+## 🔬 Step 1: Basic Dialect Definition
 
 Create the foundational dialect structure.
 
@@ -197,7 +207,7 @@ public:
 } // namespace mlir
 ```
 
-## Step 2: Defining Parameterized Types
+## 🔬 Step 2: Defining Parameterized Types
 
 Types in MLIR carry semantic information. For polynomials, the degree bound isn't just documentation—it's **computational semantics embedded in the type system**.
 
@@ -360,7 +370,7 @@ assert(t1 != t3);  // Different degree → different instance
 
 This is implemented via the `TypeStorageAllocator` which maintains a uniquing map.
 
-## Step 3: Defining Operations
+## 🔬 Step 3: Defining Operations
 
 Operations are the verbs of your dialect. Let's define polynomial arithmetic.
 
@@ -531,7 +541,7 @@ type($rhs) = !poly.poly<10>
 type($output) = !poly.poly<10>
 ```
 
-## Step 4: CMake Integration
+## 👉 Step 4: CMake Integration
 
 Now we need to build the dialect with CMake.
 
@@ -609,6 +619,8 @@ void PolyDialect::initialize() {
 
 ### Building the Dialect
 
+**Working directory:** Start from your repository root (such as `D:\repos\mlir-tutorial\`)
+
 ```powershell
 # Configure (if not already done)
 cd D:\repos\mlir-tutorial
@@ -643,7 +655,7 @@ ls .\lib\Dialect\Poly\
 # PolyOps.cpp.inc
 ```
 
-## Step 5: Using Your Dialect
+## 👉 Step 5: Using Your Dialect
 
 ### Registering with tutorial-opt
 
@@ -711,7 +723,7 @@ module {
 .\build\bin\tutorial-opt.exe test_poly.mlir --mlir-print-ir-after-all
 ```
 
-## Design Considerations: The Art of Dialect Design
+## 🔍 Design Considerations: The Art of Dialect Design
 
 Dialect design involves navigating trade-offs between expressiveness, simplicity, and optimization potential. Every choice affects the entire implementation stack.
 
@@ -820,7 +832,7 @@ We choose the middle ground: explicit types (no inference complexity) but concis
 
 This is MLIR philosophy: **prefer explicit over implicit**. The cost (verbosity) is paid once; the benefit (clarity) compounds.
 
-## Debugging Your Dialect
+## 👉 Debugging Your Dialect
 
 ### View Generated Code
 
@@ -885,7 +897,7 @@ Run with:
   FileCheck .\tests\poly_basic.mlir
 ```
 
-## Advanced Topics
+## 🔍 Advanced Topics
 
 ### Multiple Type Parameters
 
@@ -1037,7 +1049,7 @@ affine.for %i = 0 to 100 {
 **Type parameters:** Memory space
 **Design choice:** Polyhedral model for loop transformations
 
-## Key Takeaways
+## 📖 Key Takeaways
 
 **Conceptual:**
 

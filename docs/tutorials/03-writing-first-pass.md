@@ -6,7 +6,17 @@
 
 ---
 
-## What You'll Learn
+## 📖 Navigation Guide
+
+This tutorial uses emojis to help you navigate:
+- **📖 Reading sections** - Conceptual explanations and background
+- **🔬 Examples** - Code samples and detailed examination
+- **🔍 Deep dives** - Advanced features and detailed analysis
+- **👉 Action sections** - Commands to run and tasks to complete
+
+---
+
+## 📖 What You'll Learn
 
 - What an MLIR **pass** is and how it transforms IR
 - Implementing a pass by **walking** the IR tree
@@ -14,7 +24,7 @@
 - **Registering** passes with MLIR
 - Building and testing passes on Windows
 
-## What is a Pass? (And Why This is the Heart of MLIR)
+## 📖 What is a Pass? (And Why This is the Heart of MLIR)
 
 If Tutorial 01 was about infrastructure and Tutorial 02 was about testing, Tutorial 03 is where you **become an MLIR developer**. Writing passes is the main work in MLIR. It's where optimizations happen, where lowering happens, where your compiler's intelligence lives.
 
@@ -137,7 +147,7 @@ Most MLIR passes use **pattern rewriting** because it's higher-level and handles
 
 The pattern: **small, focused, composable**. You build complex compilers by chaining simple passes.
 
-## Example Pass: MulToAdd
+## 🔬 Example Pass: MulToAdd
 
 Let's implement a simple optimization that converts multiplication by a constant to repeated addition:
 
@@ -308,7 +318,7 @@ void runOnOperation() override {
   });
   ```
 
-## Building the Pass on Windows
+## 👉 Building the Pass on Windows
 
 ### 1. Add to CMakeLists.txt
 
@@ -333,6 +343,8 @@ add_mlir_library(MLIRMulToAddPasses
 
 ### 2. Build
 
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
+
 ```powershell
 cd build
 ninja MLIRMulToAddPasses
@@ -356,11 +368,13 @@ int main(int argc, char **argv) {
 
 ### 4. Rebuild tutorial-opt
 
+**Working directory:** Build directory (such as `D:\repos\mlir-tutorial\build\`)
+
 ```powershell
 ninja tutorial-opt
 ```
 
-## Testing the Pass
+## 👉 Testing the Pass
 
 Create `tests/mul_to_add.mlir`:
 
@@ -382,6 +396,8 @@ func.func @test_mul_to_add(%arg0: i32) -> i32 {
 
 ### Run the test:
 
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
+
 ```powershell
 # Run transformation
 .\build\bin\tutorial-opt.exe .\tests\mul_to_add.mlir --mul-to-add
@@ -394,7 +410,7 @@ cd build
 ninja check-mlir-tutorial
 ```
 
-## Common Pattern Rewriting Idioms
+## 🔍 Common Pattern Rewriting Idioms
 
 ### 1. Replace with Single Value
 
@@ -430,7 +446,7 @@ rewriter.setInsertionPoint(op);
 auto newOp = rewriter.create<SomeOp>(op.getLoc(), ...);
 ```
 
-## Pattern Matching Features
+## 🔍 Pattern Matching Features
 
 ### Matching Attributes
 
@@ -460,7 +476,7 @@ auto funcOp = op->getParentOfType<func::FuncOp>();
 if (!funcOp) return failure();  // Not inside a function
 ```
 
-## Debugging Passes
+## 👉 Debugging Passes
 
 ### 1. Print Debug Info
 
@@ -495,16 +511,18 @@ Set breakpoint in `matchAndRewrite()`, then press **F5**:
 
 `.vscode/launch.json` is already configured for debugging tutorial-opt.
 
-## Pass Ordering and Pipelines
+## 📖 Pass Ordering and Pipelines
 
 ### Running Multiple Passes
 
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
+
 ```powershell
 # Run passes sequentially
-tutorial-opt input.mlir --pass1 --pass2 --pass3
+.\build\bin\tutorial-opt.exe input.mlir --pass1 --pass2 --pass3
 
 # Use pass pipeline syntax
-tutorial-opt input.mlir --pass-pipeline="builtin.module(func.func(pass1,pass2))"
+.\build\bin\tutorial-opt.exe input.mlir --pass-pipeline="builtin.module(func.func(pass1,pass2))"
 ```
 
 ### Pass Dependencies
@@ -518,7 +536,7 @@ void getDependentDialects(DialectRegistry &registry) const override {
 }
 ```
 
-## Best Practices
+## 📖 Best Practices
 
 ### 1. Return failure() Early
 

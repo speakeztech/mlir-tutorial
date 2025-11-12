@@ -149,16 +149,6 @@ Given these tutorials' tensor-processing focus and Python-centric bias, the chal
     - Compiling PDLL with mlir-pdll on Windows
     - CMake integration for PDLL patterns
 
-## Pedagogical Enhancement
-
-These tutorials go **beyond platform adaptation**. Eleven tutorials (01, 04-13) have been **pedagogically enhanced** with deep conceptual narrative extracted from Jeremy Kun's original 2023 blog articles:
-
-- **Philosophical depth** - Why features exist, design trade-offs, architectural insights
-- **Honest assessments** - Limitations, documentation gaps, learning curve realities, evolution status
-- **Contextual connections** - How features compose, when to use different approaches, why multiple mechanisms exist
-
-**Word count:** Enhanced tutorials average ~3,685 words vs ~2,500 in technical-only versions, providing rich learning experiences that explain **why** design decisions were made, **when** to apply techniques, and **what limitations** exist in practice.
-
 See [TUTORIAL_COMPLETION_SUMMARY.md](../TUTORIAL_COMPLETION_SUMMARY.md) for complete enhancement methodology and verification details.
 
 ## Original Articles

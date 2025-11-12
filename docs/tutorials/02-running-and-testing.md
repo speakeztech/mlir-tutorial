@@ -6,7 +6,17 @@
 
 ---
 
-## What You'll Learn
+## 📖 Navigation Guide
+
+This tutorial uses emojis to help you navigate:
+- **📖 Reading sections** - Conceptual explanations and background
+- **🔬 Examples** - Code samples and detailed examination
+- **🔍 Deep dives** - Advanced features and detailed analysis
+- **👉 Action sections** - Commands to run and tasks to complete
+
+---
+
+## 📖 What You'll Learn
 
 - How MLIR **dialects** represent different abstraction levels
 - How to **progressively lower** from high-level to low-level dialects
@@ -14,7 +24,7 @@
 - Running MLIR code with **mlir-cpu-runner**
 - Setting up the testing infrastructure with **CMake**
 
-## Understanding Dialects and Lowering: The Core of MLIR
+## 📖 Understanding Dialects and Lowering: The Core of MLIR
 
 If Tutorial 01 was about setup and philosophy, Tutorial 02 is where MLIR's design starts to **make sense**. You'll see why progressive lowering isn't just a nice idea—it's a practical necessity that makes sophisticated optimizations possible.
 
@@ -30,7 +40,7 @@ Source code is about:
 Machine code is about:
 - Registers and memory addresses
 - Precise instruction sequences
-- Hardware reality ("load this byte, shift these bits, jump to that address")
+- Hardware reality ("load this byte, shift these bits, jumIt would bp to that address")
 
 Traditional compilers try to bridge this gap in **one giant leap**. They parse source code, immediately lower to a single IR (like LLVM IR), optimize there, and emit assembly. But here's the problem: **by the time you reach the IR, you've lost information**.
 
@@ -209,7 +219,7 @@ Think of progressive lowering like **refining a sculpture**:
 
 You can't polish before carving—you need the right level of abstraction for each operation. MLIR's progressive lowering matches this natural workflow.
 
-## Example: Count Leading Zeros (ctlz)
+## 🔬 Example: Count Leading Zeros (ctlz)
 
 Let's look at the ctlz example in `tests/ctlz.mlir`:
 
@@ -227,7 +237,9 @@ func.func @main() -> i32 {
 - Counts leading zeros (28 in this case)
 - Returns the count
 
-### Running the Example
+### 👉 Running the Example
+
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
 
 ```powershell
 # Show the original MLIR
@@ -249,7 +261,7 @@ mlir-cpu-runner .\tests\ctlz_runner.mlir `
   --shared-libs=C:\msys64\mingw64\bin\mlir_runner_utils.dll
 ```
 
-## Testing with lit and FileCheck: The Philosophy of Compiler Testing
+## 📖 Testing with lit and FileCheck: The Philosophy of Compiler Testing
 
 Now we get to one of MLIR's most distinctive features: **embedded testing**. When I first saw lit/FileCheck, I thought: "Why are tests embedded in source files? This violates separation of concerns!"
 
@@ -384,7 +396,7 @@ If the transformation worked, FileCheck prints nothing (success). If it fails, y
 error: CHECK: expected string not found in input
 ```
 
-## Advanced FileCheck Patterns: The Art of Flexible Matching
+## 🔍 Advanced FileCheck Patterns: The Art of Flexible Matching
 
 When I started using FileCheck, I wrote tests that were **too specific**. They'd break when MLIR changed trivial details like SSA value numbering. After rewriting tests dozens of times, I learned: **FileCheck patterns should be as loose as necessary and as tight as needed**.
 
@@ -601,9 +613,11 @@ func.func @simple_loop() {
 // CHECK: // Iteration 3
 ```
 
-## Running the Test Suite
+## 👉 Running the Test Suite
 
 ### Using CMake/Ninja
+
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
 
 ```powershell
 # Build and run all tests
@@ -620,15 +634,17 @@ Testing Time: 2.34s
 
 ### Running Individual Tests
 
+**Working directory:** Build directory (such as `D:\repos\mlir-tutorial\build\`)
+
 ```powershell
 # Run specific test
-lit -v .\tests\ctlz_simple.mlir
+lit -v ..\tests\ctlz_simple.mlir
 
 # Run tests matching pattern
-lit .\tests\poly*.mlir
+lit ..\tests\poly*.mlir
 
 # Show detailed output
-lit -v -a .\tests\
+lit -v -a ..\tests\
 ```
 
 ### Understanding lit Configuration
@@ -792,30 +808,36 @@ func.func @my_function(%arg0: i32) -> i32 {
 // CHECK: return %[[SUM]]
 ```
 
-### Step 2: Run the Test
+### 👉 Step 2: Run the Test
+
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
 
 ```powershell
 # Test manually
-tutorial-opt .\tests\my_test.mlir --canonicalize | FileCheck .\tests\my_test.mlir
+.\build\bin\tutorial-opt.exe .\tests\my_test.mlir --canonicalize | FileCheck .\tests\my_test.mlir
 
-# Or with lit
+# Or with lit (from build directory)
 cd build
 lit ..\tests\my_test.mlir
 ```
 
-### Step 3: Test Automatically
+### 👉 Step 3: Test Automatically
 
 No changes needed! CMake automatically discovers `*.mlir` files in `tests/`.
+
+**Working directory:** Build directory (such as `D:\repos\mlir-tutorial\build\`)
 
 ```powershell
 ninja check-mlir-tutorial
 ```
 
-## Debugging Test Failures
+## 👉 Debugging Test Failures
 
 ### Common Issues
 
 **Test fails with "expected string not found":**
+
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
 
 ```powershell
 # See what mlir-opt actually produces
@@ -826,6 +848,8 @@ mlir-opt .\tests\my_test.mlir --canonicalize
 ```
 
 **Tool not found:**
+
+**Working directory:** Build directory (such as `D:\repos\mlir-tutorial\build\`)
 
 ```powershell
 # Check lit can find tools
@@ -845,7 +869,7 @@ lit -v .\tests\my_test.mlir
 mlir-opt --help | Select-String print
 ```
 
-## Running Code with mlir-cpu-runner
+## 🔬 Running Code with mlir-cpu-runner
 
 For tests that need to execute (not just transform), use `mlir-cpu-runner`:
 
@@ -866,6 +890,8 @@ func.func @main() -> i32 {
 
 **Windows-specific:**
 
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
+
 ```powershell
 mlir-cpu-runner .\tests\example.mlir `
   --entry-point-result=i32 `
@@ -873,7 +899,7 @@ mlir-cpu-runner .\tests\example.mlir `
   --shared-libs=C:\msys64\mingw64\bin\mlir_runner_utils.dll
 ```
 
-## Best Practices
+## 📖 Best Practices
 
 ### 1. Test One Thing at a Time
 

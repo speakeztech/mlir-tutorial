@@ -6,7 +6,17 @@
 
 ---
 
-## The "I'm Not Smart Enough" Con
+## 📖 Navigation Guide
+
+This tutorial uses emojis to help you navigate:
+- **📖 Reading sections** - Conceptual explanations and background
+- **🔬 Examples** - Code samples and detailed examination
+- **🔍 Deep dives** - Advanced features and detailed analysis
+- **👉 Action sections** - Commands to run and tasks to complete
+
+---
+
+## 📖 The "I'm Not Smart Enough" Con
 
 Here's an uncomfortable truth about software development: **boilerplate exists because we're not smart enough to remember all the details**.
 
@@ -18,7 +28,7 @@ And it leads to a crucial realization: if you're going to forget things anyway, 
 
 But here's where things get interesting (and where I initially stumbled): TableGen isn't the magical abstraction layer it first appears to be. It's something both simpler and more powerful—a **transparent code generator** that trades "hiding complexity" for "making repetition mechanical".
 
-## What You'll Learn
+## 📖 What You'll Learn
 
 - Why **boilerplate matters** and how TableGen addresses it
 - The **mental model shift** from "abstraction" to "transparent generation"
@@ -28,7 +38,7 @@ But here's where things get interesting (and where I initially stumbled): TableG
 - The **philosophy** of white-box code generation
 - Real-world tradeoffs and when TableGen helps vs. frustrates
 
-## The Problem TableGen Solves
+## 📖 The Problem TableGen Solves
 
 Let me show you the problem before we discuss the solution.
 
@@ -80,7 +90,7 @@ And every time you add a new pass, you copy-paste-modify this ceremony, hoping y
 
 **This is where TableGen enters.**
 
-## What is TableGen?
+## 📖 What is TableGen?
 
 **TableGen** is a domain-specific language and code generator used throughout LLVM/MLIR. Instead of writing repetitive C++ boilerplate, you write a declarative `.td` file and let `mlir-tblgen` generate the code.
 
@@ -131,7 +141,7 @@ For each pass definition in a `.td` file, TableGen generates:
 
 The generated code uses the Curiously Recurring Template Pattern (CRTP), which allows the base class to know about your derived class at compile time without virtual function overhead.
 
-## The Transformation: Before and After
+## 🔬 The Transformation: Before and After
 
 Let's see the same pass implemented manually versus with TableGen.
 
@@ -217,7 +227,7 @@ The C++ implementation only contains the unique logic: `runOnOperation()`. Every
 
 **Trade-off:** You now have two files to maintain instead of one. But for a codebase with dozens of passes, this declarative approach scales better and reduces errors.
 
-## TableGen Syntax for Passes
+## 🔬 TableGen Syntax for Passes
 
 ### Basic Pass Definition
 
@@ -279,8 +289,11 @@ def MyPass : Pass<"my-pass"> {
 ```
 
 Usage:
+
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
+
 ```powershell
-tutorial-opt input.mlir --my-pass="threshold=20 target-ops=arith.addi,arith.muli"
+.\build\bin\tutorial-opt.exe input.mlir --my-pass="threshold=20 target-ops=arith.addi,arith.muli"
 ```
 
 ### Pass Statistics
@@ -304,7 +317,7 @@ void runOnOperation() override {
 }
 ```
 
-## CMake Integration
+## 👉 CMake Integration
 
 ### Step 1: Create Passes.td File
 
@@ -355,6 +368,8 @@ add_mlir_library(MLIRAffineFullUnrollPasses
 ```
 
 ### Step 3: Build
+
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
 
 ```powershell
 cd build
@@ -536,8 +551,11 @@ struct MyOptimization : impl::MyOptimizationBase<MyOptimization> {
 ```
 
 **Usage:**
+
+**Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
+
 ```powershell
-tutorial-opt input.mlir --my-opt="aggr=3 debug=true"
+.\build\bin\tutorial-opt.exe input.mlir --my-opt="aggr=3 debug=true"
 ```
 
 ### Pass with Statistics
@@ -644,7 +662,7 @@ struct AffineFullUnroll : impl::AffineFullUnrollBase<AffineFullUnroll> {
 
 The base class knows about `AffineFullUnroll` as `DerivedT`, enabling static polymorphism.
 
-## CMake Integration: The Windows-Native Build
+## 👉 CMake Integration: The Windows-Native Build
 
 On Windows with CMake, TableGen integration is more straightforward than on Linux with Bazel. Let's see how it works.
 
