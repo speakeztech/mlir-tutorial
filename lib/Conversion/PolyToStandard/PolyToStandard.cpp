@@ -2,12 +2,12 @@
 
 #include "lib/Dialect/Poly/PolyOps.h"
 #include "lib/Dialect/Poly/PolyTypes.h"
-#include "llvm/include/llvm/ADT/SmallVector.h"          // from @llvm-project
+#include "llvm/ADT/SmallVector.h"          // from @llvm-project
 #include "mlir/Dialect/SCF/IR/SCF.h"                    // from @llvm-project
-#include "mlir/include/mlir/Dialect/Func/IR/FuncOps.h"  // from @llvm-project
-#include "mlir/include/mlir/Dialect/Func/Transforms/FuncConversions.h"  // from @llvm-project
-#include "mlir/include/mlir/IR/ImplicitLocOpBuilder.h"  // from @llvm-project
-#include "mlir/include/mlir/Transforms/DialectConversion.h"  // from @llvm-project
+#include "mlir/Dialect/Func/IR/FuncOps.h"  // from @llvm-project
+#include "mlir/Dialect/Func/Transforms/FuncConversions.h"  // from @llvm-project
+#include "mlir/IR/ImplicitLocOpBuilder.h"  // from @llvm-project
+#include "mlir/Transforms/DialectConversion.h"  // from @llvm-project
 
 namespace mlir {
 namespace tutorial {

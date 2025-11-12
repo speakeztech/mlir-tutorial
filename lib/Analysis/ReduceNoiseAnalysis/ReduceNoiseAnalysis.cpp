@@ -3,12 +3,12 @@
 #include <string>
 
 #include "lib/Dialect/Noisy/NoisyOps.h"
-#include "mlir/include/mlir/IR/Operation.h"
-#include "mlir/include/mlir/IR/Value.h"
+#include "mlir/IR/Operation.h"
+#include "mlir/IR/Value.h"
 #include "ortools/linear_solver/linear_solver.h"
 #include "llvm/Support/Debug.h"
-#include "llvm/include/llvm/ADT/DenseMap.h"
-#include "llvm/include/llvm/ADT/TypeSwitch.h"
+#include "llvm/ADT/DenseMap.h"
+#include "llvm/ADT/TypeSwitch.h"
 
 using namespace operations_research;
 

@@ -5,9 +5,9 @@
 #include "lib/Dialect/Noisy/NoisyTypes.h"
 #include "mlir/Interfaces/InferTypeOpInterface.h"
 #include "mlir/Interfaces/InferIntRangeInterface.h"
-#include "mlir/include/mlir/IR/BuiltinOps.h"
-#include "mlir/include/mlir/IR/BuiltinTypes.h"
-#include "mlir/include/mlir/IR/Dialect.h"
+#include "mlir/IR/BuiltinOps.h"
+#include "mlir/IR/BuiltinTypes.h"
+#include "mlir/IR/Dialect.h"
 
 #define GET_OP_CLASSES
 #include "lib/Dialect/Noisy/NoisyOps.h.inc"

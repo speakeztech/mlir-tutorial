@@ -18,7 +18,7 @@
     Disable or-tools dependency (useful if download fails)
 
 .PARAMETER BuildDir
-    Build directory path. Default: .\build
+    Build directory path. Default: .\cmake-build (avoids conflict with Bazel BUILD file on Windows)
 
 .PARAMETER Jobs
     Number of parallel build jobs. Default: CPU count
@@ -45,14 +45,20 @@ param(
 
     [switch]$DisableOrTools,
 
-    [string]$BuildDir = "build",
+    [string]$BuildDir = "cmake-build",
 
     [int]$Jobs = $env:NUMBER_OF_PROCESSORS
 )
 
 $ErrorActionPreference = 'Stop'
 
+# Ensure we're running from the repository root
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$repoRoot = Split-Path -Parent $scriptDir
+Set-Location $repoRoot
+
 Write-Host "`n=== MLIR Tutorial Windows Build Script ===" -ForegroundColor Cyan
+Write-Host "Repository Root: $repoRoot" -ForegroundColor Yellow
 Write-Host "Build Type: $BuildType" -ForegroundColor Yellow
 Write-Host "Build Directory: $BuildDir" -ForegroundColor Yellow
 
@@ -116,9 +122,7 @@ Please install it in MSYS2 MINGW64 terminal:
 # Set up environment
 Write-Host "`n[2/6] Setting up environment..." -ForegroundColor Green
 
-$env:Path = "$msys2Path\mingw64\bin;$env:Path"
-
-# Verify cmake is accessible
+# Verify cmake is accessible (but don't modify PATH yet)
 $cmakeVersion = & "$msys2Path\mingw64\bin\cmake.exe" --version | Select-Object -First 1
 Write-Host "  $cmakeVersion" -ForegroundColor Gray
 
@@ -131,11 +135,33 @@ if ($Clean -and (Test-Path $BuildDir)) {
     Write-Host "`n[3/6] Using existing build directory..." -ForegroundColor Green
 }
 
-# Create build directory
-if (-not (Test-Path $BuildDir)) {
-    New-Item -ItemType Directory -Path $BuildDir | Out-Null
-    Write-Host "  Created $BuildDir" -ForegroundColor Gray
+# Create build directory BEFORE modifying PATH (to avoid MSYS2 interference)
+$BuildDirAbsolute = Join-Path $repoRoot $BuildDir
+Write-Host "  Absolute build path: $BuildDirAbsolute" -ForegroundColor Gray
+
+if (-not (Test-Path $BuildDirAbsolute -PathType Container)) {
+    Write-Host "  Creating directory..." -ForegroundColor Gray
+    try {
+        # Use .NET Framework method directly to avoid any PATH issues
+        [System.IO.Directory]::CreateDirectory($BuildDirAbsolute) | Out-Null
+        Write-Host "  Created: $BuildDirAbsolute" -ForegroundColor Gray
+
+        # Verify it was created
+        if (Test-Path $BuildDirAbsolute -PathType Container) {
+            Write-Host "  Verified: Directory exists" -ForegroundColor Green
+        } else {
+            throw "Directory creation verification failed"
+        }
+    } catch {
+        Write-Host "  ERROR: Directory creation failed: $_" -ForegroundColor Red
+        exit 1
+    }
+} else {
+    Write-Host "  Build directory already exists" -ForegroundColor Gray
 }
+
+# NOW set MSYS2 in PATH (after directory operations complete)
+$env:Path = "$msys2Path\mingw64\bin;$env:Path"
 
 # Configure CMake
 Write-Host "`n[4/6] Configuring CMake..." -ForegroundColor Green
@@ -143,6 +169,8 @@ Write-Host "`n[4/6] Configuring CMake..." -ForegroundColor Green
 $cmakeArgs = @(
     "-G", "Ninja",
     "-DCMAKE_BUILD_TYPE=$BuildType",
+    "-DCMAKE_CXX_FLAGS=-D_USE_MATH_DEFINES -D__MINGW64__",
+    "-DCMAKE_CXX_FLAGS_DEBUG=-O0",
     "-DMLIR_DIR=$msys2Path/mingw64/lib/cmake/mlir",
     "-DLLVM_DIR=$msys2Path/mingw64/lib/cmake/llvm"
 )
@@ -154,7 +182,7 @@ if ($DisableOrTools) {
 
 $cmakeArgs += ".."
 
-Push-Location $BuildDir
+Push-Location $BuildDirAbsolute
 try {
     Write-Host "  Running: cmake $($cmakeArgs -join ' ')" -ForegroundColor Gray
     & "$msys2Path\mingw64\bin\cmake.exe" $cmakeArgs
@@ -164,6 +192,44 @@ try {
     }
 
     Write-Host "  CMake configuration successful" -ForegroundColor Gray
+
+    # Patch HiGHS header file if it exists (attempt to fix compilation issue with GCC 15+)
+    $highs_zstr_header = Join-Path $BuildDirAbsolute "_deps\highs-src\extern\zstr\zstr.hpp"
+    if (Test-Path $highs_zstr_header) {
+        Write-Host "`n  Patching HiGHS zstr.hpp for GCC compatibility..." -ForegroundColor Gray
+        $content = Get-Content $highs_zstr_header -Raw
+        if ($content -notmatch '#include <cstdint>') {
+            $content = $content -replace '(#include <cassert>)', "$1`n#include <cstdint>"
+            Set-Content -Path $highs_zstr_header -Value $content -NoNewline
+            Write-Host "  Applied cstdint patch" -ForegroundColor Green
+        }
+    }
+
+    # Patch or-tools aligned_memory header for MinGW compatibility
+    $ortools_aligned_header = Join-Path $BuildDirAbsolute "_deps\or-tools-src\ortools\util\aligned_memory_internal.h"
+    if (Test-Path $ortools_aligned_header) {
+        Write-Host "`n  Patching or-tools aligned_memory_internal.h for MinGW..." -ForegroundColor Gray
+        $content = Get-Content $ortools_aligned_header -Raw
+        if ($content -notmatch '__MINGW64__') {
+            $content = $content -replace '#if !defined\(_MSC_VER\)', '#if !defined(_MSC_VER) && !defined(__MINGW64__)'
+            $content = $content -replace '#else', '#elif defined(_MSC_VER) || defined(__MINGW64__)'
+            Set-Content -Path $ortools_aligned_header -Value $content -NoNewline
+            Write-Host "  Applied MinGW aligned_alloc patch" -ForegroundColor Green
+        }
+    }
+
+    # Patch or-tools fp_utils header for MinGW compatibility
+    $ortools_fp_header = Join-Path $BuildDirAbsolute "_deps\or-tools-src\ortools\util\fp_utils.h"
+    if (Test-Path $ortools_fp_header) {
+        Write-Host "`n  Patching or-tools fp_utils.h for MinGW..." -ForegroundColor Gray
+        $content = Get-Content $ortools_fp_header -Raw
+        if ($content -notmatch '__MINGW64__') {
+            # Skip fenv manipulation code on MinGW (incompatible fenv_t structure)
+            $content = $content -replace '#elif \(defined\(__GNUC__\) \|\| defined\(__llvm__\)\) && defined\(__x86_64__\) && \\', '#elif (defined(__GNUC__) || defined(__llvm__)) && defined(__x86_64__) && !defined(__MINGW64__) && \'
+            Set-Content -Path $ortools_fp_header -Value $content -NoNewline
+            Write-Host "  Applied MinGW fp_utils patch" -ForegroundColor Green
+        }
+    }
 
     # Build
     Write-Host "`n[5/6] Building project..." -ForegroundColor Green

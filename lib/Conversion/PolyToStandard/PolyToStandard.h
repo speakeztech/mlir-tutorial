@@ -1,11 +1,11 @@
 #ifndef LIB_CONVERSION_POLYTOSTANDARD_POLYTOSTANDARD_H_
 #define LIB_CONVERSION_POLYTOSTANDARD_POLYTOSTANDARD_H_
 
-#include "mlir/include/mlir/Pass/Pass.h"  // from @llvm-project
+#include "mlir/Pass/Pass.h"  // from @llvm-project
 
 // Extra includes needed for dependent dialects
-#include "mlir/include/mlir/Dialect/Arith/IR/Arith.h"   // from @llvm-project
-#include "mlir/include/mlir/Dialect/Tensor/IR/Tensor.h"  // from @llvm-project
+#include "mlir/Dialect/Arith/IR/Arith.h"   // from @llvm-project
+#include "mlir/Dialect/Tensor/IR/Tensor.h"  // from @llvm-project
 
 namespace mlir {
 namespace tutorial {

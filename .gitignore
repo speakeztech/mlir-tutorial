@@ -27,7 +27,7 @@ tablegen_compile_commands.yml
 
 # JetBrains IDEs
 .idea/
-cmake-build-*/
+cmake-build*/
 
 # VSCode workspace settings (keep shared settings, ignore personal)
 .vscode/*

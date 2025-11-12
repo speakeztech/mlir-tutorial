@@ -11,7 +11,20 @@
       "Bash(cd D:/repos/mlir-tutorial/docs/tutorials for file in 07-folders-constant-propagation.md 08-verifiers.md 09-canonicalizers.md 10-dialect-conversion.md 12-dataflow-analysis.md 13-pdll-patterns.md)",
       "Bash(do grep -A2 \"🧭 Navigation Guide\" \"$file\")",
       "Bash(cd D:/repos/mlir-tutorial/docs/tutorials for file in 0[2-9]-*.md 1[0-3]-*.md)",
-      "Bash(do echo \"=== $file ===\" grep -n \"^## [A-Z]\" \"$file\")"
+      "Bash(do echo \"=== $file ===\" grep -n \"^## [A-Z]\" \"$file\")",
+      "Bash(find:*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File ./scripts/build-windows.ps1 -Clean)",
+      "Bash(/d/msys64/mingw64/bin/ninja.exe:*)",
+      "Bash(/d/msys64/mingw64/bin/c++.exe:*)",
+      "Bash(timeout 60 /d/msys64/mingw64/bin/c++.exe:*)",
+      "Bash(echo:*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File ./scripts/build-windows.ps1 -BuildType Release -Clean)",
+      "Bash(pacman -U:*)",
+      "Bash(pacman -Udd:*)",
+      "Bash(/d/msys64/mingw64/bin/cmake.exe:*)",
+      "Bash(powershell.exe -File ./scripts/build-windows.ps1)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File ./scripts/build-windows.ps1)",
+      "Bash(tee:*)"
     ],
     "deny": [],
     "ask": []

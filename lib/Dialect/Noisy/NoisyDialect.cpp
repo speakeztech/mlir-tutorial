@@ -2,8 +2,8 @@
 
 #include "lib/Dialect/Noisy/NoisyOps.h"
 #include "lib/Dialect/Noisy/NoisyTypes.h"
-#include "mlir/include/mlir/IR/Builders.h"
-#include "llvm/include/llvm/ADT/TypeSwitch.h"
+#include "mlir/IR/Builders.h"
+#include "llvm/ADT/TypeSwitch.h"
 
 #include "lib/Dialect/Noisy/NoisyDialect.cpp.inc"
 #define GET_TYPEDEF_CLASSES

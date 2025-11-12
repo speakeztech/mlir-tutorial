@@ -1,7 +1,7 @@
 #ifndef LIB_DIALECT_POLY_POLYTRAITS_H_
 #define LIB_DIALECT_POLY_POLYTRAITS_H_
 
-#include "mlir/include/mlir/IR/OpDefinition.h"
+#include "mlir/IR/OpDefinition.h"
 
 namespace mlir::tutorial::poly {
 

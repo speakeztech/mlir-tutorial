@@ -2,8 +2,8 @@
 
 #include "lib/Dialect/Poly/PolyOps.h"
 #include "lib/Dialect/Poly/PolyTypes.h"
-#include "mlir/include/mlir/IR/Builders.h"
-#include "llvm/include/llvm/ADT/TypeSwitch.h"
+#include "mlir/IR/Builders.h"
+#include "llvm/ADT/TypeSwitch.h"
 
 #include "lib/Dialect/Poly/PolyDialect.cpp.inc"
 #define GET_TYPEDEF_CLASSES

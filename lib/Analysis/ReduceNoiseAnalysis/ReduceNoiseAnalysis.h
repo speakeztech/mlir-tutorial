@@ -1,9 +1,9 @@
 #ifndef LIB_ANALYSIS_REDUCENOISEANALYSIS_REDUCENOISEANALYSIS_H_
 #define LIB_ANALYSIS_REDUCENOISEANALYSIS_REDUCENOISEANALYSIS_H_
 
-#include "llvm/include/llvm/ADT/DenseMap.h"  // from @llvm-project
-#include "mlir/include/mlir/IR/Operation.h"  // from @llvm-project
-#include "mlir/include/mlir/IR/Value.h"      // from @llvm-project
+#include "llvm/ADT/DenseMap.h"  // from @llvm-project
+#include "mlir/IR/Operation.h"  // from @llvm-project
+#include "mlir/IR/Value.h"      // from @llvm-project
 
 namespace mlir {
 namespace tutorial {

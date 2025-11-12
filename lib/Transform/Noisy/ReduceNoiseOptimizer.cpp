@@ -3,11 +3,11 @@
 #include "lib/Analysis/ReduceNoiseAnalysis/ReduceNoiseAnalysis.h"
 #include "lib/Dialect/Noisy/NoisyOps.h"
 #include "lib/Dialect/Noisy/NoisyTypes.h"
-#include "mlir/include/mlir/Analysis/DataFlow/DeadCodeAnalysis.h"
-#include "mlir/include/mlir/Analysis/DataFlow/IntegerRangeAnalysis.h"
-#include "mlir/include/mlir/Analysis/DataFlowFramework.h"
-#include "mlir/include/mlir/IR/Visitors.h"
-#include "mlir/include/mlir/Pass/Pass.h"
+#include "mlir/Analysis/DataFlow/DeadCodeAnalysis.h"
+#include "mlir/Analysis/DataFlow/IntegerRangeAnalysis.h"
+#include "mlir/Analysis/DataFlowFramework.h"
+#include "mlir/IR/Visitors.h"
+#include "mlir/Pass/Pass.h"
 
 namespace mlir {
 namespace tutorial {
