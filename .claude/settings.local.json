@@ -24,7 +24,12 @@
       "Bash(/d/msys64/mingw64/bin/cmake.exe:*)",
       "Bash(powershell.exe -File ./scripts/build-windows.ps1)",
       "Bash(powershell.exe -ExecutionPolicy Bypass -File ./scripts/build-windows.ps1)",
-      "Bash(tee:*)"
+      "Bash(tee:*)",
+      "Bash(pacman:*)",
+      "Bash(cat:*)",
+      "Bash(pkill:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []

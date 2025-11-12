@@ -2,7 +2,7 @@
 
 <#
 .SYNOPSIS
-    Build mlir-tutorial on Windows using MSYS2/MinGW64 toolchain
+    Build mlir-tutorial on Windows using MSYS2/CLANG64 toolchain
 
 .DESCRIPTION
     This script automates the build process for the mlir-tutorial on Windows.
@@ -13,9 +13,6 @@
 
 .PARAMETER Clean
     Remove build directory before building
-
-.PARAMETER DisableOrTools
-    Disable or-tools dependency (useful if download fails)
 
 .PARAMETER BuildDir
     Build directory path. Default: .\cmake-build (avoids conflict with Bazel BUILD file on Windows)
@@ -30,10 +27,6 @@
 .EXAMPLE
     .\scripts\build-windows.ps1 -BuildType Release -Clean
     Clean build in Release mode
-
-.EXAMPLE
-    .\scripts\build-windows.ps1 -DisableOrTools
-    Build without or-tools dependency
 #>
 
 [CmdletBinding()]
@@ -42,8 +35,6 @@ param(
     [string]$BuildType = 'Debug',
 
     [switch]$Clean,
-
-    [switch]$DisableOrTools,
 
     [string]$BuildDir = "cmake-build",
 
@@ -71,7 +62,7 @@ function Find-MSYS2 {
     )
 
     foreach ($path in $possiblePaths) {
-        if (Test-Path "$path\mingw64\bin") {
+        if (Test-Path "$path\clang64\bin") {
             return $path
         }
     }
@@ -92,9 +83,9 @@ Please install MSYS2 first:
 
 Or download from: https://www.msys2.org/
 
-Then install LLVM/MLIR packages:
-    pacman -S mingw-w64-x86_64-llvm mingw-w64-x86_64-clang mingw-w64-x86_64-mlir \
-              mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
+Then install CLANG64 toolchain and MLIR:
+    pacman -S mingw-w64-clang-x86_64-toolchain mingw-w64-clang-x86_64-cmake \
+              mingw-w64-clang-x86_64-ninja mingw-w64-clang-x86_64-mlir
 "@
 }
 
@@ -102,9 +93,10 @@ Write-Host "  Found MSYS2 at: $msys2Path" -ForegroundColor Gray
 
 # Verify tools
 $requiredTools = @(
-    @{Name = "cmake"; Path = "$msys2Path\mingw64\bin\cmake.exe"},
-    @{Name = "ninja"; Path = "$msys2Path\mingw64\bin\ninja.exe"},
-    @{Name = "mlir-opt"; Path = "$msys2Path\mingw64\bin\mlir-opt.exe"}
+    @{Name = "cmake"; Path = "$msys2Path\clang64\bin\cmake.exe"},
+    @{Name = "ninja"; Path = "$msys2Path\clang64\bin\ninja.exe"},
+    @{Name = "clang"; Path = "$msys2Path\clang64\bin\clang.exe"},
+    @{Name = "mlir-opt"; Path = "$msys2Path\clang64\bin\mlir-opt.exe"}
 )
 
 foreach ($tool in $requiredTools) {
@@ -112,8 +104,8 @@ foreach ($tool in $requiredTools) {
         Write-Error @"
 Required tool '$($tool.Name)' not found at: $($tool.Path)
 
-Please install it in MSYS2 MINGW64 terminal:
-    pacman -S mingw-w64-x86_64-$($tool.Name)
+Please install it in MSYS2 terminal:
+    pacman -S mingw-w64-clang-x86_64-$($tool.Name)
 "@
     }
     Write-Host "  Found $($tool.Name)" -ForegroundColor Gray
@@ -122,9 +114,14 @@ Please install it in MSYS2 MINGW64 terminal:
 # Set up environment
 Write-Host "`n[2/6] Setting up environment..." -ForegroundColor Green
 
-# Verify cmake is accessible (but don't modify PATH yet)
-$cmakeVersion = & "$msys2Path\mingw64\bin\cmake.exe" --version | Select-Object -First 1
+# Verify cmake is accessible
+$cmakeVersion = & "$msys2Path\clang64\bin\cmake.exe" --version | Select-Object -First 1
 Write-Host "  $cmakeVersion" -ForegroundColor Gray
+
+# Check Clang version
+Write-Host "`n  Checking Clang version..." -ForegroundColor Gray
+$clangVersionOutput = & "$msys2Path\clang64\bin\clang.exe" --version | Select-Object -First 1
+Write-Host "  $clangVersionOutput" -ForegroundColor Gray
 
 # Clean build directory if requested
 if ($Clean -and (Test-Path $BuildDir)) {
@@ -160,8 +157,8 @@ if (-not (Test-Path $BuildDirAbsolute -PathType Container)) {
     Write-Host "  Build directory already exists" -ForegroundColor Gray
 }
 
-# NOW set MSYS2 in PATH (after directory operations complete)
-$env:Path = "$msys2Path\mingw64\bin;$env:Path"
+# NOW set MSYS2 CLANG64 in PATH (after directory operations complete)
+$env:Path = "$msys2Path\clang64\bin;$env:Path"
 
 # Configure CMake
 Write-Host "`n[4/6] Configuring CMake..." -ForegroundColor Green
@@ -169,23 +166,19 @@ Write-Host "`n[4/6] Configuring CMake..." -ForegroundColor Green
 $cmakeArgs = @(
     "-G", "Ninja",
     "-DCMAKE_BUILD_TYPE=$BuildType",
-    "-DCMAKE_CXX_FLAGS=-D_USE_MATH_DEFINES -D__MINGW64__",
-    "-DCMAKE_CXX_FLAGS_DEBUG=-O0",
-    "-DMLIR_DIR=$msys2Path/mingw64/lib/cmake/mlir",
-    "-DLLVM_DIR=$msys2Path/mingw64/lib/cmake/llvm"
+    "-DCMAKE_C_COMPILER=$msys2Path/clang64/bin/clang.exe",
+    "-DCMAKE_CXX_COMPILER=$msys2Path/clang64/bin/clang++.exe",
+    "-DMLIR_DIR=$msys2Path/clang64/lib/cmake/mlir",
+    "-DLLVM_DIR=$msys2Path/clang64/lib/cmake/llvm",
+    ".."
 )
 
-if ($DisableOrTools) {
-    $cmakeArgs += "-DENABLE_ORTOOLS=OFF"
-    Write-Host "  or-tools disabled" -ForegroundColor Yellow
-}
-
-$cmakeArgs += ".."
+Write-Host "  Using CLANG64 toolchain with prebuilt MLIR libraries" -ForegroundColor Gray
 
 Push-Location $BuildDirAbsolute
 try {
     Write-Host "  Running: cmake $($cmakeArgs -join ' ')" -ForegroundColor Gray
-    & "$msys2Path\mingw64\bin\cmake.exe" $cmakeArgs
+    & "$msys2Path\clang64\bin\cmake.exe" $cmakeArgs
 
     if ($LASTEXITCODE -ne 0) {
         throw "CMake configuration failed with exit code $LASTEXITCODE"
@@ -193,49 +186,11 @@ try {
 
     Write-Host "  CMake configuration successful" -ForegroundColor Gray
 
-    # Patch HiGHS header file if it exists (attempt to fix compilation issue with GCC 15+)
-    $highs_zstr_header = Join-Path $BuildDirAbsolute "_deps\highs-src\extern\zstr\zstr.hpp"
-    if (Test-Path $highs_zstr_header) {
-        Write-Host "`n  Patching HiGHS zstr.hpp for GCC compatibility..." -ForegroundColor Gray
-        $content = Get-Content $highs_zstr_header -Raw
-        if ($content -notmatch '#include <cstdint>') {
-            $content = $content -replace '(#include <cassert>)', "$1`n#include <cstdint>"
-            Set-Content -Path $highs_zstr_header -Value $content -NoNewline
-            Write-Host "  Applied cstdint patch" -ForegroundColor Green
-        }
-    }
-
-    # Patch or-tools aligned_memory header for MinGW compatibility
-    $ortools_aligned_header = Join-Path $BuildDirAbsolute "_deps\or-tools-src\ortools\util\aligned_memory_internal.h"
-    if (Test-Path $ortools_aligned_header) {
-        Write-Host "`n  Patching or-tools aligned_memory_internal.h for MinGW..." -ForegroundColor Gray
-        $content = Get-Content $ortools_aligned_header -Raw
-        if ($content -notmatch '__MINGW64__') {
-            $content = $content -replace '#if !defined\(_MSC_VER\)', '#if !defined(_MSC_VER) && !defined(__MINGW64__)'
-            $content = $content -replace '#else', '#elif defined(_MSC_VER) || defined(__MINGW64__)'
-            Set-Content -Path $ortools_aligned_header -Value $content -NoNewline
-            Write-Host "  Applied MinGW aligned_alloc patch" -ForegroundColor Green
-        }
-    }
-
-    # Patch or-tools fp_utils header for MinGW compatibility
-    $ortools_fp_header = Join-Path $BuildDirAbsolute "_deps\or-tools-src\ortools\util\fp_utils.h"
-    if (Test-Path $ortools_fp_header) {
-        Write-Host "`n  Patching or-tools fp_utils.h for MinGW..." -ForegroundColor Gray
-        $content = Get-Content $ortools_fp_header -Raw
-        if ($content -notmatch '__MINGW64__') {
-            # Skip fenv manipulation code on MinGW (incompatible fenv_t structure)
-            $content = $content -replace '#elif \(defined\(__GNUC__\) \|\| defined\(__llvm__\)\) && defined\(__x86_64__\) && \\', '#elif (defined(__GNUC__) || defined(__llvm__)) && defined(__x86_64__) && !defined(__MINGW64__) && \'
-            Set-Content -Path $ortools_fp_header -Value $content -NoNewline
-            Write-Host "  Applied MinGW fp_utils patch" -ForegroundColor Green
-        }
-    }
-
     # Build
     Write-Host "`n[5/6] Building project..." -ForegroundColor Green
     Write-Host "  Using $Jobs parallel jobs" -ForegroundColor Gray
 
-    & "$msys2Path\mingw64\bin\ninja.exe" -j $Jobs
+    & "$msys2Path\clang64\bin\ninja.exe" -j $Jobs
 
     if ($LASTEXITCODE -ne 0) {
         throw "Build failed with exit code $LASTEXITCODE"
@@ -253,9 +208,9 @@ try {
     }
 
     # Run test suite if available
-    if (& "$msys2Path\mingw64\bin\ninja.exe" -t targets | Select-String -Pattern "check-mlir-tutorial") {
+    if (& "$msys2Path\clang64\bin\ninja.exe" -t targets | Select-String -Pattern "check-mlir-tutorial") {
         Write-Host "  Running test suite..." -ForegroundColor Gray
-        & "$msys2Path\mingw64\bin\ninja.exe" check-mlir-tutorial
+        & "$msys2Path\clang64\bin\ninja.exe" check-mlir-tutorial
 
         if ($LASTEXITCODE -eq 0) {
             Write-Host "  All tests passed" -ForegroundColor Green

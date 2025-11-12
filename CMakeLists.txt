@@ -8,7 +8,7 @@ set(BUILD_DEPS ON)
 
 # Windows/MSYS2 specific configurations
 if(WIN32)
-    message(STATUS "Configuring for Windows with MSYS2/MinGW64")
+    message(STATUS "Configuring for Windows with MSYS2/CLANG64")
 
     # Detect MSYS2 installation
     if(NOT DEFINED MSYS2_ROOT)
@@ -24,15 +24,26 @@ if(WIN32)
     if(MSYS2_ROOT)
         message(STATUS "Found MSYS2 at: ${MSYS2_ROOT}")
 
-        # Auto-detect MLIR/LLVM if not specified
-        if(NOT DEFINED MLIR_DIR AND EXISTS "${MSYS2_ROOT}/mingw64/lib/cmake/mlir")
-            set(MLIR_DIR "${MSYS2_ROOT}/mingw64/lib/cmake/mlir" CACHE PATH "Path to MLIRConfig.cmake")
+        # Auto-detect MLIR/LLVM from CLANG64 environment
+        if(NOT DEFINED MLIR_DIR AND EXISTS "${MSYS2_ROOT}/clang64/lib/cmake/mlir")
+            set(MLIR_DIR "${MSYS2_ROOT}/clang64/lib/cmake/mlir" CACHE PATH "Path to MLIRConfig.cmake")
         endif()
 
-        if(NOT DEFINED LLVM_DIR AND EXISTS "${MSYS2_ROOT}/mingw64/lib/cmake/llvm")
-            set(LLVM_DIR "${MSYS2_ROOT}/mingw64/lib/cmake/llvm" CACHE PATH "Path to LLVMConfig.cmake")
+        if(NOT DEFINED LLVM_DIR AND EXISTS "${MSYS2_ROOT}/clang64/lib/cmake/llvm")
+            set(LLVM_DIR "${MSYS2_ROOT}/clang64/lib/cmake/llvm" CACHE PATH "Path to LLVMConfig.cmake")
         endif()
     endif()
+
+    # Use Clang and LLD linker (avoids GNU ld library ordering issues)
+    set(CMAKE_C_COMPILER "${MSYS2_ROOT}/clang64/bin/clang.exe")
+    set(CMAKE_CXX_COMPILER "${MSYS2_ROOT}/clang64/bin/clang++.exe")
+    set(CMAKE_LINKER "${MSYS2_ROOT}/clang64/bin/ld.lld.exe")
+
+    # Use LLD linker flags
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fuse-ld=lld")
+
+    message(STATUS "Using Clang/LLD toolchain from CLANG64 environment")
 endif()
 
 find_package(MLIR REQUIRED CONFIG)
@@ -54,23 +65,11 @@ include_directories(${MLIR_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
 
-# Optional: or-tools dependency (only needed for specific tutorials)
-# Comment out if you encounter download issues
-option(ENABLE_ORTOOLS "Enable or-tools dependency" ON)
-
-if(ENABLE_ORTOOLS)
-    message(STATUS "Fetching or-tools...")
-    include(FetchContent)
-    FetchContent_Declare(
-      or-tools
-      GIT_REPOSITORY https://github.com/google/or-tools.git
-      GIT_TAG        v9.11
-    )
-    FetchContent_MakeAvailable(or-tools)
-    message(STATUS "Done fetching or-tools")
-else()
-    message(STATUS "or-tools disabled (set ENABLE_ORTOOLS=ON to enable)")
-endif()
+# or-tools is NO LONGER REQUIRED - tutorial 12 now uses a simple greedy algorithm
+# instead of the ILP solver, removing the dependency on or-tools entirely.
+# This was done to simplify the build process and remove unnecessary dependencies.
+# The greedy algorithm teaches the same MLIR dataflow analysis concepts.
+message(STATUS "or-tools dependency removed - tutorial 12 uses simplified algorithm")
 
 add_subdirectory(tests)
 add_subdirectory(tools)
