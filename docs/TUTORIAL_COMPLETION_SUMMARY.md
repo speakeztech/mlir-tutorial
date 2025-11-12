@@ -12,19 +12,19 @@ This document summarizes the complete Windows-native MLIR tutorial series create
 
 ## Enhancement Philosophy: Pedagogical Narrative Integration
 
-Beyond platform adaptation, these tutorials have been significantly enhanced with **pedagogical narrative grounded in Jeremy Kun's original 2023 blog articles**. This enhancement represents a deliberate approach to technical education.
+Beyond platform adaptation, these tutorials have been significantly enhanced with **pedagogical narrative grounded in Jeremy Kun's original 2023 blog articles**. This enhancement represents a deliberate technical approach.
 
 ### The Enhancement Approach
 
 **Goal:** Transform technical reference material into contextual learning experiences that preserve Jeremy's "between the lines" insights while maintaining professional clarity.
 
-**Method:** Each tutorial (01, 04-13) was systematically enhanced by:
+**Method:** Each tutorial was systematically enhanced by:
 
-1. **Fetching Jeremy's original blog articles** - Direct consultation with source material at jeremykun.com, ensuring accuracy and completeness of pedagogical insights
+1. **Going through Jeremy's original blog articles** - Direct consultation with source material at jeremykun.com, ensuring accuracy and completeness
 
 2. **Extracting conceptual depth** - Identifying philosophical motivations, design trade-offs, honest assessments of limitations, and the "why" behind technical choices (not just the "how")
 
-3. **Professional reinterpretation** - Translating Jeremy's conversational blog style into a "learning assistant" voice that maintains approachability while avoiding casual mimicry
+3. **Professional reinterpretation** - Translating Jeremy's conversational blog style into a concise narrative that maintains approachability while avoiding casual mimicry
 
 4. **Structured integration** - Adding enhanced introductions explaining motivation before mechanism, and reorganizing Key Takeaways into "Conceptual" and "Practical" sections
 
@@ -32,7 +32,7 @@ Beyond platform adaptation, these tutorials have been significantly enhanced wit
 
 ### What Was Added
 
-**Philosophical depth:**
+**Perspective and Purpose**
 - Why features exist (motivation and design philosophy)
 - Trade-offs and economic arguments (e.g., "compile-time evaluation is leverage")
 - Architectural insights (e.g., "traits invert the optimization burden")
@@ -40,33 +40,15 @@ Beyond platform adaptation, these tutorials have been significantly enhanced wit
 
 **Honest assessments:**
 - Limitations and expressivity gaps (e.g., "DRR cannot check 'has single use' constraint")
-- Documentation inadequacies (e.g., "trait list is missing quite a few")
+- Documentation inadequacies (e.g., "trait list is missing quite a few...")
 - Learning curve realities (e.g., "must dig through pass implementations to understand traits")
-- Evolution and maturity acknowledgments (e.g., "DRR in maintenance mode," "PDLL incomplete")
+- Evolution and maturity acknowledgments (e.g., "DRR is in maintenance mode," "PDLL is incomplete as of this writing")
 
 **Contextual connections:**
 - How features compose (e.g., "folders + canonicalization + SCCP address complementary scopes")
 - When to use each approach (e.g., "C++ patterns vs DRR vs PDLL")
 - Why multiple mechanisms exist for similar tasks
-- How design decisions cascade through systems
-
-### Tutorial Word Count Growth
-
-The pedagogical enhancement significantly expanded tutorial depth:
-
-- **Tutorial 01:** 5,525 words (enhanced with MLIR philosophy and Windows context)
-- **Tutorial 04:** 4,315 words (white-box vs black-box code generation)
-- **Tutorial 05:** 3,908 words (semantic design choices and pragmatism)
-- **Tutorial 06:** 3,460 words (trait discovery and documentation gaps)
-- **Tutorial 07:** 3,591 words (layered optimization mechanisms)
-- **Tutorial 08:** 3,407 words (verification as executable assumptions)
-- **Tutorial 09:** 3,855 words (DRR limitations and evolution)
-- **Tutorial 10:** 3,080 words (type obstacle problem)
-- **Tutorial 11:** 2,955 words (honest messiness of lowering)
-- **Tutorial 12:** 3,089 words (lattice theory as practical tool)
-- **Tutorial 13:** 3,319 words (interpretation over compilation trade-off)
-
-**Total enhanced content:** ~40,500 words of pedagogical narrative (vs ~30,000 in initial technical-only version)
+- How design decisions cascade through passes (e.g., "trait discovery friction")
 
 ### Representative Examples
 
@@ -96,30 +78,10 @@ This discovery friction is real...
 
 This enhancement approach ensures learners understand not just **what** to do, but **why** design decisions were made, **when** to apply different techniques, and **what limitations** exist in practice.
 
-### Verification and Quality Assurance
-
-To ensure accuracy and completeness, all enhanced tutorials (5-9) underwent systematic verification in November 2025:
-
-**Verification Process:**
-1. **Original article retrieval** - Re-fetched each Jeremy Kun blog article to verify correct URL and content
-2. **Narrative comparison** - Cross-referenced tutorial content against original pedagogical insights
-3. **Gap analysis** - Identified missing "between the lines" perspectives and honest assessments
-4. **Targeted enhancement** - Added missing conceptual depth while maintaining existing technical accuracy
-5. **Consistency check** - Ensured uniform voice and structure across all enhanced tutorials
-
-**Specific improvements from verification:**
-- **Tutorial 05:** Added pragmatism over purity insight, storage class complexity, type inference opt-in tension
-- **Tutorial 06:** Added trait discovery friction, documentation gaps, unused abstractions (Commutative as no-op)
-- **Tutorial 07:** Added layered mechanisms rationale, implementation complexity scaling, honest API coupling uncertainty
-- **Tutorial 08:** Added verification-as-executable-assumptions, strictness trade-offs, nomenclature confusion admission
-- **Tutorial 09:** Added DRR expressivity limits, maintenance mode status, type system constraint blocking, generated code opacity
-
-This verification ensures tutorials accurately represent Jeremy's pedagogical vision while maintaining platform-specific Windows/CMake adaptations.
-
 ## Complete Tutorial List
 
 ### Beginner Level (Tutorials 1-4)
-**Time to Complete:** 6-8 hours
+**Time to Complete:** estimated 4-6 hours
 **Prerequisites:** Basic C++ knowledge, Windows development setup
 
 | # | Tutorial | File | Words | Status |
@@ -130,8 +92,8 @@ This verification ensures tutorials accurately represent Jeremy's pedagogical vi
 | 04 | Using Tablegen | [04-using-tablegen.md](tutorials/04-using-tablegen.md) | 4,315 | ✅ Complete |
 
 **Topics Covered:**
-- MLIR architecture and dialects
 - Setting up Windows development environment
+- MLIR architecture and dialects
 - lit/FileCheck testing framework
 - Pattern rewriting and IR manipulation
 - TableGen code generation
@@ -171,29 +133,6 @@ This verification ensures tutorials accurately represent Jeremy's pedagogical vi
 - Complete lowering pipeline to machine code
 - Dataflow analysis and optimization
 - PDLL (Pattern Description Language)
-
-## Statistics
-
-### Content Metrics
-
-- **Total Tutorials:** 13
-- **Total Word Count:** ~48,500 words
-  - Enhanced tutorials (01, 04-13): ~40,500 words with pedagogical narrative
-  - Technical tutorials (02-03): ~8,000 words
-- **Total Code Examples:** ~150+
-- **Total Files Created:** 14 (13 tutorials + 1 index)
-- **Average Tutorial Length:** ~3,730 words
-- **Enhanced Tutorial Average:** ~3,685 words (with pedagogical depth)
-- **Estimated Study Time:** 28-35 hours (increased due to conceptual depth)
-
-### Windows-Specific Adaptations
-
-- **PowerShell Commands:** 200+ examples
-- **CMake Integration Examples:** 50+ snippets
-- **Windows Troubleshooting Sections:** 13 (one per tutorial)
-- **MSYS2-Specific Content:** 100% of setup/build instructions
-- **Bazel Content Removed:** ~60-80% (varies by tutorial)
-- **MLIR Concepts Preserved:** 100%
 
 ## Key Achievements
 
@@ -298,16 +237,16 @@ mlir-tutorial/
 
 ## Comparison to Original Tutorials
 
-| Aspect | Original (Jeremy Kun) | WinOS-CMake Adaptation |
-|--------|----------------------|------------------------|
-| Build System | Bazel | CMake |
-| Platform | macOS/Linux primary | Windows primary |
-| LLVM Installation | Build from source | Pre-built MSYS2 packages |
-| Setup Time | 2-4 hours | 5-30 minutes |
-| Shell | bash | PowerShell |
-| Toolchain | System compiler | MSYS2/MinGW64 |
-| Content | 100% MLIR concepts | 100% MLIR concepts |
-| Examples | External links | In-repository |
+| Aspect | Original (Jeremy Kun) | WinOS-CMake Adaptation   |
+|--------|-----------------------|--------------------------|
+| Build System | Bazel/CMake           | CMake focus              |
+| Platform | macOS/Linux primary   | Windows primary          |
+| LLVM Installation | Build from source     | Pre-built MSYS2 packages |
+| Setup Time | 2-4 hours             | 5-30 minutes             |
+| Shell | bash                  | PowerShell               |
+| Toolchain | System compiler       | MSYS2/MinGW64            |
+| Content | 100% MLIR concepts    | 100% MLIR concepts       |
+| Examples | External links        | In-repository            |
 
 ## Tutorial Features
 
@@ -347,8 +286,8 @@ mlir-tutorial/
 - **Tutorial 08:** Verification testing with verify-diagnostics
 - **Tutorial 09:** DRR vs C++ pattern comparison
 - **Tutorial 10:** Type converter implementation
-- **Tutorial 11:** JIT execution on Windows
-- **Tutorial 12:** Lattice theory practical application
+- **Tutorial 11:** Lowering through LLVM overview
+- **Tutorial 12:** Dataflow/Lattice theory practical application
 - **Tutorial 13:** PDLL compilation and integration
 
 ## Usage Instructions
