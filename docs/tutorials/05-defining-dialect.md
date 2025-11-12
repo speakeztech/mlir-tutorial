@@ -964,7 +964,7 @@ def FloatPolynomial : Poly_Type<"FloatPolynomial"> {
 }
 ```
 
-## Comparing to Bazel Build
+## 🔍 Comparing to Bazel Build
 
 ### Original Tutorial (Bazel)
 
@@ -1014,7 +1014,7 @@ add_mlir_library(MLIRPoly
 )
 ```
 
-## Real-World Dialect Examples
+## 🔍 Real-World Dialect Examples
 
 ### Tensor Dialect
 

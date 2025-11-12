@@ -26,7 +26,7 @@ This tutorial uses emojis to help you navigate:
 - **Pass pipeline construction** strategies
 - Integrating with **CMake build system**
 
-## The Journey to Executable Code
+## 📖 The Journey to Executable Code
 
 Here's the reality of building compilers: **getting from high-level abstractions to machine code is messy**.
 
@@ -97,7 +97,7 @@ The LLVM dialect operations map directly to LLVM IR instructions. Once in LLVM I
 
 Each step **eliminates abstraction**. Each step **makes implicit assumptions explicit**. Each step **closes optimization opportunities** while opening execution paths.
 
-## Building Pipelines: The Honest Assessment
+## 📖 Building Pipelines: The Honest Assessment
 
 Let me quote Jeremy Kun directly: "I don't have a particularly good solution here besides trial and error."
 
@@ -265,7 +265,7 @@ void buildPolyToLLVMPipeline(OpPassManager &pm) {
 }
 ```
 
-## Understanding Bufferization
+## 🔍 Understanding Bufferization
 
 **Bufferization** transforms tensor operations (immutable, SSA values) into memref operations (mutable memory).
 
@@ -332,7 +332,7 @@ void buildPipeline(OpPassManager &pm) {
 - Fewer intermediate steps
 - More efficient
 
-## Complete Lowering Pipeline
+## 🔬 Complete Lowering Pipeline
 
 Here's a production-ready pipeline for Poly → LLVM.
 
@@ -417,7 +417,7 @@ void registerPolyToLLVMPipeline() {
 - Ensures type consistency
 - Final verification
 
-## Converting Individual Dialects
+## 🔍 Converting Individual Dialects
 
 Let's look at specific conversion passes.
 
@@ -526,7 +526,7 @@ void runOnOperation() override {
 - `scf.if` → `cf.cond_br`
 - `scf.while` → loop with `cf.br`
 
-## Translation to LLVM IR
+## 👉 Translation to LLVM IR
 
 Once in LLVM dialect, use `mlir-translate` to generate LLVM IR.
 
@@ -584,7 +584,7 @@ gcc example.o -o example.exe
 clang example.ll -o example.exe
 ```
 
-## Handling Common Issues
+## 👉 Handling Common Issues
 
 ### Issue 1: Unrealized Conversion Casts
 
@@ -637,7 +637,7 @@ error: dialect 'llvm' is not registered
 context.getOrLoadDialect<LLVM::LLVMDialect>();
 ```
 
-## Complete End-to-End Example
+## 🔬 Complete End-to-End Example
 
 ### File: `examples/poly_complete.mlir`
 
@@ -697,7 +697,7 @@ clang output.ll -o program.exe
   -o lowered.mlir
 ```
 
-## Testing LLVM Lowering
+## 👉 Testing LLVM Lowering
 
 ### FileCheck Tests
 
@@ -754,7 +754,7 @@ module {
 // OUTPUT: Result: 42
 ```
 
-## Performance Optimization
+## 🔍 Performance Optimization
 
 ### LLVM Optimization Levels
 
@@ -784,7 +784,7 @@ opt -O3 output.ll -o optimized.ll
 opt -O3 -debug-pass=Structure output.ll
 ```
 
-## CMake Integration
+## 👉 CMake Integration
 
 ### Complete Conversion Library
 
@@ -839,7 +839,7 @@ ninja tutorial-opt
 .\bin\tutorial-opt.exe ..\examples\poly_complete.mlir --lower-poly-to-llvm
 ```
 
-## Key Takeaways
+## 📖 Key Takeaways
 
 This tutorial explored complete lowering with honest assessment of the challenges:
 

@@ -691,7 +691,7 @@ llvm_config.add_tool_substitutions(tools, tool_dirs)
 - **Suffixes:** `.mlir` - Only test these files
 - **Tools:** Defines `%tutorial-opt` substitution
 
-## Comparing to Bazel Testing: Lessons in Pragmatism
+## 🔍 Comparing to Bazel Testing: Lessons in Pragmatism
 
 This is a good moment to reflect on **why build systems matter** and **when to optimize for what**.
 
@@ -785,7 +785,7 @@ Neither is "better", they solve different problems. This tutorial chooses CMake 
 
 When you build a production MLIR compiler, re-evaluate. If you're at Google, use Bazel. If you're at a startup, maybe CMake. If you're building open-source tools, consider both. The concepts transfer; the build system is just scaffolding.
 
-## Writing Your Own Tests
+## 👉 Writing Your Own Tests
 
 ### Step 1: Create Test File
 
@@ -941,7 +941,7 @@ This prevents operations from `test1` matching against `test2`.
 // CHECK-NOT: math.ctlz
 ```
 
-## Design Tradeoffs: Syntactic vs Semantic Lowering
+## 🔍 Design Tradeoffs: Syntactic vs Semantic Lowering
 
 Before we wrap up, let's address an important limitation that Jeremy Kun highlighted in his original article.
 
@@ -993,7 +993,7 @@ By keeping these separate, MLIR stays flexible. You can define dialects with arb
 
 This is both **powerful** (you can define any semantics) and **risky** (you can define wrong semantics). The testing infrastructure exists to catch the risks.
 
-## Key Takeaways: What You've Really Learned
+## 📖 Key Takeaways: What You've Really Learned
 
 Beyond the mechanics of writing tests, here's what you should internalize:
 
