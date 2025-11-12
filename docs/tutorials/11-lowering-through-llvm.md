@@ -574,121 +574,6 @@ gcc example.o -o example.exe
 clang example.ll -o example.exe
 ```
 
-## JIT Compilation and Execution
-
-For interactive testing, use JIT (Just-In-Time) compilation.
-
-### Creating a JIT Tool
-
-**File: `tools/tutorial-jit.cpp`**
-
-```cpp
-#include "mlir/ExecutionEngine/ExecutionEngine.h"
-#include "mlir/ExecutionEngine/OptUtils.h"
-#include "mlir/IR/MLIRContext.h"
-#include "mlir/Parser/Parser.h"
-#include "mlir/Target/LLVMIR/Dialect/LLVMIR/LLVMToLLVMIRTranslation.h"
-#include "mlir/Target/LLVMIR/Export.h"
-#include "llvm/Support/TargetSelect.h"
-
-using namespace mlir;
-
-int main(int argc, char **argv) {
-  if (argc != 2) {
-    llvm::errs() << "Usage: " << argv[0] << " <input.mlir>\n";
-    return 1;
-  }
-
-  // Initialize LLVM
-  llvm::InitializeNativeTarget();
-  llvm::InitializeNativeTargetAsmPrinter();
-
-  // Setup MLIR context
-  MLIRContext context;
-  context.getOrLoadDialect<LLVM::LLVMDialect>();
-
-  // Register LLVM translation
-  registerLLVMDialectTranslation(context);
-
-  // Parse input file
-  OwningOpRef<ModuleOp> module = parseSourceFile<ModuleOp>(argv[1], &context);
-  if (!module) {
-    llvm::errs() << "Failed to parse input file\n";
-    return 1;
-  }
-
-  // Create JIT execution engine
-  ExecutionEngineOptions options;
-  options.transformer = mlir::makeOptimizingTransformer(
-      /*optLevel=*/3, /*sizeLevel=*/0, /*targetMachine=*/nullptr);
-
-  auto maybeEngine = ExecutionEngine::create(*module, options);
-  if (!maybeEngine) {
-    llvm::errs() << "Failed to create execution engine\n";
-    return 1;
-  }
-
-  auto &engine = maybeEngine.get();
-
-  // Invoke main function
-  auto mainFunc = engine->lookupPacked("main");
-  if (!mainFunc) {
-    llvm::errs() << "Failed to find 'main' function\n";
-    return 1;
-  }
-
-  // Call with no arguments
-  (*mainFunc)();
-
-  return 0;
-}
-```
-
-### CMake for JIT Tool
-
-**File: `tools/CMakeLists.txt`**
-
-```cmake
-add_llvm_executable(tutorial-jit
-  tutorial-jit.cpp
-)
-
-target_link_libraries(tutorial-jit PRIVATE
-  MLIRIR
-  MLIRParser
-  MLIRExecutionEngine
-  MLIRTargetLLVMIRExport
-  MLIRLLVMDialect
-  MLIRSupport
-)
-```
-
-### Using the JIT
-
-**Test file: `test_jit.mlir`**
-```mlir
-module {
-  llvm.func @printf(!llvm.ptr<i8>, ...) -> i32
-
-  llvm.func @main() {
-    %0 = llvm.mlir.constant("Hello from JIT!\0A\00") : !llvm.array<17 x i8>
-    %1 = llvm.mlir.addressof @str : !llvm.ptr<array<17 x i8>>
-    %2 = llvm.getelementptr %1[0, 0]
-      : (!llvm.ptr<array<17 x i8>>) -> !llvm.ptr<i8>
-    %3 = llvm.call @printf(%2) : (!llvm.ptr<i8>) -> i32
-    llvm.return
-  }
-
-  llvm.mlir.global private constant @str("Hello from JIT!\0A\00")
-}
-```
-
-**Run:**
-```powershell
-.\build\bin\tutorial-jit.exe test_jit.mlir
-# Output: Hello from JIT!
-```
-
 ## Handling Common Issues
 
 ### Issue 1: Unrealized Conversion Casts
@@ -935,7 +820,7 @@ add_mlir_library(MLIRPolyToLLVMConversion
 
 ```powershell
 cd D:\repos\mlir-tutorial\build
-ninja tutorial-opt tutorial-jit
+ninja tutorial-opt
 
 # Test pipeline
 .\bin\tutorial-opt.exe --help | Select-String "lower-poly-to-llvm"
@@ -972,10 +857,9 @@ This tutorial explored complete lowering with honest assessment of the challenge
 
 1. **[Tutorial 12: Dataflow Analysis](12-dataflow-analysis.md)** - Global optimization and analysis
 2. **Implement complete lowering** for your dialect
-3. **Experiment with JIT** compilation and execution
-4. **Study MLIR conversions** in `mlir/lib/Conversion/`
-5. **Profile and optimize** generated LLVM IR
-6. **Build integration tests** that compile and run programs
+3. **Study MLIR conversions** in `mlir/lib/Conversion/`
+4. **Profile and optimize** generated LLVM IR
+5. **Build integration tests** that compile and run programs
 
 ## Additional Resources
 
