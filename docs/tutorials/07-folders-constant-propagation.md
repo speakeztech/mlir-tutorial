@@ -1,6 +1,6 @@
 # Tutorial 07: Folders and Constant Propagation
 
-**Original Article:** [MLIR — Folders](https://jeremykun.com/2023/09/11/mlir-folders/) by Jeremy Kun
+**Original Article:** [MLIR ,  Folders](https://jeremykun.com/2023/09/11/mlir-folders/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on constant folding mechanisms with CMake build integration.
 
@@ -39,7 +39,7 @@ Consider this code:
 
 At runtime, this generates instructions: load 2, load 3, add them, store result. But the compiler already knows the answer is 5. Why generate instructions at all?
 
-**Constant folding** is the optimization that eliminates this waste. It's not just an optimization—it's a **fundamental principle** of compilation: **do at compile time whatever you can, so runtime does less**.
+**Constant folding** is the optimization that eliminates this waste. It's not just an optimization, it's a **fundamental principle** of compilation: **do at compile time whatever you can, so runtime does less**.
 
 ### The Economic Argument
 
@@ -57,7 +57,7 @@ Every computation you do at compile time:
 - Makes programs faster
 - Reduces energy consumption
 
-In performance-critical code, constant propagation can eliminate entire functions, simplify control flow, and unlock further optimizations. **It's leverage—one compile-time computation saves millions of runtime executions.**
+In performance-critical code, constant propagation can eliminate entire functions, simplify control flow, and unlock further optimizations. **It's leverage, one compile-time computation saves millions of runtime executions.**
 
 ### What Are Folders?
 
@@ -86,7 +86,7 @@ The folding process:
 4. **Replacement** - Replace the original operation with the constant
 5. **Propagation** - Let other operations fold using this new constant
 
-This isn't just local optimization—it's a **cascade**. One folded operation creates new constant operands for other operations, which fold in turn, which creates more constants, etc. The program progressively simplifies.
+This isn't just local optimization, it's a **cascade**. One folded operation creates new constant operands for other operations, which fold in turn, which creates more constants, etc. The program progressively simplifies.
 
 ## Local vs Global Optimization: SCCP and Canonicalization
 
@@ -104,7 +104,7 @@ Operation → Check operands → Fold if constant → Done
 Program → Build dataflow graph → Propagate constants through edges → Fold operations
 ```
 
-This isn't just a performance difference—it's a fundamental difference in what each approach can discover.
+This isn't just a performance difference, it's a fundamental difference in what each approach can discover.
 
 ### SCCP: Sparse Conditional Constant Propagation
 
@@ -123,7 +123,7 @@ func.func @branching(%cond: i1) -> i32 {
 }
 ```
 
-If SCCP determines `%cond` is always true, it knows `%result` is always 10—even though there's a conditional. Local analysis can't do this; it doesn't track which branch executes.
+If SCCP determines `%cond` is always true, it knows `%result` is always 10, even though there's a conditional. Local analysis can't do this; it doesn't track which branch executes.
 
 **SCCP characteristics:**
 - **Global dataflow analysis** - Builds a lattice of constant values across the entire function
@@ -167,11 +167,11 @@ Canonicalize looks at `arith.addi`, sees both operands are constants, calls the 
 
 ### Why Both Exist: The Trade-Off
 
-This isn't redundancy—it's deliberate architectural choice.
+This isn't redundancy, it's deliberate architectural choice.
 
 **SCCP is powerful but expensive.** You run it once or twice in an optimization pipeline, at carefully chosen points where you expect to discover many constants.
 
-**Canonicalize is cheap but limited.** You run it frequently—after every major transformation—to clean up and expose new optimization opportunities.
+**Canonicalize is cheap but limited.** You run it frequently, after every major transformation, to clean up and expose new optimization opportunities.
 
 **Typical pipeline:**
 ```

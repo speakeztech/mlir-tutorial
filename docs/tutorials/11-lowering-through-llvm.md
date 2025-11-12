@@ -1,6 +1,6 @@
 # Tutorial 11: Lowering through LLVM
 
-**Original Article:** [MLIR — Lowering Through LLVM](https://jeremykun.com/2023/11/01/mlir-lowering-through-llvm/) by Jeremy Kun
+**Original Article:** [MLIR ,  Lowering Through LLVM](https://jeremykun.com/2023/11/01/mlir-lowering-through-llvm/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on complete lowering pipeline to LLVM IR with Windows/MSYS2 tooling and CMake integration.
 
@@ -32,7 +32,7 @@ Here's the reality of building compilers: **getting from high-level abstractions
 
 You start with operations that carry semantic meaning (`poly.mul` means polynomial multiplication). You end with CPU instructions that move bytes and flip bits. Between these extremes lies a cascade of transformations, each stripping away one layer of abstraction.
 
-This tutorial follows that journey—honestly, including the false starts and trial-and-error that characterize real compiler development.
+This tutorial follows that journey, honestly, including the false starts and trial-and-error that characterize real compiler development.
 
 ### The Non-Linear Problem
 
@@ -50,11 +50,11 @@ You lower to tensor operations, then discover bufferization introduces SCF loops
 
 As the author notes: there "can be dozens of lowerings involved" in a complete pipeline, and ordering them correctly requires either deep knowledge of pass interactions or "embarrassing trial and error."
 
-This is compiler engineering reality—the systematic methods exist, but practical pipeline construction remains partially artisanal.
+This is compiler engineering reality, the systematic methods exist, but practical pipeline construction remains partially artisanal.
 
 ### The LLVM Dialect: The Exit Point
 
-The **LLVM dialect** serves a specific architectural role: it's the **exit dialect**—a known-good interface to external code generation infrastructure.
+The **LLVM dialect** serves a specific architectural role: it's the **exit dialect**, a known-good interface to external code generation infrastructure.
 
 **Why not target machine code directly?**
 1. **Architecture independence** - LLVM handles x86, ARM, RISC-V, etc.
@@ -80,7 +80,7 @@ define i32 @add(i32 %arg0, i32 %arg1) {
 }
 ```
 
-The LLVM dialect operations map directly to LLVM IR instructions. Once in LLVM IR, you're on familiar ground—the rest is standard LLVM compilation.
+The LLVM dialect operations map directly to LLVM IR instructions. Once in LLVM IR, you're on familiar ground, the rest is standard LLVM compilation.
 
 ### The Complete Path: Abstraction to Execution
 
@@ -101,7 +101,7 @@ Each step **eliminates abstraction**. Each step **makes implicit assumptions exp
 
 Let me quote Jeremy Kun directly: "I don't have a particularly good solution here besides trial and error."
 
-This isn't defeatism—it's honesty about the state of the art.
+This isn't defeatism, it's honesty about the state of the art.
 
 ### The Incremental Approach
 
@@ -112,7 +112,7 @@ This isn't defeatism—it's honesty about the state of the art.
 5. **Reorder passes**
 6. **Repeat until successful**
 
-This feels ad-hoc because it is. The alternative—planning the perfect pipeline from the start—requires encyclopedic knowledge of hundreds of passes and their interactions.
+This feels ad-hoc because it is. The alternative, planning the perfect pipeline from the start, requires encyclopedic knowledge of hundreds of passes and their interactions.
 
 ### Why Pass Ordering Is Hard
 

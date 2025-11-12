@@ -1,6 +1,6 @@
 # Tutorial 10: Dialect Conversion
 
-**Original Article:** [MLIR — Dialect Conversion](https://jeremykun.com/2023/10/23/mlir-dialect-conversion/) by Jeremy Kun
+**Original Article:** [MLIR ,  Dialect Conversion](https://jeremykun.com/2023/10/23/mlir-dialect-conversion/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on systematic dialect conversion framework with CMake build integration.
 
@@ -71,7 +71,7 @@ func.func @example(%p: tensor<10xi32>) -> tensor<10xi32> {
 3. Debugging is nearly impossible (which rewrite broke what?)
 4. You're fighting the infrastructure instead of using it
 
-This is the **type obstacle**—a coordination problem that requires special infrastructure.
+This is the **type obstacle**, a coordination problem that requires special infrastructure.
 
 ### What Makes Conversion Different From Rewriting
 
@@ -96,7 +96,7 @@ MLIR provides infrastructure that solves the type obstacle through three mechani
 **1. Ordered Processing**
 The framework "lowers ops in a certain sorted order, converting the types as they go, and giving the op converters access to both the original types of each op as well as what the in-progress converted types look like."
 
-You don't manually sequence rewrites—the framework manages dependencies.
+You don't manually sequence rewrites, the framework manages dependencies.
 
 **2. Type Materialization**
 When type conflicts arise, the framework can "insert new intermediate ops that resolve type conflicts" through materializer hooks.

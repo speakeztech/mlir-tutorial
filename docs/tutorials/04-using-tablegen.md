@@ -1,6 +1,6 @@
 # Tutorial 04: Using Tablegen for Passes
 
-**Original Article:** [MLIR — Using Tablegen for Passes](https://jeremykun.com/2023/08/10/mlir-using-tablegen-for-passes/) by Jeremy Kun
+**Original Article:** [MLIR ,  Using Tablegen for Passes](https://jeremykun.com/2023/08/10/mlir-using-tablegen-for-passes/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on TableGen integration with CMake instead of Bazel.
 
@@ -22,11 +22,11 @@ Here's an uncomfortable truth about software development: **boilerplate exists b
 
 When Jeremy Kun wrote about TableGen, he opened with this disarming confession: he's not clever enough to correctly implement all the required methods for MLIR passes from memory. He forgets which virtual methods need overriding. He misspells function names. He gets parameter types wrong.
 
-This isn't weakness—it's **honesty about how humans actually work**.
+This isn't weakness, it's **honesty about how humans actually work**.
 
 And it leads to a crucial realization: if you're going to forget things anyway, you might as well have a tool generate the boilerplate for you. That tool, in MLIR, is **TableGen**.
 
-But here's where things get interesting (and where I initially stumbled): TableGen isn't the magical abstraction layer it first appears to be. It's something both simpler and more powerful—a **transparent code generator** that trades "hiding complexity" for "making repetition mechanical".
+But here's where things get interesting (and where I initially stumbled): TableGen isn't the magical abstraction layer it first appears to be. It's something both simpler and more powerful, a **transparent code generator** that trades "hiding complexity" for "making repetition mechanical".
 
 ## 💡 What You'll Learn
 
@@ -75,7 +75,7 @@ void registerMyPass() {
 }
 ```
 
-Notice the pattern? **Out of ~20 lines, maybe 10 contain actual transformation logic**. The rest is infrastructure—critical infrastructure that must be exactly right, but also mechanical and repetitive.
+Notice the pattern? **Out of ~20 lines, maybe 10 contain actual transformation logic**. The rest is infrastructure, critical infrastructure that must be exactly right, but also mechanical and repetitive.
 
 ### The Scaling Problem
 
@@ -94,7 +94,7 @@ And every time you add a new pass, you copy-paste-modify this ceremony, hoping y
 
 **TableGen** is a domain-specific language and code generator used throughout LLVM/MLIR. Instead of writing repetitive C++ boilerplate, you write a declarative `.td` file and let `mlir-tblgen` generate the code.
 
-But let me be clear about something crucial—something that took me time to understand:
+But let me be clear about something crucial, something that took me time to understand:
 
 ### The Critical Mental Model Shift
 
@@ -888,11 +888,11 @@ void registerMyPass() { /* ... */ }
 
 Rather than generate three separate files (increasing build complexity), TableGen generates one file with three guarded sections. Each consumer includes the same file but activates different sections.
 
-This pattern appears throughout LLVM/MLIR's TableGen usage—once you recognize it, you'll see it everywhere.
+This pattern appears throughout LLVM/MLIR's TableGen usage, once you recognize it, you'll see it everywhere.
 
 ### Transparent vs. Opaque Generation
 
-Many code generators aim for complete abstraction—you never see the generated code. TableGen takes the opposite approach: the generated code is meant to be read.
+Many code generators aim for complete abstraction, you never see the generated code. TableGen takes the opposite approach: the generated code is meant to be read.
 
 This choice has trade-offs:
 
@@ -907,7 +907,7 @@ This choice has trade-offs:
 - More exposed to implementation changes (generated code format may evolve)
 - Less "automated" feeling (you're more aware of the machinery)
 
-The MLIR team chose transparency over opacity. This tutorial follows that philosophy—hence the emphasis on reading generated `.h.inc` files.
+The MLIR team chose transparency over opacity. This tutorial follows that philosophy, hence the emphasis on reading generated `.h.inc` files.
 
 ## Common Pitfalls and How to Avoid Them
 
@@ -952,21 +952,21 @@ add_mlir_library(MyPasses
 
 This tutorial covered TableGen from both philosophical and practical perspectives. Here are the essential points:
 
-✅ **TableGen is white-box code generation**, not abstraction—you should understand the generated code
+✅ **TableGen is white-box code generation**, not abstraction, you should understand the generated code
 
-✅ **Boilerplate exists because humans forget details**—TableGen mechanizes what we'd otherwise copy-paste-modify
+✅ **Boilerplate exists because humans forget details**, TableGen mechanizes what we'd otherwise copy-paste-modify
 
-✅ **`.td` files declare pass metadata**—name, description, options, statistics, dependencies
+✅ **`.td` files declare pass metadata**, name, description, options, statistics, dependencies
 
 ✅ **Generated code uses CRTP** for efficient base class implementation without virtual overhead
 
 ✅ **Three preprocessor guards** control what gets included: `_DECL`, `_DEF`, `_REGISTRATION`
 
-✅ **CMake integration is straightforward** on Windows—`mlir_tablegen()` handles code generation
+✅ **CMake integration is straightforward** on Windows, `mlir_tablegen()` handles code generation
 
-✅ **TableGen trades complexity types**—less boilerplate, but more code generation machinery
+✅ **TableGen trades complexity types**, less boilerplate, but more code generation machinery
 
-✅ **Always read generated `.h.inc` files** when learning—this demystifies the process
+✅ **Always read generated `.h.inc` files** when learning, this demystifies the process
 
 ## The Learning Journey: From Confusion to Clarity
 
@@ -984,7 +984,7 @@ You copy-paste `.td` examples, get mysterious compilation errors, and wonder why
 
 You start recognizing the three-section pattern. You understand that `GEN_PASS_DEF_MYPASS` needs to be defined before including the `.h.inc` file. You can write a simple pass without consulting documentation.
 
-**What helps:** Implement 2-3 passes from scratch. Not copy-pasting—actually typing out the `.td` definition, CMake integration, and C++ implementation. Muscle memory matters.
+**What helps:** Implement 2-3 passes from scratch. Not copy-pasting, actually typing out the `.td` definition, CMake integration, and C++ implementation. Muscle memory matters.
 
 ### Stage 3: Competence (Week 2)
 
@@ -996,7 +996,7 @@ TableGen becomes mundane. You know the syntax for options and statistics. You un
 
 You encounter a scenario where you need to add a new field to 20 pass definitions. In the manual world, this would mean editing 20 C++ files carefully. With TableGen, you add one field to the base class generator and update 20 `.td` files mechanically.
 
-This is when TableGen's value becomes visceral. It's not about eliminating complexity—it's about making certain kinds of changes safe and systematic.
+This is when TableGen's value becomes visceral. It's not about eliminating complexity, it's about making certain kinds of changes safe and systematic.
 
 ## Windows-Specific Considerations
 
@@ -1038,7 +1038,7 @@ The key to using TableGen effectively is understanding it as white-box code gene
 
 Once you internalize this mental model, TableGen transforms from a mysterious obstacle into a practical tool. You'll start using it not because you have to, but because it makes certain tasks genuinely easier.
 
-The next tutorial moves beyond passes to defining custom dialects—where TableGen becomes even more valuable.
+The next tutorial moves beyond passes to defining custom dialects, where TableGen becomes even more valuable.
 
 ## Next Steps
 

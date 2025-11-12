@@ -1,6 +1,6 @@
 # Tutorial 12: Global Optimization and Dataflow Analysis
 
-**Original Article:** [MLIR — A Global Optimization and Dataflow Analysis](https://jeremykun.com/2023/11/15/mlir-a-global-optimization-and-dataflow-analysis/) by Jeremy Kun
+**Original Article:** [MLIR ,  A Global Optimization and Dataflow Analysis](https://jeremykun.com/2023/11/15/mlir-a-global-optimization-and-dataflow-analysis/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on MLIR's dataflow analysis framework with practical examples using CMake build integration.
 
@@ -36,7 +36,7 @@ You need to answer questions like:
 - "Is this expression already computed somewhere?"
 - "Could this pointer alias that one?"
 
-But you can't just execute the program and observe—the compiler runs at compile time, before the program has inputs.
+But you can't just execute the program and observe, the compiler runs at compile time, before the program has inputs.
 
 **Dataflow analysis** solves this by **propagating abstract information** through the program's control flow graph. Instead of executing with concrete values, you reason with abstract properties that hold across all possible executions.
 
@@ -56,13 +56,13 @@ If one branch sets x = 5 and another sets x = 10,
 then after the merge, x ∈ [5,10]
 ```
 
-Together, these let you **propagate facts** through arbitrary control flow—loops, branches, function calls—arriving at safe approximations of program behavior.
+Together, these let you **propagate facts** through arbitrary control flow, loops, branches, function calls, arriving at safe approximations of program behavior.
 
 ### From Theory to Practice: The Noise Example
 
 Jeremy Kun's tutorial uses a concrete example: tracking "noise" in homomorphic encryption operations. The question: "At this program point, how many bits of noise could this ciphertext contain?"
 
-This isn't constant propagation (concrete values) or type checking (static types). It's **abstract interpretation**—tracking a property (noise bounds) that affects correctness but isn't directly represented in the IR.
+This isn't constant propagation (concrete values) or type checking (static types). It's **abstract interpretation**, tracking a property (noise bounds) that affects correctness but isn't directly represented in the IR.
 
 **Why this example matters:**
 - Shows analysis for a domain-specific property
@@ -948,15 +948,15 @@ solver.load<DeadCodeAnalysis>();
 
 **Conceptual:**
 
-✅ **Lattice theory is a practical tool, not just math:** A semilattice—values with a "join" operation that merges information—provides the theoretical guarantee that your analysis will terminate. The join operation naturally expresses "what we know when we merge two control flow paths."
+✅ **Lattice theory is a practical tool, not just math:** A semilattice, values with a "join" operation that merges information, provides the theoretical guarantee that your analysis will terminate. The join operation naturally expresses "what we know when we merge two control flow paths."
 
 ✅ **Separation of analysis from transformation:** The dataflow framework computes facts about your program without modifying it. Optimization passes then consume these facts to perform safe transformations. This separation means you can reuse analyses across multiple optimization contexts.
 
-✅ **Abstract interpretation enables domain reasoning:** Instead of tracking concrete values (which explodes exponentially), track abstract properties—ranges, constants, types, nullability. The lattice structure ensures your approximations remain sound even when information flows through complex control flow.
+✅ **Abstract interpretation enables domain reasoning:** Instead of tracking concrete values (which explodes exponentially), track abstract properties, ranges, constants, types, nullability. The lattice structure ensures your approximations remain sound even when information flows through complex control flow.
 
 ✅ **Fixed-point iteration has guarantees:** Kildall's method repeatedly propagates information until nothing changes. The lattice's finite height guarantees this process terminates. Your only responsibility is defining a sound join operation and transfer functions.
 
-✅ **The framework is the real deliverable:** MLIR's dataflow infrastructure handles worklists, state management, and interprocedural coordination. You focus on domain logic: "What properties matter?" and "How do operations transform those properties?" This is profound reuse—write 50 lines instead of 500.
+✅ **The framework is the real deliverable:** MLIR's dataflow infrastructure handles worklists, state management, and interprocedural coordination. You focus on domain logic: "What properties matter?" and "How do operations transform those properties?" This is profound reuse, write 50 lines instead of 500.
 
 **Practical:**
 

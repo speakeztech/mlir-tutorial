@@ -1,6 +1,6 @@
 # Tutorial 03: Writing Your First Pass
 
-**Original Article:** [MLIR — Writing Our First Pass](https://jeremykun.com/2023/08/10/mlir-writing-our-first-pass/) by Jeremy Kun
+**Original Article:** [MLIR ,  Writing Our First Pass](https://jeremykun.com/2023/08/10/mlir-writing-our-first-pass/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on C++ pass implementation with CMake build integration.
 
@@ -106,7 +106,7 @@ patterns.add<MyPattern>(&getContext());
 applyPatternsAndFoldGreedily(getOperation(), std::move(patterns));
 ```
 
-The tradeoff isn't about "which is better"—it's about **what kind of transformation you're doing**.
+The tradeoff isn't about "which is better", it's about **what kind of transformation you're doing**.
 
 **Use Walking when:**
 - You need full dataflow analysis (like CSE, which must track all definitions)
@@ -620,7 +620,7 @@ Without these assumptions, our pass would need to handle cases like:
 
 MLIR's convention: **canonicalization passes run frequently**. You can assume your input is in canonical form. This lets you write simpler passes.
 
-**The tradeoff:** Your pass depends on other passes running first. This isn't a bug—it's **intentional layering**. MLIR's pass infrastructure manages these dependencies.
+**The tradeoff:** Your pass depends on other passes running first. This isn't a bug, it's **intentional layering**. MLIR's pass infrastructure manages these dependencies.
 
 ### Pattern Rewriting is Declarative
 
@@ -656,7 +656,7 @@ This trust is earned: MLIR's infrastructure has been battle-tested on massive co
 
 ### 1. Passes Are MLIR's Fundamental Abstraction
 
-Everything meaningful in MLIR happens through passes. Optimizations, lowering, analysis—all implemented as passes. Mastering passes means mastering MLIR.
+Everything meaningful in MLIR happens through passes. Optimizations, lowering, analysis, all implemented as passes. Mastering passes means mastering MLIR.
 
 ### 2. Small, Focused Transformations Scale
 
@@ -672,7 +672,7 @@ Most local transformations fit the pattern-rewriting model. Learning to think in
 
 ### 4. Walking is for Complex Analysis
 
-When pattern rewriting isn't enough—when you need global dataflow analysis or complex state—walking gives you full control.
+When pattern rewriting isn't enough, when you need global dataflow analysis or complex state, walking gives you full control.
 
 ### 5. CMake Integration is Straightforward
 
@@ -680,7 +680,7 @@ Adding passes to the build is mechanical: `add_mlir_library`, link dependencies,
 
 ### 6. FileCheck Tests Document Behavior
 
-Tests aren't just verification—they're executable documentation showing what your pass does. Write them early, refer to them often.
+Tests aren't just verification, they're executable documentation showing what your pass does. Write them early, refer to them often.
 
 ### 7. MLIR's Design Enables Parallelism
 

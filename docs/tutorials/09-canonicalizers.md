@@ -1,6 +1,6 @@
 # Tutorial 09: Canonicalizers and Declarative Rewrite Patterns
 
-**Original Article:** [MLIR — Canonicalizers and Declarative Rewrite Patterns](https://jeremykun.com/2023/09/20/mlir-canonicalizers-and-declarative-rewrite-patterns/) by Jeremy Kun
+**Original Article:** [MLIR ,  Canonicalizers and Declarative Rewrite Patterns](https://jeremykun.com/2023/09/20/mlir-canonicalizers-and-declarative-rewrite-patterns/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on canonicalization patterns using declarative rewrite rules (DRR) with CMake build integration.
 
@@ -39,7 +39,7 @@ x - 0    vs    x
 
 Mathematically equivalent, but structurally different in the IR. This creates a combinatorial explosion: every downstream pass must handle all possible equivalent forms.
 
-**Canonicalization solves this** by transforming IR into a **normal form**—a standard representation chosen among equivalent alternatives.
+**Canonicalization solves this** by transforming IR into a **normal form**, a standard representation chosen among equivalent alternatives.
 
 ### The Power of Standard Forms
 
@@ -83,7 +83,7 @@ Canonicalization can:
 - Restructure computation graphs
 - Apply algebraic identities
 
-This is powerful—you're not just simplifying individual operations, you're **reshaping entire subgraphs**.
+This is powerful, you're not just simplifying individual operations, you're **reshaping entire subgraphs**.
 
 ### Why Canonicalization Enables Optimization
 
@@ -105,7 +105,7 @@ Optimization passes see uniform structure
 Optimizations trigger reliably
 ```
 
-Canonicalization is a **force multiplier**—it makes other passes exponentially more effective by reducing the space of IR structures they must handle.
+Canonicalization is a **force multiplier**, it makes other passes exponentially more effective by reducing the space of IR structures they must handle.
 
 ### Common Canonicalization Patterns
 
@@ -1098,7 +1098,7 @@ def OptimizedPattern : Pattern<
 
 ✅ **Type system constraints can block valid patterns** - Jeremy discovered "Complex types are forced to be floating point because all the op verifiers...require it," preventing Gaussian integer support despite mathematical validity. Design decisions upstream ripple through canonicalization possibilities
 
-✅ **Generated code opacity requires debugging skills** - Developers must "inspect the generated C++ to debug" DRR patterns, suggesting the abstraction leaks during development. This isn't fully declarative—it's declarative with imperative debugging
+✅ **Generated code opacity requires debugging skills** - Developers must "inspect the generated C++ to debug" DRR patterns, suggesting the abstraction leaks during development. This isn't fully declarative, it's declarative with imperative debugging
 
 **Practical:**
 

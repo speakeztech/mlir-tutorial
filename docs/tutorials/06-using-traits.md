@@ -1,6 +1,6 @@
 # Tutorial 06: Using Traits
 
-**Original Article:** [MLIR — Using Traits](https://jeremykun.com/2023/09/07/mlir-using-traits/) by Jeremy Kun
+**Original Article:** [MLIR ,  Using Traits](https://jeremykun.com/2023/09/07/mlir-using-traits/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on trait concepts and implementation with CMake integration.
 
@@ -49,11 +49,11 @@ Operation: "Um... let me check my semantics..."
 
 **Trait-based approach (operations declare contracts):**
 ```
-Operation: "I'm Pure—no side effects, deterministic, safe to speculate"
+Operation: "I'm Pure, no side effects, deterministic, safe to speculate"
 Pass: "Perfect, I can eliminate you, hoist you, deduplicate you"
 ```
 
-The pass doesn't need to know what `poly.add` is. It only needs to know that `poly.add` is Pure. The **trait is a contract**—a zero-method interface that declares behavioral properties.
+The pass doesn't need to know what `poly.add` is. It only needs to know that `poly.add` is Pure. The **trait is a contract**, a zero-method interface that declares behavioral properties.
 
 ### The Real Example: From Zero to Full Optimization
 
@@ -77,7 +77,7 @@ That `[Pure]` declaration unlocks:
 
 ### Why This Matters: The Economics of Compiler Infrastructure
 
-Consider the economics. LLVM/MLIR has hundreds of optimization passes developed over decades by thousands of engineers. These passes encode sophisticated algorithms—polyhedral optimization, value numbering, dataflow analysis, alias analysis, instruction scheduling.
+Consider the economics. LLVM/MLIR has hundreds of optimization passes developed over decades by thousands of engineers. These passes encode sophisticated algorithms, polyhedral optimization, value numbering, dataflow analysis, alias analysis, instruction scheduling.
 
 Without traits, your custom dialect can't access this infrastructure. You'd need to:
 1. Understand each optimization algorithm
@@ -90,7 +90,7 @@ With traits, you:
 1. Mark your operations with standard properties
 2. Inherit decades of optimization work
 
-This is **leverage**. You're not building a compiler from scratch—you're plugging into existing infrastructure by declaring conformance to known contracts.
+This is **leverage**. You're not building a compiler from scratch, you're plugging into existing infrastructure by declaring conformance to known contracts.
 
 ## What Are Traits?
 
@@ -262,7 +262,7 @@ The `Pure` trait is actually a combination of two traits:
 def Pure : TraitList<[NoMemoryEffect, AlwaysSpeculatable]>;
 ```
 
-This dual nature is important—it's not just about memory, it's about **safety guarantees** for aggressive optimization.
+This dual nature is important, it's not just about memory, it's about **safety guarantees** for aggressive optimization.
 
 #### NoMemoryEffect: The Memory Contract
 

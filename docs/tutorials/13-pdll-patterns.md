@@ -1,6 +1,6 @@
 # Tutorial 13: Defining Patterns with PDLL
 
-**Original Article:** [MLIR — PDLL](https://www.jeremykun.com/2024/08/04/mlir-pdll/) by Jeremy Kun
+**Original Article:** [MLIR ,  PDLL](https://www.jeremykun.com/2024/08/04/mlir-pdll/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on PDLL (Pattern Descriptor Language) for advanced pattern matching with CMake integration.
 
@@ -35,7 +35,7 @@ This tutorial uses emojis to help you navigate:
 
 When you first learned pattern matching in Tutorial 09, TableGen DRR seemed elegant: declare what you want to match, declare the replacement, done. But that elegance has limits. **TableGen DRR cannot express operations with multiple results, operations containing regions (like loops), operations with variable-length operand lists, or patterns that need to perform arithmetic on constant values during matching.**
 
-These aren't edge cases—they're fundamental IR patterns. When you encounter them, you face an unpleasant choice: abandon declarative pattern matching and write verbose C++ pattern classes, or contort your dialect to avoid these features. PDLL offers a third option: **a more expressive pattern language that preserves declarative benefits while handling the complexity TableGen cannot.**
+These aren't edge cases, they're fundamental IR patterns. When you encounter them, you face an unpleasant choice: abandon declarative pattern matching and write verbose C++ pattern classes, or contort your dialect to avoid these features. PDLL offers a third option: **a more expressive pattern language that preserves declarative benefits while handling the complexity TableGen cannot.**
 
 ### The Bytecode Insight: Interpretation Enables Extensibility
 
@@ -47,7 +47,7 @@ PDLL's design makes a fascinating trade-off. Instead of compiling patterns direc
 
 Why interpretation instead of compilation? Three concrete wins: **extensibility** (users can provide patterns without recompiling the compiler), **binary size** (bytecode is ~10x smaller than equivalent C++), and **joint optimization** (the system can merge redundant work across multiple patterns into a shared finite state machine).
 
-This last point is subtle but powerful. When you have hundreds of patterns competing to match IR, they repeatedly access the same operands and attributes. Compiled C++ patterns duplicate this work; interpreted bytecode can coordinate it. The performance trade-off—slower individual pattern execution—is amortized by reducing redundant access across the pattern set.
+This last point is subtle but powerful. When you have hundreds of patterns competing to match IR, they repeatedly access the same operands and attributes. Compiled C++ patterns duplicate this work; interpreted bytecode can coordinate it. The performance trade-off, slower individual pattern execution, is amortized by reducing redundant access across the pattern set.
 
 ### PDLL vs TableGen DRR
 
@@ -949,9 +949,9 @@ Pattern TestPattern {
 
 ✅ **Declarative with escape hatches:** PDLL doesn't dogmatically enforce pure declarativity. The native constraint mechanism explicitly allows "anything [PDLL] doesn't support" to drop into C++ implementations. The philosophy: **declare what you can, shell out to imperative code where necessary**. This pragmatism acknowledges that pattern languages cannot anticipate every domain need.
 
-✅ **Evolution from TableGen's limitations:** DRR breaks on fundamental IR constructs—multi-result operations, regions, variadic operands, constant arithmetic during matching. PDLL exists because these aren't edge cases; they're structural features of real dialects. The language represents MLIR's admission that TableGen was the wrong abstraction for complex pattern matching.
+✅ **Evolution from TableGen's limitations:** DRR breaks on fundamental IR constructs, multi-result operations, regions, variadic operands, constant arithmetic during matching. PDLL exists because these aren't edge cases; they're structural features of real dialects. The language represents MLIR's admission that TableGen was the wrong abstraction for complex pattern matching.
 
-✅ **Extensibility as architectural goal:** The bytecode model reframes pattern matching from compile-time artifact (DRR generates C++) to runtime service (PDLL loads bytecode). This shift enables a future where "the user [can pass] their own patterns to the compiler without having to rebuild it"—treating optimization as configuration rather than compilation.
+✅ **Extensibility as architectural goal:** The bytecode model reframes pattern matching from compile-time artifact (DRR generates C++) to runtime service (PDLL loads bytecode). This shift enables a future where "the user [can pass] their own patterns to the compiler without having to rebuild it", treating optimization as configuration rather than compilation.
 
 ✅ **Incomplete but evolving:** Jeremy's honest assessment notes missing features (arithmetic/logic/comparison have RFCs but aren't implemented, regions and dialect conversion have no RFC yet) and unclear documentation requiring implementer consultation. PDLL is a work-in-progress, not a finished specification.
 

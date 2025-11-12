@@ -86,7 +86,7 @@ compiler infrastructure to work with your new operations? The naive answer: writ
 passes for every optimization. This doesn't scale.
 
 Traits invert this burden. Rather than making passes know about your dialect, you make
-your dialect declare properties that passes already understand. The trait is a contract—
+your dialect declare properties that passes already understand. The trait is a contract, 
 a zero-method interface that declares behavioral properties.
 
 However, Jeremy's candid observation: "To figure out what each trait does, you have to

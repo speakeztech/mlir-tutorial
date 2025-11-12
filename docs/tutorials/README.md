@@ -12,15 +12,15 @@ These tutorials are based on Jeremy Kun's blog articles **written in 2023** duri
 
 ### Understanding the Tutorial's Scope and Bias
 
-**Critical perspective:** Many of these tutorials carry a **subtle tensor processing bias** reflecting their origins in Google's machine learning infrastructure work. While tensor operations are important, they represent only **one domain** among many that MLIR serves.
+**Maintain perspective:** Many of these tutorials carry a **subtle tensor processing bias** reflecting their origins in Google's machine learning infrastructure work. While tensor operations are important, they represent only **one domain** among many that MLIR will serve in the Fidelity Framework.
 
-**The Fidelity Framework context:** These tutorials are hosted within the mlir-tutorial repository to support the **Fidelity Framework** and its **Firefly compiler**—an F# compiler targeting the full spectrum of LLVM backends **and beyond**:
+**This project's context:** These tutorials are hosted within the mlir-tutorial repository to support the **Fidelity Framework** and its **Firefly compiler**, an F# compiler targeting the full spectrum of LLVM backends **and beyond**:
 
 - **LLVM-supported targets:** CPU (x86, ARM, RISC-V), GPU (CUDA, ROCm, Vulkan), specialized accelerators
 - **Beyond LLVM:** IoT microcontrollers, FPGA fabric, CGRA (Coarse-Grained Reconfigurable Architectures), neuromorphic processors
 - **Future expansion:** Custom silicon, domain-specific hardware, emerging compute paradigms
 
-**The lesson:** View these tutorials as teaching **core MLIR infrastructure patterns**—dialect design, transformation passes, progressive lowering, analysis frameworks—that apply across all compilation targets. Do not over-index on tensor operations as the primary use case.
+**The lesson:** View these tutorials as teaching **core MLIR infrastructure patterns**, dialect design, transformation passes, progressive lowering, analysis frameworks, that apply across all compilation targets. Do not over-index on tensor operations as the primary use case. Or take the hard-won lessons learned as the *only* pathway to solve problems in your domain. They are valuable for grasping MLIR, but not necessarily the *right* pathway for us here. Take it as a great way to get acquainted with the Good, the Bad, and the Ugly. Work will continue to reduce or remove the latter two categories as the framework matures.
 
 ### Fidelity Philosophy
 
@@ -30,7 +30,7 @@ These tutorials are based on Jeremy Kun's blog articles **written in 2023** duri
 - Recursive compilation and re-lowering can be triggered
 - Optimization passes spend significant effort "fixing" structural problems introduced by permissive source languages
 
-You'll notice throughout tutorials 7-11 that considerable pass complexity addresses **inserting structure that wasn't present semantically**—normalization, canonicalization, verification, type conversion, bufferization.
+You'll notice throughout tutorials 7-11 that considerable pass complexity addresses **inserting structure that wasn't present semantically**, normalization, canonicalization, verification, type conversion, bufferization.
 
 **The Fidelity Framework difference:** F# is a **strongly-typed functional language** making a good faith effort to embrace a **"correct by construction"** principle:
 - Type correctness enforced at source level by design-time LSP/compiler services
@@ -44,7 +44,7 @@ The high-level takeaway: **These tutorials teach essential MLIR infrastructure, 
 
 **Important context on other strongly-typed languages:** Haskell, Rust, and Swift all use LLVM and could fall into the "correct by construction" category with similar benefits. However, **these languages target LLVM directly, not MLIR**. While experimental bindings exist (mlir-hs for Haskell), **F# via the Fidelity Framework may be the first general-purpose language making general-purpose use of MLIR for compilation**. This pioneering position means the Firefly compiler may be the first to demonstrate how MLIR's multi-level IR capabilities can significantly enhance compilation pathways for strongly-typed functional languages.
 
-Given these tutorials' tensor-processing focus and Python-centric bias, the challenges addressed here are a subset of the full gamut of F#'s needs. **As the Fidelity Framework matures, these tutorials may shift significantly**—new concerns specific to F#/MLIR/LLVM pathways may require deeper scrutiny, while issues emphasized here may prove less pertinent. Consider this tutorial series a living document that will evolve as real-world experience reveals the true friction points.
+Given these tutorials' tensor-processing focus and Python-centric bias, the challenges addressed here are a subset of the full gamut of F#'s needs. **As the Fidelity Framework matures, these tutorials may shift significantly**, new concerns specific to F#/MLIR/LLVM pathways may require deeper scrutiny, while issues emphasized here may prove less pertinent. Consider this tutorial series a living document that will evolve as real-world experience reveals the true friction points.
 
 **For technical details about how the Fidelity Framework achieves this efficiency, see the [Technical Addendum](#technical-addendum-fidelity-frameworks-compilation-pathway) below.**
 
@@ -306,7 +306,7 @@ This section provides technical depth on how the Fidelity Framework achieves the
 
 ### The FCS Foundation: Type-Checked AST as Starting Point
 
-Most compilation tutorials—including these MLIR tutorials—begin from **raw source text** or **loosely-typed ASTs** that require extensive analysis passes to establish semantic correctness. The Fidelity Framework starts differently.
+Most compilation tutorials, including these MLIR tutorials, begin from **raw source text** or **loosely-typed ASTs** that require extensive analysis passes to establish semantic correctness. The Fidelity Framework starts differently.
 
 **F# Compiler Services (FCS)** provides:
 - **Fully type-checked Abstract Syntax Tree** - Complete type information for every expression, function, and binding
@@ -317,7 +317,7 @@ This means when Firefly begins lowering to MLIR, **structural correctness is alr
 
 ### Program Hypergraph (PHG): The Architectural Map
 
-Between FCS and MLIR sits the **Program Hypergraph (PHG)**—a symbolic/semantic representation that preserves:
+Between FCS and MLIR sits the **Program Hypergraph (PHG)**, a symbolic/semantic representation that preserves:
 
 **Reachability and Tree Shaking:**
 - **Type-aware pruning** - Starting from entry points (main, exports), traverse only reachable code
@@ -345,7 +345,7 @@ The **Program Hypergraph (PHG)** is PHG's evolution for modern compilation chall
 
 ### The Direct Pathway: Fewer Passes, Less Churn
 
-Putting it together—the Firefly compilation pipeline:
+Putting it together, the Firefly compilation pipeline:
 
 ```
 F# Source Code
@@ -404,7 +404,7 @@ MLIR High-Level → Targeted Lowering → LLVM → Binary
 
 ### Proof-Aware Compilation: Optimization Through Verification
 
-What truly distinguishes the Fidelity Framework from traditional compilation approaches is **proof-aware compilation**—treating formal verification not as a constraint on optimization, but as an *enabler* of it.
+What truly distinguishes the Fidelity Framework from traditional compilation approaches is **proof-aware compilation**, treating formal verification not as a constraint on optimization, but as an *enabler* of it.
 
 **The traditional false choice:** Safety checks impose runtime overhead, or trust the optimizer won't break invariants. Proof assistants generate conservative code. Verification and optimization oppose each other.
 
@@ -424,11 +424,11 @@ What truly distinguishes the Fidelity Framework from traditional compilation app
 
 3. **LLVM layer** - Architecture-specific tuning within boundaries established by proof metadata. LLVM isn't asked to preserve high-level properties it can't understand; it receives pre-optimized code with clear boundaries.
 
-**Opt-in verification with graduated formalism:** Developers write standard F# with optional verification annotations. The hypergraph automatically derives and maintains proof obligations. No separate verification languages required. Proofs can be applied to specific functions or code sections—not all-or-nothing.
+**Opt-in verification with graduated formalism:** Developers write standard F# with optional verification annotations. The hypergraph automatically derives and maintains proof obligations. No separate verification languages required. Proofs can be applied to specific functions or code sections, not all-or-nothing.
 
-**Safety standards as reusable proof libraries:** MISRA-C, DO-178C, and similar patterns become instantiable proof hyperedges. A MISRA Rule 17.1 (pointer arithmetic) hyperedge doesn't just check compliance—it carries optimization knowledge about safe transformations.
+**Safety standards as reusable proof libraries:** MISRA-C, DO-178C, and similar patterns become instantiable proof hyperedges. A MISRA Rule 17.1 (pointer arithmetic) hyperedge doesn't just check compliance, it carries optimization knowledge about safe transformations.
 
-**Patent-pending innovation:** SpeakEZ has patent pending (US 63/786,264) for "Verification-Preserving Compilation Using Formal Certificate Guided Optimization"—maintaining verification properties across aggressive optimizations targeting heterogeneous hardware.
+**Patent-pending innovation:** SpeakEZ has patent pending (US 63/786,264) for "Verification-Preserving Compilation Using Formal Certificate Guided Optimization", maintaining verification properties across aggressive optimizations targeting heterogeneous hardware.
 
 ### The Alloy Library: Zero-Allocation Runtime
 
@@ -441,7 +441,7 @@ This ensures that even at the runtime, the "correct by construction" philosophy 
 
 ### Key Takeaway
 
-**These MLIR tutorials teach essential infrastructure knowledge**—dialect design, pass mechanisms, analysis frameworks, lowering strategies. This knowledge remains critical for understanding how MLIR works and how to extend it.
+**These MLIR tutorials teach essential infrastructure knowledge**, dialect design, pass mechanisms, analysis frameworks, lowering strategies. This knowledge remains critical for understanding how MLIR works and how to extend it.
 
 **But the Fidelity Framework demonstrates** that with strong static types, functional programming principles, and careful semantic preservation through FCS and PHG, many of the reconstruction passes shown in tutorials become unnecessary or significantly simplified.
 

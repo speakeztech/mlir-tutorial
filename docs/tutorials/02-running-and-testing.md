@@ -1,6 +1,6 @@
 # Tutorial 02: Running and Testing a Lowering
 
-**Original Article:** [MLIR — Running and Testing a Lowering](https://jeremykun.com/2023/08/10/mlir-running-and-testing-a-lowering/) by Jeremy Kun
+**Original Article:** [MLIR ,  Running and Testing a Lowering](https://jeremykun.com/2023/08/10/mlir-running-and-testing-a-lowering/) by Jeremy Kun
 
 **Windows Adaptation:** This tutorial focuses on lit/FileCheck testing with CMake instead of Bazel.
 
@@ -26,7 +26,7 @@ This tutorial uses emojis to help you navigate:
 
 ## 📖 Understanding Dialects and Lowering: The Core of MLIR
 
-If Tutorial 01 was about setup and philosophy, Tutorial 02 is where MLIR's design starts to **make sense**. You'll see why progressive lowering isn't just a nice idea—it's a practical necessity that makes sophisticated optimizations possible.
+If Tutorial 01 was about setup and philosophy, Tutorial 02 is where MLIR's design starts to **make sense**. You'll see why progressive lowering isn't just a nice idea, it's a practical necessity that makes sophisticated optimizations possible.
 
 ### The Problem: The Impedance Mismatch
 
@@ -61,7 +61,7 @@ for (int i = 0; i < 1000; i++) {
 }
 ```
 
-Now suppose you want to **vectorize** this loop—process multiple elements at once using SIMD instructions. Can you tell from the LLVM-style IR that this accesses a diagonal? That there's no aliasing? That iterations are independent?
+Now suppose you want to **vectorize** this loop, process multiple elements at once using SIMD instructions. Can you tell from the LLVM-style IR that this accesses a diagonal? That there's no aliasing? That iterations are independent?
 
 Maybe. But you'd need to **reconstruct** that information through complex dataflow analysis. You'd need alias analysis to prove the iterations don't interfere. You'd need pattern matching to recognize the diagonal access pattern. It's a huge pain, and it's error-prone.
 
@@ -82,13 +82,13 @@ The `affine` dialect explicitly represents:
 - Array accesses with multi-dimensional indices
 - Independence between iterations (implicitly, through affine constraints)
 
-Now vectorization is **trivial**—the structure is explicit. Polyhedral analysis works directly on the affine form. Only after optimization do you lower to simpler dialects.
+Now vectorization is **trivial**, the structure is explicit. Polyhedral analysis works directly on the affine form. Only after optimization do you lower to simpler dialects.
 
 This is MLIR's core insight: **preserve structure through multiple levels**, discarding it only when you lower to the next level. Each level enables optimizations that would be impossible at lower levels.
 
 ### The Problem: Many Abstraction Levels
 
-A compiler needs to bridge the gap from high-level source code to machine instructions. MLIR solves this with **dialects**—small, focused intermediate representations at different abstraction levels.
+A compiler needs to bridge the gap from high-level source code to machine instructions. MLIR solves this with **dialects**, small, focused intermediate representations at different abstraction levels.
 
 But here's the key: **dialects coexist**. You don't replace all high-level operations at once. Instead, you incrementally lower parts of your program, keeping high-level structure where it helps and lowering to low-level forms where it doesn't.
 
@@ -217,7 +217,7 @@ Think of progressive lowering like **refining a sculpture**:
 4. Add fine details (lower to low-level dialect)
 5. Polish (optimize at low-level)
 
-You can't polish before carving—you need the right level of abstraction for each operation. MLIR's progressive lowering matches this natural workflow.
+You can't polish before carving, you need the right level of abstraction for each operation. MLIR's progressive lowering matches this natural workflow.
 
 ## 🔬 Example: Count Leading Zeros (ctlz)
 
@@ -305,7 +305,7 @@ func.func @test() {
 // CHECK: expected transformation
 ```
 
-Now the **input** is the file itself, and the **expected output** is right there in comments. When the transformation changes, you see input and output together—making updates natural.
+Now the **input** is the file itself, and the **expected output** is right there in comments. When the transformation changes, you see input and output together, making updates natural.
 
 This is called "literate testing" because tests **document** what the code should do, right where you can see it.
 
@@ -329,7 +329,7 @@ Think of `lit` as a specialized test runner that understands compiler testing pa
 - Supports regex, variable capture, and complex patterns
 - Reports exactly where matching failed
 
-The genius of FileCheck is that it's **flexible enough** to handle minor formatting changes but **strict enough** to catch real errors. It's not a simple string comparison—it's a domain-specific matcher for compiler output.
+The genius of FileCheck is that it's **flexible enough** to handle minor formatting changes but **strict enough** to catch real errors. It's not a simple string comparison, it's a domain-specific matcher for compiler output.
 
 ### Why This Combination Works
 
@@ -402,7 +402,7 @@ When I started using FileCheck, I wrote tests that were **too specific**. They'd
 
 ### Variable Capture and Reuse: Testing Dataflow
 
-The most powerful FileCheck feature is **variable capture**—capturing part of the output and referencing it later.
+The most powerful FileCheck feature is **variable capture**, capturing part of the output and referencing it later.
 
 ```mlir
 // CHECK: %[[VAR:.*]] = arith.constant 8
@@ -477,7 +477,7 @@ Matches must appear **in order**, but there can be anything between them. This i
 // CHECK-NEXT: %1 = arith.constant 2
 ```
 
-The second line must **immediately follow** the first (no blank lines, comments, or other operations). Use sparingly—it makes tests brittle.
+The second line must **immediately follow** the first (no blank lines, comments, or other operations). Use sparingly, it makes tests brittle.
 
 **When to use:** Verifying specific instruction sequence (e.g., "constant must be immediately before use for some optimization").
 
@@ -591,7 +591,7 @@ When a FileCheck test fails:
 4. **Compare** - Is the output wrong, or is the CHECK pattern wrong?
 5. **Fix whichever is wrong**
 
-Most CHECK failures aren't bugs—they're patterns that were too strict. Learning to write resilient patterns is an art.
+Most CHECK failures aren't bugs, they're patterns that were too strict. Learning to write resilient patterns is an art.
 
 ### Example: Testing Loop Unrolling
 
@@ -761,7 +761,7 @@ CMake uses **convention over configuration**. The `add_lit_testsuite` call:
 
 **The Tradeoff:**
 
-You lose Bazel's granular caching and distribution. CMake's incremental test runs are coarser—if any test changes, you might re-run more tests than necessary.
+You lose Bazel's granular caching and distribution. CMake's incremental test runs are coarser, if any test changes, you might re-run more tests than necessary.
 
 For **learning MLIR**, where you have dozens (not thousands) of tests, this tradeoff is acceptable.
 
@@ -781,7 +781,7 @@ The Bazel vs CMake choice illustrates a broader principle: **optimize for your c
 - Faster builds (minutes to compile with packages)
 - Local development (get started quickly)
 
-Neither is "better"—they solve different problems. This tutorial chooses CMake because **your constraint is learning time**, not build infrastructure at scale.
+Neither is "better", they solve different problems. This tutorial chooses CMake because **your constraint is learning time**, not build infrastructure at scale.
 
 When you build a production MLIR compiler, re-evaluate. If you're at Google, use Bazel. If you're at a startup, maybe CMake. If you're building open-source tools, consider both. The concepts transfer; the build system is just scaffolding.
 
@@ -999,7 +999,7 @@ Beyond the mechanics of writing tests, here's what you should internalize:
 
 ### 1. Progressive Lowering Enables Better Optimizations
 
-Traditional compilers lose high-level structure early. MLIR preserves it through multiple abstraction levels. This isn't academic—it's the difference between "can't vectorize this loop" and "automatic vectorization."
+Traditional compilers lose high-level structure early. MLIR preserves it through multiple abstraction levels. This isn't academic, it's the difference between "can't vectorize this loop" and "automatic vectorization."
 
 When you build compilers, think: **what structure do my optimizations need?** Design dialects that preserve that structure.
 

@@ -1,6 +1,6 @@
 # Tutorial 08: Verifiers
 
-**Original Article:** [MLIR — Verifiers](https://jeremykun.com/2023/09/13/mlir-verifiers/) by Jeremy Kun
+**Original Article:** [MLIR ,  Verifiers](https://jeremykun.com/2023/09/13/mlir-verifiers/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on verification mechanisms with CMake build integration.
 
@@ -27,13 +27,13 @@ This tutorial uses emojis to help you navigate:
 
 ## Verification as Communication
 
-Here's an uncomfortable truth about compiler development: **most compiler bugs aren't logic errors—they're assumption violations**.
+Here's an uncomfortable truth about compiler development: **most compiler bugs aren't logic errors, they're assumption violations**.
 
 You write a pass assuming operations have certain properties. Maybe you assume operand types match. Maybe you assume degree bounds are consistent. Maybe you assume control flow is well-structured.
 
-Then someone runs your pass on IR that violates those assumptions. Your pass crashes. Or worse—it silently produces wrong code. You spend hours debugging only to discover: "Oh, I was assuming the input was X, but it was actually Y."
+Then someone runs your pass on IR that violates those assumptions. Your pass crashes. Or worse, it silently produces wrong code. You spend hours debugging only to discover: "Oh, I was assuming the input was X, but it was actually Y."
 
-**Verification makes assumptions explicit.** Instead of implicit expectations that might be violated, you write verifiers that check and enforce them. Verification isn't just error-catching—it's **documentation that executes**.
+**Verification makes assumptions explicit.** Instead of implicit expectations that might be violated, you write verifiers that check and enforce them. Verification isn't just error-catching, it's **documentation that executes**.
 
 ### The Philosophy: Fail Fast, Fail Clearly
 
@@ -84,7 +84,7 @@ Every minute spent writing verifiers saves hours of debugging.
 **The investment:** 10 minutes to write a verifier.
 **The return:** Potentially hours saved on every future bug.
 
-This is leverage—verifiers pay dividends throughout the project's lifetime.
+This is leverage, verifiers pay dividends throughout the project's lifetime.
 
 ### When Verification Runs
 
@@ -900,7 +900,7 @@ LogicalResult ConstantOp::verify() {
 
 ✅ **Verification is economic leverage** - 10 minutes writing a verifier saves hours of debugging throughout the project's lifetime. By enforcing invariants through verification, "passes [can be] simpler because they can rely on the invariants to avoid edge case checking." This is investment that reduces downstream complexity
 
-✅ **Strictness vs flexibility is a deliberate trade-off** - Jeremy's tutorial demonstrates progression from `SameOperandsAndResultElementType` (flexible, allowed mixed poly/tensor semantics) to `SameOperandsAndResultType` (strict, uniform types). This choice involves "reducing expressiveness to gain stronger guarantees"—accepting constraints on programs to gain confidence in transformations
+✅ **Strictness vs flexibility is a deliberate trade-off** - Jeremy's tutorial demonstrates progression from `SameOperandsAndResultElementType` (flexible, allowed mixed poly/tensor semantics) to `SameOperandsAndResultType` (strict, uniform types). This choice involves "reducing expressiveness to gain stronger guarantees", accepting constraints on programs to gain confidence in transformations
 
 ✅ **Verification enables conciseness elsewhere** - Once type inference is available through traits, assembly format can be "simplified...so that the type need only be specified once instead of three times." Verification investments pay off in improved developer experience
 

@@ -1,6 +1,6 @@
 # Tutorial 01: Getting Started with MLIR on Windows
 
-**Original Article:** [MLIR — Build System (Getting Started)](https://jeremykun.com/2023/08/10/mlir-getting-started/) by Jeremy Kun
+**Original Article:** [MLIR ,  Build System (Getting Started)](https://jeremykun.com/2023/08/10/mlir-getting-started/) by Jeremy Kun
 
 **Windows Adaptation:** This tutorial replaces Bazel workspace setup with MSYS2/CMake for native Windows development.
 
@@ -12,7 +12,7 @@ When I first encountered MLIR, I thought it was "just another compiler framework
 
 ### The Historical Problem
 
-Let me take you back to 2017. Google's TensorFlow team had a problem: LLVM wasn't cutting it for machine learning workloads. Why not? Because LLVM was designed for general-purpose CPU code generation in the 1990s-2000s era. It operated at a low abstraction level—think pointers, registers, and basic blocks—and had accumulated decades of technical debt.
+Let me take you back to 2017. Google's TensorFlow team had a problem: LLVM wasn't cutting it for machine learning workloads. Why not? Because LLVM was designed for general-purpose CPU code generation in the 1990s-2000s era. It operated at a low abstraction level, think pointers, registers, and basic blocks, and had accumulated decades of technical debt.
 
 But here's the deeper issue: **modern compilers need to optimize at multiple abstraction levels**. When you're compiling a neural network, you need to:
 - Reason about tensor shapes and dimensions (high-level)
@@ -24,7 +24,7 @@ Traditional compilers force you into a single intermediate representation (IR). 
 
 ### Enter MLIR: A Philosophy, Not Just a Tool
 
-MLIR (Multi-Level Intermediate Representation) isn't just a compiler infrastructure—it's a **design philosophy**: break large compilers into lots of small compilers between sub-languages. Each intermediate representation (called a "dialect" in MLIR) is designed to make a particular kind of optimization natural to express.
+MLIR (Multi-Level Intermediate Representation) isn't just a compiler infrastructure, it's a **design philosophy**: break large compilers into lots of small compilers between sub-languages. Each intermediate representation (called a "dialect" in MLIR) is designed to make a particular kind of optimization natural to express.
 
 Think of it like this:
 - Traditional compiler: One giant leap from source code to assembly
@@ -70,7 +70,7 @@ Think of dialects as **Lego blocks for compiler construction**. Each dialect is 
 - Pointers, memory operations
 - Gateway to native code generation
 
-And here's the insight: **you can mix these dialects in a single program**. Your function might use `tensor` ops for high-level computation, `affine` loops for iteration, `arith` for scalars, and `func` for structure—all at once.
+And here's the insight: **you can mix these dialects in a single program**. Your function might use `tensor` ops for high-level computation, `affine` loops for iteration, `arith` for scalars, and `func` for structure, all at once.
 
 ### Progressive Lowering: The MLIR Way
 
@@ -82,14 +82,14 @@ Your Custom Dialect → Standard Dialects → LLVM Dialect → Machine Code
                           rich, optimizable)
 ```
 
-Each arrow is a **pass**—a small, focused transformation. This approach has profound implications:
+Each arrow is a **pass**, a small, focused transformation. This approach has profound implications:
 
 1. **Debuggability**: If something breaks, you know which pass caused it
 2. **Reusability**: A pass that lowers `tensor` to `linalg` works for everyone
 3. **Flexibility**: You can insert your custom optimization at the right level
 4. **Testability**: Each pass can be tested independently
 
-This is why MLIR matters: it's not about replacing your entire compiler—it's about giving you the right abstractions to build compilers **compositionally**.
+This is why MLIR matters: it's not about replacing your entire compiler, it's about giving you the right abstractions to build compilers **compositionally**.
 
 ### Why Choose MLIR Over Building From Scratch?
 
@@ -99,8 +99,8 @@ When I talk to compiler engineers, I hear the same objection: "I could just writ
 - Do you want to debug all of that before you even start on your actual problem?
 
 MLIR gives you:
-- **Infrastructure**: Parsing, printing, verification, pass management—all solved
-- **Reusable passes**: CSE, DCE, inlining, canonicalization—hundreds of optimizations ready to use
+- **Infrastructure**: Parsing, printing, verification, pass management, all solved
+- **Reusable passes**: CSE, DCE, inlining, canonicalization, hundreds of optimizations ready to use
 - **Ecosystem**: Tools, debuggers, visualizers that work with any MLIR dialect
 - **Community**: Thousands of engineers at Google, Meta, Apple, Microsoft using and improving MLIR
 
@@ -168,7 +168,7 @@ You should see a long list including: `affine`, `arith`, `func`, `llvm`, `math`,
 
 ## Understanding the Repository Structure: A Guided Tour
 
-When you clone this repository, you're not just getting code—you're getting a **working MLIR compiler project** structured following LLVM/MLIR conventions. Let's understand the philosophy behind this organization.
+When you clone this repository, you're not just getting code, you're getting a **working MLIR compiler project** structured following LLVM/MLIR conventions. Let's understand the philosophy behind this organization.
 
 ```
 mlir-tutorial/
@@ -238,7 +238,7 @@ This structure follows MLIR convention:
 - **`.td` files** describe structure declaratively (we'll learn TableGen in Tutorial 04)
 - **`CMakeLists.txt`** tells the build system how to compile this
 
-The `Poly` dialect implements **polynomial arithmetic**—operations like `poly.add`, `poly.mul`, `poly.from_tensor`. It's a complete example you can study and imitate when building your own dialects.
+The `Poly` dialect implements **polynomial arithmetic**, operations like `poly.add`, `poly.mul`, `poly.from_tensor`. It's a complete example you can study and imitate when building your own dialects.
 
 **Why polynomials?** They're complex enough to demonstrate real dialect features (custom types, attributes, operations) but simple enough to understand without domain expertise. They're the "Hello, World" of custom MLIR dialects.
 
@@ -318,7 +318,7 @@ When you run `ninja tutorial-opt`, CMake:
 3. Builds in correct dependency order
 4. Links everything together
 
-You rarely need to think about this—it just works. But understanding the structure helps when you add new dialects or passes.
+You rarely need to think about this, it just works. But understanding the structure helps when you add new dialects or passes.
 
 ### How This Structure Supports Learning
 
@@ -327,7 +327,7 @@ The repository is organized to **teach by example**:
 - Want to write a pass? Study `lib/Transform/Arith/MulToAdd.cpp`
 - Want to test something? Study `tests/*.mlir`
 
-Each component is **complete and working**. You're not reading fragments; you're reading real, tested, functional code. This is intentional—learning from working examples beats reading documentation.
+Each component is **complete and working**. You're not reading fragments; you're reading real, tested, functional code. This is intentional, learning from working examples beats reading documentation.
 
 ## Building the Tutorial
 
@@ -434,7 +434,7 @@ If you're building a production MLIR compiler, consider Bazel once you understan
 
 **The Philosophy Behind This Choice:**
 
-I believe tutorials should minimize friction **orthogonal to the learning goal**. Your goal is to understand MLIR concepts—dialects, passes, operations, lowering. The build system is infrastructure. Spending hours debugging Bazel configurations doesn't teach you MLIR; it teaches you Bazel. We choose CMake so you can focus on what matters.
+I believe tutorials should minimize friction **orthogonal to the learning goal**. Your goal is to understand MLIR concepts, dialects, passes, operations, lowering. The build system is infrastructure. Spending hours debugging Bazel configurations doesn't teach you MLIR; it teaches you Bazel. We choose CMake so you can focus on what matters.
 
 ## Your First MLIR Program: Understanding SSA and Dialects
 
@@ -470,7 +470,7 @@ Every MLIR program starts with a `module`. Why? Because compilers need a **scope
 
 The `@` prefix isn't arbitrary. It distinguishes **symbols** (global names like functions) from **SSA values** (local values like `%result`). This matters during linking and optimization. The parser needs to know: "Is this a local value or a global reference?"
 
-The `func.func` part might seem redundant—why not just `func`? Because **operations** are namespaced by dialect. This lets different dialects define their own operations without collisions. One dialect's `func` might mean "function definition" while another's might mean "function pointer."
+The `func.func` part might seem redundant, why not just `func`? Because **operations** are namespaced by dialect. This lets different dialects define their own operations without collisions. One dialect's `func` might mean "function definition" while another's might mean "function pointer."
 
 **`%result = arith.addi %arg0, %arg1 : i32`** - Arithmetic from `arith` dialect:
 - `%result` - **SSA value** (like a variable, but immutable)
@@ -484,11 +484,11 @@ This line embodies **Static Single Assignment (SSA)** form, the foundation of mo
 
 Why SSA? Because it makes **dataflow analysis trivial**. Want to know where `%result` is used? Follow the edges. Want to know if two computations are the same? Compare their definitions. SSA eliminates whole classes of bugs that plague mutable-variable IRs.
 
-The `: i32` type annotation is **redundant by design**. MLIR could infer it from `arith.addi`'s signature. But explicit types make the IR self-documenting and enable better error messages. When something fails, you see types immediately—no need to trace back through inference chains.
+The `: i32` type annotation is **redundant by design**. MLIR could infer it from `arith.addi`'s signature. But explicit types make the IR self-documenting and enable better error messages. When something fails, you see types immediately, no need to trace back through inference chains.
 
 **`return %result : i32`** - Return the value
 
-Again, we redundantly specify the type. This isn't inefficiency—it's **verification**. MLIR can check that return types match function signatures without complex inference. Fast verification enables rapid development.
+Again, we redundantly specify the type. This isn't inefficiency, it's **verification**. MLIR can check that return types match function signatures without complex inference. Fast verification enables rapid development.
 
 ### The Mental Model Shift: IR is Not Source Code
 
@@ -585,7 +585,7 @@ Our custom tool (in `tools/tutorial-opt.cpp`):
 
 ## Development Workflow: The Reality of MLIR Development
 
-Now that you understand the structure, let's talk about the **actual workflow** you'll use when developing MLIR code. This isn't the idealized "write-compile-run" of textbooks—it's the messy reality of compiler development.
+Now that you understand the structure, let's talk about the **actual workflow** you'll use when developing MLIR code. This isn't the idealized "write-compile-run" of textbooks, it's the messy reality of compiler development.
 
 ### The Iterative Cycle
 
@@ -601,7 +601,7 @@ MLIR development is fundamentally iterative. You'll rarely get something right o
 8. **Fix test** → Discover edge case
 9. **Handle edge case** → Finally works!
 
-This isn't failure—it's normal. Compiler development involves many moving pieces: TableGen generation, C++ templates, type systems, pattern matching, IR verification. Each layer can fail independently.
+This isn't failure, it's normal. Compiler development involves many moving pieces: TableGen generation, C++ templates, type systems, pattern matching, IR verification. Each layer can fail independently.
 
 ### 1. Edit Code: Where to Start?
 
@@ -639,7 +639,7 @@ cd build
 ninja tutorial-opt
 ```
 
-**Why this matters:** Rebuilding `tutorial-opt` after changing one file takes 5-10 seconds. Rebuilding everything takes minutes. Ninja's incremental builds are smart—use them.
+**Why this matters:** Rebuilding `tutorial-opt` after changing one file takes 5-10 seconds. Rebuilding everything takes minutes. Ninja's incremental builds are smart, use them.
 
 **Pro tip:** Keep a terminal open in the `build/` directory. Your workflow becomes:
 ```powershell
@@ -734,7 +734,7 @@ Here's what they don't tell you: in MLIR development, **reading code takes longe
 - Reading TableGen documentation to understand syntax
 - Reading test files to see how features are used
 
-This is normal. MLIR is a large framework with many abstractions. The investment pays off—once you understand the patterns, development accelerates. But the initial learning curve is steep.
+This is normal. MLIR is a large framework with many abstractions. The investment pays off, once you understand the patterns, development accelerates. But the initial learning curve is steep.
 
 ### My Workflow (Real Example)
 
@@ -915,7 +915,7 @@ This makes MLIR powerful but not beginner-friendly. The tradeoff is intentional:
 
 **MLIR Concepts:** Everything about dialects, operations, passes, and transformations remains identical
 
-**Code:** The actual C++ and TableGen code is the same—we just build it differently
+**Code:** The actual C++ and TableGen code is the same, we just build it differently
 
 **Examples:** All `.mlir` test files work identically
 
@@ -935,7 +935,7 @@ This makes MLIR powerful but not beginner-friendly. The tradeoff is intentional:
 - You're in a monorepo environment
 - You're contributing to Google's MLIR projects
 
-Both approaches teach the same MLIR concepts. The build system is infrastructure—choose what lets you focus on learning.
+Both approaches teach the same MLIR concepts. The build system is infrastructure, choose what lets you focus on learning.
 
 ## Next Steps
 

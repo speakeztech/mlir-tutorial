@@ -1,6 +1,6 @@
 # Tutorial 05: Defining a New Dialect
 
-**Original Article:** [MLIR — Defining a New Dialect](https://jeremykun.com/2023/08/21/mlir-defining-a-new-dialect/) by Jeremy Kun
+**Original Article:** [MLIR ,  Defining a New Dialect](https://jeremykun.com/2023/08/21/mlir-defining-a-new-dialect/) by Jeremy Kun
 
 **Windows Adaptation:** Focus on MLIR dialect concepts with CMake build integration instead of Bazel.
 
@@ -27,7 +27,7 @@ This tutorial uses emojis to help you navigate:
 
 ## 📖 The Philosophy of Dialect Design
 
-When you define a custom dialect in MLIR, you're not just adding new syntax—you're **embedding domain knowledge into the compiler's type system**. This is a fundamentally different approach from traditional compiler design.
+When you define a custom dialect in MLIR, you're not just adding new syntax, you're **embedding domain knowledge into the compiler's type system**. This is a fundamentally different approach from traditional compiler design.
 
 ### The Traditional Compiler Problem
 
@@ -38,11 +38,11 @@ Your Domain → Generic IR → Optimization → Machine Code
    (lost immediately)   (one-size-fits-all)
 ```
 
-Once you've lowered to that generic IR, you've **lost the semantic structure** that enables domain-specific optimizations. A polynomial multiplication becomes a series of loops and arithmetic operations—the compiler no longer knows it's dealing with polynomials.
+Once you've lowered to that generic IR, you've **lost the semantic structure** that enables domain-specific optimizations. A polynomial multiplication becomes a series of loops and arithmetic operations, the compiler no longer knows it's dealing with polynomials.
 
 ### The MLIR Approach: Computation Dialects
 
-MLIR introduces the concept of **computation dialects**—intermediate representations designed specifically to capture domain-specific operations and enable specialized transformations.
+MLIR introduces the concept of **computation dialects**, intermediate representations designed specifically to capture domain-specific operations and enable specialized transformations.
 
 A computation dialect:
 - Preserves high-level semantic structure
@@ -209,7 +209,7 @@ public:
 
 ## 🔬 Step 2: Defining Parameterized Types
 
-Types in MLIR carry semantic information. For polynomials, the degree bound isn't just documentation—it's **computational semantics embedded in the type system**.
+Types in MLIR carry semantic information. For polynomials, the degree bound isn't just documentation, it's **computational semantics embedded in the type system**.
 
 ### Types as Semantic Anchors
 
@@ -731,7 +731,7 @@ Dialect design involves navigating trade-offs between expressiveness, simplicity
 
 **Question:** What should be parameterized?
 
-This isn't arbitrary—parameters determine what the compiler can reason about statically.
+This isn't arbitrary, parameters determine what the compiler can reason about statically.
 
 **Polynomial example:**
 - ✅ **Degree bound** - Affects operation semantics, enables static analysis
@@ -740,8 +740,8 @@ This isn't arbitrary—parameters determine what the compiler can reason about s
 
 **The criterion:** Parameterize properties that:
 - Affect type compatibility (should `poly<7>` be compatible with `poly<10>`? No.)
-- Enable optimization (can compiler generate better code? Yes—fixed-size arrays)
-- Express semantic constraints (does this prevent invalid programs? Yes—mismatched degrees)
+- Enable optimization (can compiler generate better code? Yes, fixed-size arrays)
+- Express semantic constraints (does this prevent invalid programs? Yes, mismatched degrees)
 
 **The cost:** Each parameter increases type system complexity. More parameters mean:
 - More storage class code (hashing, equality, construction)
@@ -790,7 +790,7 @@ For `poly.mul`, we chose:
 - **Use case alignment**: Cryptographic schemes use ring arithmetic
 - **Composability**: Works well with existing MLIR passes
 
-**The lesson:** Semantic choices aren't "right" or "wrong"—they're **trade-offs aligned with use cases**.
+**The lesson:** Semantic choices aren't "right" or "wrong", they're **trade-offs aligned with use cases**.
 
 ### Assembly Format Design: Ergonomics vs Explicitness
 
@@ -1061,11 +1061,11 @@ affine.for %i = 0 to 100 {
 
 ✅ **Pragmatism over philosophical purity** - Jeremy's honest acknowledgment: "There is quite a large surface area of design choices," and the tutorial trades perfect design for functional implementation. The ring reduction semantics (Option 3) was chosen partly because it's "easier" to implement, not because it's mathematically superior
 
-✅ **TableGen is semantic encoding, not just code generation** - Lines like `let assemblyFormat = ...` don't merely generate parsers—they declare how concrete syntax mirrors semantic structure. The progression from `class` (abstract design) to `def` (realized artifact) mirrors design-to-implementation
+✅ **TableGen is semantic encoding, not just code generation** - Lines like `let assemblyFormat = ...` don't merely generate parsers, they declare how concrete syntax mirrors semantic structure. The progression from `class` (abstract design) to `def` (realized artifact) mirrors design-to-implementation
 
 ✅ **Storage classes hide unavoidable complexity** - The `PolynomialTypeStorage` pattern represents a concession: dialects present simple interfaces (`poly<7>`), but underneath require storage management for parameters. Jeremy notes external projects have "multi-thousand line implementation files" for this
 
-✅ **Design with lowering targets in mind** - The static degree choice is justified partly because it "makes lowering a poly type require replacing `poly.poly<D>` with a tensor of D coefficients"—a natural, zero-overhead abstraction. Progressive lowering validates design decisions
+✅ **Design with lowering targets in mind** - The static degree choice is justified partly because it "makes lowering a poly type require replacing `poly.poly<D>` with a tensor of D coefficients", a natural, zero-overhead abstraction. Progressive lowering validates design decisions
 
 ✅ **Type inference is opt-in, not automatic** - Jeremy observes that auto-generated type inference "should be able to work" but "the MLIR devs appear to have made [it] opt-in via the trait infrastructure." Even MLIR's design contains unresolved tensions between inference and explicit specification
 
