@@ -24,6 +24,26 @@ This tutorial uses emojis to help you navigate:
 - Running MLIR code with **mlir-cpu-runner**
 - Setting up the testing infrastructure with **CMake**
 
+---
+
+## 📝 A Note on Testing Infrastructure
+
+This tutorial teaches the current state of the art: **lit** and **FileCheck**, the standard testing tools used throughout the LLVM/MLIR ecosystem. They're simple, universal, and well-established. You'll use them extensively in MLIR development.
+
+However, if you value strongly-typed verification and semantic correctness guarantees, you might be interested in alternative approaches being developed. The **[Fidelity Framework](https://speakez.tech/blog/)** anticipates a different path, using parser combinators, semantic graphs, and proof-carrying compilation to verify transformations at a deeper level than text-pattern matching allows.
+
+**For those curious about the future:**
+- **[Verifying F#](https://speakez.tech/blog/verifying-fsharp/)** - Formal verification in functional languages
+- **[Hyping Hypergraphs](https://speakez.tech/blog/hyping-hypergraphs/)** - Semantic structures beyond ASTs
+- **[Proof-Aware Compilation](https://speakez.tech/blog/proof-aware-compilation/)** - How F* proofs travel through MLIR
+- **[MLIR Testing with Teeth](https://speakez.tech/blog/mlir-testing-with-teeth/)** - Why typed verification matters
+
+This tutorial focuses on **understanding MLIR as it exists today**. The Fidelity Framework represents a complementary vision for where compiler verification might go in the future. Both perspectives have value: lit/FileCheck for pragmatic, universal testing; typed verification for semantic correctness proofs.
+
+Now, let's dive into how MLIR testing works in practice.
+
+---
+
 ## 📖 Understanding Dialects and Lowering: The Core of MLIR
 
 If Tutorial 01 was about setup and philosophy, Tutorial 02 is where MLIR's design starts to **make sense**. You'll see why progressive lowering isn't just a nice idea, it's a practical necessity that makes sophisticated optimizations possible.
