@@ -21,7 +21,7 @@ This tutorial uses emojis to help you navigate:
 - How MLIR **dialects** represent different abstraction levels
 - How to **progressively lower** from high-level to low-level dialects
 - Testing transformations with **lit** and **FileCheck**
-- Running MLIR code with **mlir-cpu-runner**
+- Running MLIR code with **mlir-runner**
 - Setting up the testing infrastructure with **CMake**
 
 ---
@@ -998,12 +998,12 @@ lit -v .\tests\my_test.mlir
 mlir-opt --help | Select-String print
 ```
 
-## 🔬 Running Code with mlir-cpu-runner
+## 🔬 Running Code with mlir-runner
 
-For tests that need to execute (not just transform), use `mlir-cpu-runner`:
+For tests that need to execute (not just transform), use `mlir-runner`:
 
 ```mlir
-// RUN: mlir-cpu-runner %s \
+// RUN: mlir-runner %s \
 // RUN:   --entry-point-result=i32 \
 // RUN:   -e main \
 // RUN:   --shared-libs=%mlir_runner_utils \
@@ -1022,7 +1022,7 @@ func.func @main() -> i32 {
 **Working directory:** Repository root (such as `D:\repos\mlir-tutorial\`)
 
 ```powershell
-mlir-cpu-runner .\tests\example.mlir `
+mlir-runner .\tests\example.mlir `
   --entry-point-result=i32 `
   -e main `
   --shared-libs=C:\msys64\clang64\bin\mlir_runner_utils.dll
@@ -1105,7 +1105,7 @@ But it doesn't check "does this actually compute leading zeros?"
 
 This limitation means:
 - **FileCheck tests** verify structure, not semantics
-- **mlir-cpu-runner tests** verify execution, confirming correctness
+- **mlir-runner tests** verify execution, confirming correctness
 - You need **both kinds of tests** for confidence
 
 The Bazel vs CMake tradeoff makes sense in this light. MLIR's testing philosophy already layers structural tests (FileCheck) with semantic tests (execution). Each layer has a purpose.
@@ -1147,7 +1147,7 @@ This coexistence is intentional. Lower each operation **when you're ready**, not
 MLIR's testing can't prove your transformation is correct. But it can:
 - Document intended behavior (FileCheck)
 - Catch regressions (when changes break tests)
-- Verify execution (mlir-cpu-runner)
+- Verify execution (mlir-runner)
 
 This combination builds **confidence**, which is what you need for production compilers.
 
